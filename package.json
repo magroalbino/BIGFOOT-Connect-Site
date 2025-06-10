@@ -1,1 +1,24 @@
-{ "name": "bigfoot-connect", "version": "1.0.0" }
+{
+  "name": "bigfoot-connect",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "@types/react": "19.1.7",
+    "eslint": "9.28.0",
+    "eslint-config-next": "15.3.3",
+    "prisma": "^6.9.0",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}

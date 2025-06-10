@@ -1,1 +1,1 @@
-// Prisma Client setup
+// Configuração do Prisma Client

@@ -1,2 +1,1 @@
-// Cabeçalho
-export default function Header() { return <header>Header</header>; }
+// Cabeçalho com navegação e AuthButton

@@ -1,1 +1,1 @@
-// Configuração NextAuth
+// Configuração do NextAuth
