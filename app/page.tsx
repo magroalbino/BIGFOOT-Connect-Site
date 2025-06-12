@@ -1,9 +1,5 @@
-// Landing page
+import { redirect } from 'next/navigation';
 
-export default function HomePage() {
-    return (
-        <main>
-            <h1>Página inicial do BIGFOOT Connect</h1>
-        </main>
-    );
+export default function Home() {
+    redirect('/dashboard');
 }
