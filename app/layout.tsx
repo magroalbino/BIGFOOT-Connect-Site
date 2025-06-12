@@ -1,4 +1,4 @@
-import '../app/globals.css';
+import './globals.css';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 
