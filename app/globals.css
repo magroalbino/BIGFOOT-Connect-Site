@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globais opcionais */
+body {
+  @apply bg-neutral-950 text-white;
+  font-family: 'Inter', sans-serif;
+}
