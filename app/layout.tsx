@@ -1,19 +1,17 @@
-import './globals.css';
-import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
+// app/layout.tsx
+import Header from '@/components/Header'
+import Sidebar from '@/components/Sidebar'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
-            <body className="bg-gray-50 text-black">
-                <div className="flex min-h-screen">
-                    <Sidebar />
-                    <div className="flex-1 flex flex-col">
-                        <Topbar />
-                        <main className="p-6">{children}</main>
-                    </div>
+        <html lang="pt-br">
+            <body className="flex bg-background">
+                <Sidebar />
+                <div className="flex-1">
+                    <Header />
+                    {children}
                 </div>
             </body>
         </html>
-    );
+    )
 }
