@@ -1,6 +1,6 @@
 # 🌐 BIGFOOT Connect
 
-Projeto inspirado na arquitetura da extensão **Grass**, com foco em **compartilhamento de banda ociosa** de forma segura, escalável e fácil de usar.  
+Projeto inspirado na arquitetura da extensão **DAWN**, com foco em **compartilhamento de banda ociosa** de forma segura, escalável e fácil de usar.  
 Este repositório contém o **painel web (frontend + backend)** da aplicação, desenvolvido com **Next.js 14 (App Router)**, **Prisma ORM** e **NextAuth** para autenticação.
 
 ---
