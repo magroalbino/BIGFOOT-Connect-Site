@@ -1,12 +1,13 @@
-// Esquema do banco: User, PairingCode
-
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DB_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id        Int      @id @default(autoincrement())
+  userId    String   @unique
+  password  String
+  createdAt DateTime @default(now())
 }
 
 model User {
