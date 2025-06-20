@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'ID e senha são obrigatórios' }, { status: 400 })
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { userId } })
+  const existingUser = await prisma.User.findUnique({ where: { userId } })
 
   if (existingUser) {
     return NextResponse.json({ error: 'Usuário já existe' }, { status: 409 })
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
   const hashedPassword = await hash(password, 10)
 
-  const newUser = await prisma.user.create({
+  const newUser = await prisma.User.create({
     data: {
       userId,
       password: hashedPassword,
