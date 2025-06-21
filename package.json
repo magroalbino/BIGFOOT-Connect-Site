@@ -2,11 +2,12 @@
   "name": "bigfoot-connect",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "postinstall": "prisma generate"
+},
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.10",
     "@types/node": "22.15.30",
