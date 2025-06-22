@@ -8,8 +8,13 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  userId    String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  username   String   @unique      // Alterado de userId para username
+  password   String                 // Armazene o hash, nunca a senha pura
+  role       String   @default("user") // Ex: user, admin
+  isActive   Boolean  @default(true)   // Controle de ativação
+  createdAt  DateTime @default(now())
+  deletedAt  DateTime?               // Para soft delete (opcional)
+
+  @@map("users") // Nome da tabela no banco
 }
