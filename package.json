@@ -2,12 +2,15 @@
   "name": "bigfoot-connect",
   "version": "1.0.0",
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint",
-  "postinstall": "prisma generate"
-},
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.10",
     "@types/node": "22.15.30",
@@ -27,21 +30,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "description": "Projeto inspirado na arquitetura da extensão **Grass**, com foco em **compartilhamento de banda ociosa** de forma segura, escalável e fácil de usar.   Este repositório contém o **painel web (frontend + backend)** da aplicação, desenvolvido com **Next.js 14 (App Router)**, **Prisma ORM** e **NextAuth** para autenticação.",
   "main": "next.config.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/magroalbino/BIGFOOT-Connect-Site.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/magroalbino/BIGFOOT-Connect-Site/issues"
-  },
-  "homepage": "https://github.com/magroalbino/BIGFOOT-Connect-Site#readme"
+  "license": "ISC"
 }
