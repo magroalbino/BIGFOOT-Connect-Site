@@ -11,3 +11,9 @@ export async function GET() {
 
   return NextResponse.json(data)
 }
+
+// app/api/user/route.ts
+export async function GET() {
+  const user = await prisma.user.findMany();
+  return Response.json(user, { headers: { 'Cache-Control': 's-maxage=3600' } });
+}
