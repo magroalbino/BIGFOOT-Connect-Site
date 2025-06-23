@@ -1,1 +1,3 @@
 <svg><!-- Logo BIGFOOT --></svg>
+import Image from 'next/image';
+<Image src="/logo.png" alt="BIGFOOT Logo" width={200} height={50} priority />
