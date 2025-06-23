@@ -1,35 +1,14 @@
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth'; // Verifique se o caminho está correto
-
-// Força renderização dinâmica devido ao uso de getServerSession
-export const dynamic = 'force-dynamic';
-
-export default async function Dashboard() {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      redirect('/login'); // Certifique-se de que app/login/page.tsx existe
-    }
-
-    // Exemplo de conteúdo do dashboard
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-blue-600 mb-4">Bem-vindo ao Dashboard</h1>
-          <p className="text-lg text-gray-700">
-            Aqui você pode gerenciar seu compartilhamento de banda com BIGFOOT Connect.
-          </p>
-        </div>
+// app/page.tsx
+export default function Home() {
+  return (
+    <section className="min-h-screen bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+      <div className="text-center text-white">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">Ganhe com Sua Internet Ociosa</h1>
+        <p className="text-lg md:text-xl mb-6">Compartilhe sua banda e receba recompensas com BIGFOOT Connect.</p>
+        <a href="/dashboard" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100">
+          Comece Agora
+        </a>
       </div>
-    );
-  } catch (error) {
-    console.error('Erro ao carregar dashboard:', error);
-    // Fallback para evitar erro 500
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-red-600">Erro ao carregar o dashboard. Tente novamente mais tarde.</p>
-      </div>
-    );
-  }
+    </section>
+  );
 }
