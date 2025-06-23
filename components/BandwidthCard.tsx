@@ -1,4 +1,3 @@
-// components/BandwidthCard.tsx
 export default function BandwidthCard({ amount }: { amount: string }) {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
