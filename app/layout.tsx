@@ -23,3 +23,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </html>
     );
 }
+
+// app/layout.tsx
+export const metadata = {
+  title: 'BIGFOOT Connect - Compartilhe Banda, Ganhe Recompensas',
+  description: 'Ganhe recompensas compartilhando sua banda ociosa com a extensão BIGFOOT Connect. Seguro, escalável e fácil de usar.',
+  openGraph: {
+    title: 'BIGFOOT Connect',
+    description: 'Compartilhe sua internet ociosa e receba tokens BFT.',
+    images: ['/og-image.png'],
+  },
+};
