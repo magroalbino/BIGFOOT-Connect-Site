@@ -18,3 +18,12 @@ model User {
 
   @@map("users")                                // nome da tabela no banco
 }
+
+// prisma/schema.prisma
+model BandwidthLog {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  amount    Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
