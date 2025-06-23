@@ -1,37 +1,35 @@
-// app/page.tsx
-import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth'; // Verifique se o caminho está correto
 
-// Metadados para SEO
-export const metadata = {
-  title: 'BIGFOOT Connect - Compartilhe Banda, Ganhe Recompensas',
-  description:
-    'Ganhe recompensas compartilhando sua banda ociosa com a extensão BIGFOOT Connect. Seguro, escalável e fácil de usar.',
-  openGraph: {
-    title: 'BIGFOOT Connect',
-    description: 'Compartilhe sua internet ociosa e receba tokens BFT.',
-    url: process.env.NEXT_PUBLIC_URL || 'http://localhost:3000', // Fallback para desenvolvimento
-    images: [{ url: '/og-image.png' }], // Verifique se existe em public/
-  },
-};
+// Força renderização dinâmica devido ao uso de getServerSession
+export const dynamic = 'force-dynamic';
 
-export default function Home() {
-  return (
-    <section className="min-h-screen bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="text-center text-white max-w-2xl">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight">
-          Ganhe com Sua Internet Ociosa
-        </h1>
-        <p className="text-base sm:text-lg md:text-xl mb-6 leading-relaxed">
-          Compartilhe sua banda e receba recompensas com BIGFOOT Connect.
-        </p>
-        <Link
-          href="/dashboard"
-          className="inline-block bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200"
-          aria-label="Comece a usar o BIGFOOT Connect"
-        >
-          Comece Agora
-        </Link>
+export default async function Dashboard() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      redirect('/login'); // Certifique-se de que app/login/page.tsx existe
+    }
+
+    // Exemplo de conteúdo do dashboard
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-blue-600 mb-4">Bem-vindo ao Dashboard</h1>
+          <p className="text-lg text-gray-700">
+            Aqui você pode gerenciar seu compartilhamento de banda com BIGFOOT Connect.
+          </p>
+        </div>
       </div>
-    </section>
-  );
+    );
+  } catch (error) {
+    console.error('Erro ao carregar dashboard:', error);
+    // Fallback para evitar erro 500
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-red-600">Erro ao carregar o dashboard. Tente novamente mais tarde.</p>
+      </div>
+    );
+  }
 }
