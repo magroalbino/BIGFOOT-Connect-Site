@@ -28,8 +28,10 @@
     "@supabase/supabase-js": "^2.50.0",
     "bcryptjs": "^3.0.2",
     "next": "^15.3.3",
+    "next-auth": "^4.24.11",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zod": "^3.25.67"
   },
   "main": "next.config.js",
   "type": "commonjs",
