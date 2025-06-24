@@ -7,7 +7,7 @@ type Props = {
     pairingCode: string;
 };
 
-export default function clientpairingpage({ pairingCode }: Props) {
+export default function ClientPairingPage({ pairingCode }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +22,7 @@ export default function clientpairingpage({ pairingCode }: Props) {
             });
             if (!response.ok) throw new Error('Falha no pareamento');
             alert('Pareamento concluído com sucesso!');
-        } catch (err) {
+        } catch {
             setError('Erro ao confirmar pareamento. Tente novamente.');
         } finally {
             setIsLoading(false);
