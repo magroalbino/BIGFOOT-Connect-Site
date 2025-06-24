@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { QRCode } from 'qrcode.react';
+import QRCode from 'qrcode.react';
 
 type Props = {
     pairingCode: string;
