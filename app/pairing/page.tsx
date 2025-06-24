@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import QRCode from 'qrcode.react';
 import { generatePairingCode } from '@/utils/pairing'; // Ajuste o caminho conforme sua estrutura
@@ -84,9 +85,8 @@ function ClientPairingPage({ pairingCode }: { pairingCode: string }) {
         <button
           onClick={handlePairing}
           disabled={isLoading}
-          className={`w-full p-3 rounded mt-4 text-white font-semibold transition-colors duration-200 ${
-            isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          className={`w-full p-3 rounded mt-4 text-white font-semibold transition-colors duration-200 ${isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           aria-label="Confirmar pareamento com a extensão"
         >
           {isLoading ? 'Confirmando...' : 'Confirmar Pareamento'}
