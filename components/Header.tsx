@@ -6,9 +6,10 @@ import Image from 'next/image';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session, status } = useSession();
+  const sessionHook = useSession();
+  const session = sessionHook?.data;
+  const status = sessionHook?.status;
 
-  // Nome do usuário ou fallback
   const userName = session?.user?.name || 'Usuário';
 
   return (
@@ -44,9 +45,8 @@ export default function Header() {
         </div>
 
         <div
-          className={`${
-            isOpen ? 'block' : 'hidden'
-          } md:flex md:items-center md:space-x-6 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 transition-all duration-200`}
+          className={`${isOpen ? 'block' : 'hidden'
+            } md:flex md:items-center md:space-x-6 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 transition-all duration-200`}
         >
           <Link
             href="/dashboard"
