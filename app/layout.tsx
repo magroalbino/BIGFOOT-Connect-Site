@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import { Providers } from '@/app/Providers';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -24,11 +26,13 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="flex min-h-screen bg-gray-100 text-gray-900 font-sans">
-        <Providers>
+        <Providers session={session}>
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
