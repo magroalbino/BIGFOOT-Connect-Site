@@ -1,10 +1,8 @@
-// app/_not-found/page.tsx
-
+import Link from 'next/link';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
 export default async function NotFoundPage() {
-    // Busca sessão no servidor
     const session = await getServerSession(authOptions);
 
     return (
@@ -23,9 +21,10 @@ export default async function NotFoundPage() {
                 </>
             )}
 
-            <a href="/" style={{ color: "blue", textDecoration: "underline" }}>
+            {/* Use Link para navegação interna */}
+            <Link href="/" style={{ color: "blue", textDecoration: "underline" }}>
                 Voltar para Home
-            </a>
+            </Link>
         </main>
     );
 }
