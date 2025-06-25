@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 type Props = {
     pairingCode: string;
@@ -34,7 +34,7 @@ export default function ClientPairingPage({ pairingCode }: Props) {
             <div className="max-w-md w-full mx-auto p-6 bg-white rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold mb-4 text-center text-blue-600">Conectar Extensão</h1>
                 <div className="flex justify-center mb-4">
-                    <QRCode
+                    <QRCodeCanvas
                         value={pairingCode}
                         size={200}
                         aria-label={`Código de pareamento: ${pairingCode}`}

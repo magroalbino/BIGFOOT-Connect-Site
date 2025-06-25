@@ -1,30 +1,30 @@
+// app/api/pairing/route.ts
+
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-// Schema de validação para o código de pareamento (XXXX-XXXX)
+// Validação do código de pareamento
 const pairingSchema = z.object({
   code: z.string().regex(/^\d{4}-\d{4}$/, 'Código deve ter o formato XXXX-XXXX'),
 });
 
 export async function GET() {
   try {
-    // Verifica autenticação
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    if (!session?.user || typeof session.user.id !== 'number') {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
-    // Busca pareamentos do usuário
     const pairings = await prisma.pairing.findMany({
       where: { userId: session.user.id },
       select: {
         id: true,
         code: true,
         createdAt: true,
-        deviceName: true, // Opcional, se existir no schema
+        deviceName: true,
       },
     });
 
@@ -39,17 +39,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    // Verifica autenticação
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    if (!session?.user || typeof session.user.id !== 'number') {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
     }
 
-    // Valida o corpo da requisição
     const body = await req.json();
     const { code } = pairingSchema.parse(body);
 
-    // Verifica se o código existe e é válido
     const existingPairing = await prisma.pairing.findUnique({
       where: { code },
     });
@@ -62,12 +59,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Código já pareado' }, { status: 400 });
     }
 
-    // Atualiza o pareamento com o usuário
     const pairing = await prisma.pairing.update({
       where: { code },
       data: {
         userId: session.user.id,
-        deviceName: body.deviceName || 'Dispositivo Desconhecido', // Opcional
+        deviceName: body.deviceName || 'Dispositivo Desconhecido',
       },
       select: {
         id: true,

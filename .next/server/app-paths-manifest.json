@@ -1,3 +1,13 @@
 {
-  "/dashboard/page": "app/dashboard/page.js"
+  "/api/ping-db/route": "app/api/ping-db/route.js",
+  "/api/pairing/route": "app/api/pairing/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/register/route": "app/api/register/route.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/test/page": "app/test/page.js",
+  "/register/page": "app/register/page.js",
+  "/users/page": "app/users/page.js",
+  "/pairing/page": "app/pairing/page.js",
+  "/page": "app/page.js"
 }
