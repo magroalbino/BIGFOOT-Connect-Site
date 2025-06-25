@@ -1,10 +1,8 @@
-'use client';
-
 import './globals.css';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import { SessionProvider } from 'next-auth/react';
+import { Providers } from '@/app/Providers';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -30,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="flex min-h-screen bg-gray-100 text-gray-900 font-sans">
-        <SessionProvider>
+        <Providers>
           <Sidebar />
           <div className="flex-1 flex flex-col">
             <Header />
@@ -38,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
           </div>
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );
