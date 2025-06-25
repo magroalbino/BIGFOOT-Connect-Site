@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { generatePairingCode } from '@/utils/pairing';
-import ClientPairingPage from './ClientPairingPage';
+import ClientPairingPage from '@/app/pairing/ClientPairingPage';
 
 export const metadata = {
     title: 'Pareamento - BIGFOOT Connect',
