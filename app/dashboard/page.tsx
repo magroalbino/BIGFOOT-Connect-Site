@@ -3,9 +3,9 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import Link from 'next/link';
 
 // Registrar componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -16,7 +16,7 @@ export default function Dashboard() {
     totalShares: 0,
     weeklyShares: 0,
     connections: 0,
-    weeklyData: [0, 0, 0, 0, 0, 0, 0], // Dados para o gráfico
+    weeklyData: [0, 0, 0, 0, 0, 0, 0],
   });
 
   useEffect(() => {
@@ -26,7 +26,12 @@ export default function Dashboard() {
           const response = await fetch('/api/user');
           if (response.ok) {
             const data = await response.json();
-            setStats(data);
+            setStats({
+              totalShares: data.totalShares || 0,
+              weeklyShares: data.weeklyShares || 0,
+              connections: data.connections || 0,
+              weeklyData: data.weeklyData || [0, 0, 0, 0, 0, 0, 0],
+            });
           }
         } catch (error) {
           console.error('Erro ao buscar estatísticas:', error);
