@@ -28,6 +28,8 @@
             width: 100%;
             margin-bottom: 1rem;
             padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
         }
 
         button {
@@ -36,11 +38,32 @@
             background: #1F948C;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
 
         button:hover {
             background: #14635e;
+        }
+
+        #message {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .login-link a {
+            color: #1F948C;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -52,7 +75,9 @@
         <input type="password" id="password" placeholder="Senha" required />
         <button type="submit">Criar conta</button>
         <p id="message"></p>
-        <p style="margin-top:1rem;"><a href="login.html" style="color: #1F948C;">Já tem conta? Login</a></p>
+        <div class="login-link">
+            <p>Já tem conta? <a href="index.html">Login</a></p>
+        </div>
     </form>
 
     <script>
@@ -65,12 +90,38 @@
             event.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
 
-            const { error } = await supabase.auth.signUp({ email, password });
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password
+            });
 
-            document.getElementById('message').textContent = error
-                ? 'Erro: ' + error.message
-                : 'Verifique seu email para confirmar o cadastro.';
+            if (error) {
+                message.style.color = 'red';
+                message.textContent = 'Erro: ' + error.message;
+            } else {
+                // Inserir na tabela `profiles`
+                const user = data.user;
+                if (user) {
+                    const { error: dbError } = await supabase
+                        .from('profiles')
+                        .insert([{ id: user.id, email }]); // 'id' deve ser igual ao id do auth
+
+                    if (dbError) {
+                        message.style.color = 'orange';
+                        message.textContent = 'Conta criada, mas erro ao salvar perfil.';
+                        console.error(dbError);
+                        return;
+                    }
+                }
+
+                message.style.color = 'green';
+                message.textContent = 'Verifique seu email para confirmar o cadastro.';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
         }
     </script>
 </body>
