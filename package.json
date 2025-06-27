@@ -21,7 +21,7 @@
     "postcss": "^8.5.6",
     "prisma": "^6.10.1",
     "tailwindcss": "^4.1.10",
-    "typescript": "5.8.3"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
