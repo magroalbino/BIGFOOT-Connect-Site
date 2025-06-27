@@ -1,3 +1,4 @@
+import './globals.css';
 import { ReactNode } from 'react';
 import AuthButton from '@/components/AuthButton';
 
