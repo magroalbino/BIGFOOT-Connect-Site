@@ -1,3 +1,28 @@
+# Bigfoot Connect - HTML Puro
+
+Este é um site simples para Bigfoot Connect desenvolvido em HTML puro com CSS para estilização e animações.
+
+## Estrutura
+- `index.html`: Página de login.
+- `dashboard.html`: Página de dashboard.
+- `css/style.css`: Estilos globais e específicos.
+- `css/animations.css`: Definições de animações.
+- `images/`: Pasta para imagens (logo.svg e bigfoot-minimal.png).
+
+## Como Usar
+1. Clone o repositório ou baixe os arquivos.
+2. Adicione as imagens `logo.svg` e `bigfoot-minimal.png` na pasta `images/`.
+3. Abra `index.html` em um navegador para começar.
+
+## Personalização
+- Substitua as imagens na pasta `images/` por suas próprias versões.
+- Ajuste os valores no dashboard (ex.: 31,070.00, 500, 10) no `dashboard.html`.
+- Adicione funcionalidade backend para o formulário de login.
+
+## Notas
+- As animações são feitas com CSS puro.
+- O gráfico no dashboard é uma simulação estática; para um gráfico real, considere usar Canvas ou SVG.
+
 # 🌐 BIGFOOT Connect
 
 Projeto inspirado na arquitetura da extensão **DAWN**, com foco em **compartilhamento de banda ociosa** de forma segura, escalável e fácil de usar.  
