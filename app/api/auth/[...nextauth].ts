@@ -12,7 +12,7 @@ export const authOptions: NextAuthOptions = {
         username: { label: 'Usuário', type: 'text' },
         password: { label: 'Senha', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { username, password } = credentials as { username: string; password: string };
 
         const user = await prisma.user.findUnique({
