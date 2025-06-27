@@ -1,46 +1,17 @@
-import './globals.css';
-import { Inter } from 'next/font/google';
-import Header from '@/components/Header';
-import Sidebar from '@/components/Sidebar';
-import { Providers } from '@/app/Providers';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ReactNode } from 'react';
+import AuthButton from '@/components/AuthButton';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1.0,
-};
-
-export const metadata = {
-  title: 'BIGFOOT Connect - Compartilhe Banda, Ganhe Recompensas',
-  description:
-    'Ganhe recompensas compartilhando sua banda ociosa com a extensão BIGFOOT Connect. Seguro, escalável e fácil de usar.',
-  openGraph: {
-    title: 'BIGFOOT Connect',
-    description: 'Compartilhe sua internet ociosa e receba tokens BFT.',
-    url: process.env.NEXT_PUBLIC_URL || 'http://localhost:3000',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
-    type: 'website',
-  },
-};
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions);
-
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={inter.variable}>
-      <body className="flex min-h-screen bg-gray-100 text-gray-900 font-sans">
-        <Providers session={session}>
-          <Sidebar />
-          <div className="flex-1 flex flex-col">
-            <Header />
-            <main className="flex-1 p-4 sm:p-6 lg:p-8" role="main">
-              {children}
-            </main>
-          </div>
-        </Providers>
+    <html lang="pt-BR">
+      <body className="bg-black text-white min-h-screen flex flex-col">
+        <header className="bg-green-400 p-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-yellow-400">BIGFOOT Connect</h1>
+          <AuthButton />
+        </header>
+        <main className="flex-grow flex items-center justify-center p-4">
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -1,11 +1,43 @@
-// Rota de autenticação NextAuth
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaClient } from '@prisma/client';
 
-import { NextResponse } from 'next/server';
+const prisma = new PrismaClient();
 
-export async function GET() {
-  return NextResponse.json({ message: "NextAuth route not yet implemented." });
-}
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        username: { label: 'Usuário', type: 'text' },
+        password: { label: 'Senha', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        const { username, password } = credentials as { username: string; password: string };
 
-export async function POST() {
-  return NextResponse.json({ message: "NextAuth POST route placeholder." });
-}
+        const user = await prisma.user.findUnique({
+          where: { username },
+        });
+
+        if (user && user.password === password) { // Substitua por hash (ex.: bcrypt) em produção
+          // Return only the fields required by NextAuth's User type
+          return {
+            id: user.id.toString(),
+            name: user.name,
+            email: user.email,
+          };
+        }
+        return null;
+      },
+    }),
+  ],
+  pages: {
+    signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt',
+  },
+};
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
