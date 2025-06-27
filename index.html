@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigfoot Connect - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="bg-gradient-to-br">
+    <header class="header">
+        <div class="logo">
+            <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img">
+            <h1>Bigfoot Connect</h1>
+        </div>
+        <nav>
+            <a href="index.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+
+    <main class="login-container">
+        <div class="login-box animate-fadeIn">
+            <img src="images/bigfoot-minimal.png" alt="Bigfoot Minimal Logo" class="logo-minimal animate-bounce">
+            <h2>Bigfoot Connect</h2>
+            <form action="#" method="POST" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required placeholder="********">
+                </div>
+                <button type="submit" class="btn-login">Entrar</button>
+                <p class="error" id="error"></p>
+                <p class="register-link">
+                    Não tem conta? <a href="#">Registre-se</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('error');
+
+            // Simulação de validação (substitua por backend real)
+            if (email === 'user@example.com' && password === '123456') {
+                window.location.href = 'dashboard.html';
+            } else {
+                error.textContent = 'Credenciais inválidas';
+            }
+        }
+    </script>
+</body>
+</html>
