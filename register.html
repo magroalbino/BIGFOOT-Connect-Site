@@ -92,6 +92,7 @@
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
+            // 1. Criar usuário no Supabase Auth
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password
@@ -100,28 +101,30 @@
             if (error) {
                 message.style.color = 'red';
                 message.textContent = 'Erro: ' + error.message;
-            } else {
-                // Inserir na tabela `profiles`
-                const user = data.user;
-                if (user) {
-                    const { error: dbError } = await supabase
-                        .from('profiles')
-                        .insert([{ id: user.id, email }]); // 'id' deve ser igual ao id do auth
-
-                    if (dbError) {
-                        message.style.color = 'orange';
-                        message.textContent = 'Conta criada, mas erro ao salvar perfil.';
-                        console.error(dbError);
-                        return;
-                    }
-                }
-
-                message.style.color = 'green';
-                message.textContent = 'Verifique seu email para confirmar o cadastro.';
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 3000);
+                return;
             }
+
+            // 2. Inserir registro na tabela profiles
+            const user = data.user;
+            if (user) {
+                const { error: dbError } = await supabase
+                    .from('profiles')
+                    .insert([{ id: user.id, email }]);
+
+                if (dbError) {
+                    message.style.color = 'orange';
+                    message.textContent = 'Conta criada, mas erro ao salvar perfil.';
+                    console.error('Erro ao salvar perfil:', dbError);
+                    return;
+                }
+            }
+
+            // 3. Sucesso geral
+            message.style.color = 'green';
+            message.textContent = 'Verifique seu email para confirmar o cadastro.';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
         }
     </script>
 </body>
