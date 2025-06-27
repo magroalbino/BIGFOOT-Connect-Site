@@ -2,12 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    serverActions: {},
+    serverActions: true, // se realmente estiver usando
   },
   images: {
-    domains: ['localhost', 'your-cdn.com'], // adicione aqui domínios de imagens se necessário
+    domains: ['bigfoot-connect-site.vercel.app'], // coloque o domínio real aqui
   },
-  output: 'standalone', // importante para deploy em Railway ou Docker
+  output: 'standalone', // necessário apenas se você usa Railway, Docker, etc.
 };
 
 module.exports = nextConfig;
