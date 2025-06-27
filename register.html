@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - BIGFOOT Connect</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background: #111;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            background: #1F948C;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #14635e;
+        }
+    </style>
+</head>
+
+<body>
+    <form onsubmit="registerUser(event)">
+        <h2>Registrar</h2>
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <button type="submit">Criar conta</button>
+        <p id="message"></p>
+        <p style="margin-top:1rem;"><a href="login.html" style="color: #1F948C;">Já tem conta? Login</a></p>
+    </form>
+
+    <script>
+        const supabase = window.supabase.createClient(
+            'https://cfvcihpfnxavcwublvcg.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+        );
+
+        async function registerUser(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { error } = await supabase.auth.signUp({ email, password });
+
+            document.getElementById('message').textContent = error
+                ? 'Erro: ' + error.message
+                : 'Verifique seu email para confirmar o cadastro.';
+        }
+    </script>
+</body>
+
+</html>
