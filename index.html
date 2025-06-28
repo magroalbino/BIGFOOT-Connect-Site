@@ -1,91 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bigfoot Connect - Login</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/animations.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIGFOOT Connect</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #1a1a1a;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #FF6B35;
+      font-weight: 500;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+
+    main h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    main p {
+      max-width: 700px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .cta-buttons a {
+      background-color: #FF6B35;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .cta-buttons a:hover {
+      background-color: #cc5125;
+    }
+
+    .hero-image {
+      margin-top: 2rem;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #1a1a1a;
+      font-size: 0.9rem;
+      color: #999;
+    }
+  </style>
 </head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="images/logo.svg" alt="BIGFOOT Logo" />
+      <span><strong>BIGFOOT Connect</strong></span>
+    </div>
+    <nav>
+      <a href="login.html">Login</a>
+      <a href="register.html">Criar conta</a>
+    </nav>
+  </header>
 
-<body class="bg-gradient-to-br">
-    <header class="header">
-        <div class="logo">
-            <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img" />
-            <h1>Bigfoot Connect</h1>
-        </div>
-        <nav>
-            <a href="index.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
+  <main>
+    <h1>Conecte. Compartilhe. Ganhe.</h1>
+    <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BFT</strong>. Baixe o app, conecte e comece agora mesmo!</p>
+    <div class="cta-buttons">
+      <a href="/downloads/bigfoot-windows.exe">Windows</a>
+      <a href="/downloads/bigfoot-mac.dmg">macOS</a>
+      <a href="/downloads/bigfoot-linux.AppImage">Linux</a>
+    </div>
+    <img src="images/bigfoot-minimal.png" alt="Preview do App" class="hero-image animate-bounce" />
+  </main>
 
-    <main class="login-container">
-        <div class="login-box animate-fadeIn">
-            <img src="images/bigfoot-minimal.png" alt="Bigfoot Minimal Logo" class="logo-minimal animate-bounce" />
-            <h2>Bigfoot Connect</h2>
-            <form onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label for="username">Nome de usuário</label>
-                    <input type="text" id="username" name="username" required placeholder="seu_usuario" />
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" name="password" required placeholder="********" />
-                </div>
-                <button type="submit" class="btn-login">Entrar</button>
-                <p class="error" id="error"></p>
-                <p class="register-link">
-                    Não tem conta? <a href="register.html">Registre-se</a>
-                </p>
-            </form>
-        </div>
-    </main>
-
-    <script>
-        const supabase = window.supabase.createClient(
-            'https://cfvcihpfnxavcwublvcg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-        );
-
-        async function handleSubmit(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error');
-
-            // Buscar usuário pelo username
-            const { data: user, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('username', username)
-                .single();
-
-            if (error || !user) {
-                errorMsg.textContent = 'Usuário não encontrado.';
-                return;
-            }
-
-            // Usar bcryptjs via dcodeIO.bcrypt
-            const isMatch = dcodeIO.bcrypt.compareSync(password, user.password_hash);
-            if (!isMatch) {
-                errorMsg.textContent = 'Senha incorreta.';
-                return;
-            }
-
-            // Salvar sessão local e redirecionar
-            localStorage.setItem('user', JSON.stringify({
-                id: user.id,
-                username: user.username,
-                email: user.email || null
-            }));
-
-            window.location.href = 'dashboard.html';
-        }
-    </script>
+  <footer>
+    &copy; 2025 BIGFOOT Connect. Todos os direitos reservados.
+  </footer>
 </body>
-
 </html>
