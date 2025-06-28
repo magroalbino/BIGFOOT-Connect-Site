@@ -52,6 +52,20 @@
             font-size: 0.9rem;
             text-align: center;
         }
+
+        .register-link {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .register-link a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -62,9 +76,9 @@
         <input type="password" id="password" placeholder="Senha" required />
         <button type="submit">Login</button>
         <p id="message"></p>
-        <p style="margin-top:1rem;">
-            <a href="register.html" style="color: #FF6B35;">Não tem conta? Registre-se</a>
-        </p>
+        <div class="register-link">
+            <a href="register.html">Não tem conta? Registre-se</a>
+        </div>
     </form>
 
     <script>
@@ -80,31 +94,40 @@
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
-            // 1. Buscar usuário pelo username
-            const { data, error } = await supabase
+            message.textContent = '';
+            message.style.color = 'white';
+
+            if (!username || !password) {
+                message.style.color = 'red';
+                message.textContent = 'Preencha todos os campos.';
+                return;
+            }
+
+            // 1. Buscar usuário por nome
+            const { data: userData, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('username', username)
                 .single();
 
-            if (error || !data) {
+            if (error || !userData) {
                 message.style.color = 'red';
                 message.textContent = 'Usuário não encontrado.';
                 return;
             }
 
-            // 2. Verificar senha
-            const isMatch = bcrypt.compareSync(password, data.password_hash);
-            if (!isMatch) {
+            // 2. Verificar senha com bcryptjs
+            const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
+            if (!isPasswordValid) {
                 message.style.color = 'red';
                 message.textContent = 'Senha incorreta.';
                 return;
             }
 
-            // 3. Login bem-sucedido - Salvar dados no localStorage e redirecionar
+            // 3. Login bem-sucedido
             localStorage.setItem('user', JSON.stringify({
-                id: data.id,
-                username: data.username
+                id: userData.id,
+                username: userData.username
             }));
 
             message.style.color = 'green';
