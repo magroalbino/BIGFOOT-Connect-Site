@@ -2,17 +2,19 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bigfoot Connect - Login</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 </head>
 
 <body class="bg-gradient-to-br">
     <header class="header">
         <div class="logo">
-            <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img">
+            <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img" />
             <h1>Bigfoot Connect</h1>
         </div>
         <nav>
@@ -23,16 +25,16 @@
 
     <main class="login-container">
         <div class="login-box animate-fadeIn">
-            <img src="images/bigfoot-minimal.png" alt="Bigfoot Minimal Logo" class="logo-minimal animate-bounce">
+            <img src="images/bigfoot-minimal.png" alt="Bigfoot Minimal Logo" class="logo-minimal animate-bounce" />
             <h2>Bigfoot Connect</h2>
-            <form action="#" method="POST" onsubmit="handleSubmit(event)">
+            <form onsubmit="handleSubmit(event)">
                 <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                    <label for="username">Nome de usuário</label>
+                    <input type="text" id="username" name="username" required placeholder="seu_usuario" />
                 </div>
                 <div class="form-group">
                     <label for="password">Senha</label>
-                    <input type="password" id="password" name="password" required placeholder="********">
+                    <input type="password" id="password" name="password" required placeholder="********" />
                 </div>
                 <button type="submit" class="btn-login">Entrar</button>
                 <p class="error" id="error"></p>
@@ -44,18 +46,44 @@
     </main>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const error = document.getElementById('error');
+        const supabase = window.supabase.createClient(
+            'https://cfvcihpfnxavcwublvcg.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+        );
 
-            // Simulação de validação (substitua por backend real)
-            if (email === 'user@example.com' && password === '123456') {
-                window.location.href = 'dashboard.html';
-            } else {
-                error.textContent = 'Credenciais inválidas';
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error');
+
+            // Buscar usuário pelo username
+            const { data: user, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('username', username)
+                .single();
+
+            if (error || !user) {
+                errorMsg.textContent = 'Usuário não encontrado.';
+                return;
             }
+
+            // Comparar senha
+            const isMatch = bcrypt.compareSync(password, user.password_hash);
+            if (!isMatch) {
+                errorMsg.textContent = 'Senha incorreta.';
+                return;
+            }
+
+            // Salvar sessão local e redirecionar
+            localStorage.setItem('user', JSON.stringify({
+                id: user.id,
+                username: user.username,
+                email: user.email || null
+            }));
+
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
