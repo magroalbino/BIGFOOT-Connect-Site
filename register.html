@@ -94,31 +94,42 @@
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
-            const { data, error } = await supabase.auth.signUp({ email, password });
+            // 1. Criar conta
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password
+            });
 
-            if (error) {
+            if (signUpError) {
                 message.style.color = 'red';
-                message.textContent = 'Erro: ' + error.message;
+                message.textContent = 'Erro: ' + signUpError.message;
                 return;
             }
 
-            const user = data.user;
-            if (user) {
-                // Evita erro 409 usando UPSERT
-                const { error: dbError } = await supabase
-                    .from('profiles')
-                    .upsert([{ id: user.id, email, username }], { onConflict: 'id' });
+            // 2. Aguardar sessão (necessário para ter token ativo)
+            const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+            const user = sessionData?.session?.user;
 
-                if (dbError) {
-                    message.style.color = 'orange';
-                    message.textContent = 'Conta criada, mas erro ao salvar perfil.';
-                    console.error('Erro ao salvar perfil:', dbError);
-                    return;
-                }
+            if (!user) {
+                message.style.color = 'orange';
+                message.textContent = 'Conta criada, mas sessão não ativa. Verifique seu email.';
+                return;
+            }
+
+            // 3. Inserir no banco
+            const { error: dbError } = await supabase
+                .from('profiles')
+                .upsert([{ id: user.id, username, email }], { onConflict: 'id' });
+
+            if (dbError) {
+                message.style.color = 'orange';
+                message.textContent = 'Conta criada, mas erro ao salvar perfil.';
+                console.error('Erro ao salvar perfil:', dbError);
+                return;
             }
 
             message.style.color = 'green';
-            message.textContent = 'Verifique seu email para confirmar o cadastro.';
+            message.textContent = 'Cadastro concluído! Verifique seu e-mail.';
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 3000);
