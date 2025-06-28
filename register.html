@@ -72,7 +72,6 @@
     <form onsubmit="registerUser(event)">
         <h2>Registrar</h2>
         <input type="text" id="username" placeholder="Nome de usuário" required />
-        <input type="email" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Senha" required />
         <button type="submit">Criar conta</button>
         <p id="message"></p>
@@ -90,14 +89,16 @@
         async function registerUser(event) {
             event.preventDefault();
             const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
-            // 1. Criar conta
-            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-                email,
-                password
+            // Gerar email fake temporário
+            const fakeEmail = `${username}@noemail.bigfoot`;
+
+            // 1. Criar usuário no Supabase Auth
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email: fakeEmail,
+                password: password
             });
 
             if (signUpError) {
@@ -106,35 +107,27 @@
                 return;
             }
 
-            // 2. Verificar sessão (o usuário ainda precisa confirmar email, geralmente não terá sessão ativa imediatamente)
-            const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-            const user = sessionData?.session?.user;
+            const user = data.user;
 
-            if (!user) {
-                message.style.color = 'orange';
-                message.textContent = 'Conta criada! Por favor, confirme seu email para ativar sua conta.';
-                return;
+            // 2. Inserir perfil na tabela 'profiles'
+            if (user) {
+                const { error: dbError } = await supabase
+                    .from('profiles')
+                    .upsert([{ id: user.id, username }], { onConflict: 'id' });
+
+                if (dbError) {
+                    message.style.color = 'orange';
+                    message.textContent = 'Conta criada, mas erro ao salvar perfil.';
+                    console.error('Erro ao salvar perfil:', dbError);
+                    return;
+                }
+
+                message.style.color = 'green';
+                message.textContent = 'Cadastro concluído! Redirecionando...';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
             }
-
-            // 3. Inserir perfil no banco com sessão ativa
-            const { error: dbError } = await supabase
-                .from('profiles')
-                .upsert([{ id: user.id, username, email }], { onConflict: 'id' });
-
-            if (dbError) {
-                message.style.color = 'orange';
-                message.textContent = 'Conta criada, mas erro ao salvar perfil.';
-                console.error('Erro ao salvar perfil:', dbError);
-                return;
-            }
-
-            // 4. Sucesso
-            message.style.color = 'green';
-            message.textContent = 'Cadastro concluído! Redirecionando...';
-
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 3000);
         }
     </script>
 </body>
