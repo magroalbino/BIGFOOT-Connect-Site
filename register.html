@@ -106,17 +106,17 @@
                 return;
             }
 
-            // 2. Aguardar sessão (necessário para ter token ativo)
+            // 2. Verificar sessão (o usuário ainda precisa confirmar email, geralmente não terá sessão ativa imediatamente)
             const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
             const user = sessionData?.session?.user;
 
             if (!user) {
                 message.style.color = 'orange';
-                message.textContent = 'Conta criada, mas sessão não ativa. Verifique seu email.';
+                message.textContent = 'Conta criada! Por favor, confirme seu email para ativar sua conta.';
                 return;
             }
 
-            // 3. Inserir no banco
+            // 3. Inserir perfil no banco com sessão ativa
             const { error: dbError } = await supabase
                 .from('profiles')
                 .upsert([{ id: user.id, username, email }], { onConflict: 'id' });
@@ -128,8 +128,10 @@
                 return;
             }
 
+            // 4. Sucesso
             message.style.color = 'green';
-            message.textContent = 'Cadastro concluído! Verifique seu e-mail.';
+            message.textContent = 'Cadastro concluído! Redirecionando...';
+
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 3000);
