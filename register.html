@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Registro - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
     <style>
@@ -69,7 +69,7 @@
 </head>
 
 <body>
-    <form onsubmit="registerUser(event)">
+    <form id="registerForm">
         <h2>Registrar</h2>
         <input type="text" id="username" placeholder="Nome de usuário" required />
         <input type="password" id="password" placeholder="Senha" required />
@@ -80,57 +80,56 @@
         </div>
     </form>
 
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
     <script>
-        // Inicializa cliente Supabase
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+            'SUA_ANON_PUBLIC_KEY_AQUI'
         );
 
-        async function registerUser(event) {
+        const form = document.getElementById('registerForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            const message = document.getElementById('message');
 
-            // Gerar email fake necessário para criar usuário no Supabase Auth
-            const fakeEmail = `${username}@noemail.bigfoot`;
-
-            // 1. Criar usuário no Supabase Auth
-            const { data, error: signUpError } = await supabase.auth.signUp({
-                email: fakeEmail,
-                password: password
-            });
-
-            if (signUpError) {
+            if (!username || !password) {
                 message.style.color = 'red';
-                message.textContent = 'Erro: ' + signUpError.message;
+                message.textContent = 'Preencha todos os campos.';
                 return;
             }
 
-            const user = data.user;
+            // Gerar hash da senha usando bcryptjs (cliente)
+            const saltRounds = 10;
+            const passwordHash = bcrypt.hashSync(password, saltRounds);
 
-            // 2. Salvar perfil na tabela profiles (usa upsert para evitar conflito)
-            if (user) {
-                const { error: dbError } = await supabase
-                    .from('profiles')
-                    .upsert([{ id: user.id, username }], { onConflict: 'id' });
+            // Salvar no Supabase na tabela profiles
+            const { data, error } = await supabase
+                .from('profiles')
+                .insert([{ username: username, password_hash: passwordHash }]);
 
-                if (dbError) {
-                    message.style.color = 'orange';
-                    message.textContent = 'Conta criada, mas erro ao salvar perfil.';
-                    console.error('Erro ao salvar perfil:', dbError);
-                    return;
+            if (error) {
+                if (error.code === '23505') { // Unique violation
+                    message.style.color = 'red';
+                    message.textContent = 'Nome de usuário já está em uso.';
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = 'Erro ao criar conta: ' + error.message;
                 }
-
-                message.style.color = 'green';
-                message.textContent = 'Cadastro concluído! Redirecionando...';
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 3000);
+                return;
             }
-        }
+
+            message.style.color = 'green';
+            message.textContent = 'Conta criada com sucesso! Redirecionando...';
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2500);
+        });
     </script>
 </body>
 
