@@ -69,8 +69,8 @@
                 return;
             }
 
-            // Comparar senha
-            const isMatch = bcrypt.compareSync(password, user.password_hash);
+            // Usar bcryptjs via dcodeIO.bcrypt
+            const isMatch = dcodeIO.bcrypt.compareSync(password, user.password_hash);
             if (!isMatch) {
                 errorMsg.textContent = 'Senha incorreta.';
                 return;
