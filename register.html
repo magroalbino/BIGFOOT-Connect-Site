@@ -83,6 +83,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 
     <script>
+        // Substitua pela sua chave anon/public key do Supabase
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
             'SUA_ANON_PUBLIC_KEY_AQUI'
@@ -103,17 +104,17 @@
                 return;
             }
 
-            // Gerar hash da senha usando bcryptjs (cliente)
+            // Gerar hash da senha no cliente
             const saltRounds = 10;
             const passwordHash = bcrypt.hashSync(password, saltRounds);
 
-            // Salvar no Supabase na tabela profiles
+            // Inserir no Supabase
             const { data, error } = await supabase
                 .from('profiles')
                 .insert([{ username: username, password_hash: passwordHash }]);
 
             if (error) {
-                if (error.code === '23505') { // Unique violation
+                if (error.code === '23505') { // Violação de chave única (username duplicado)
                     message.style.color = 'red';
                     message.textContent = 'Nome de usuário já está em uso.';
                 } else {
