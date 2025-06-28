@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -28,6 +29,8 @@
             width: 100%;
             margin-bottom: 1rem;
             padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
         }
 
         button {
@@ -36,11 +39,18 @@
             background: #FF6B35;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
 
         button:hover {
             background: #cc5125;
+        }
+
+        #message {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -48,11 +58,13 @@
 <body>
     <form onsubmit="loginUser(event)">
         <h2>Entrar</h2>
-        <input type="email" id="email" placeholder="Email" required />
+        <input type="text" id="username" placeholder="Nome de usuário" required />
         <input type="password" id="password" placeholder="Senha" required />
         <button type="submit">Login</button>
         <p id="message"></p>
-        <p style="margin-top:1rem;"><a href="register.html" style="color: #FF6B35;">Não tem conta? Registre-se</a></p>
+        <p style="margin-top:1rem;">
+            <a href="register.html" style="color: #FF6B35;">Não tem conta? Registre-se</a>
+        </p>
     </form>
 
     <script>
@@ -63,19 +75,44 @@
 
         async function loginUser(event) {
             event.preventDefault();
-            const email = document.getElementById('email').value;
+
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
 
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+            // 1. Buscar usuário pelo username
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('username', username)
+                .single();
 
-            if (error) {
-                document.getElementById('message').textContent = 'Erro: ' + error.message;
-            } else {
-                window.location.href = 'dashboard.html';
+            if (error || !data) {
+                message.style.color = 'red';
+                message.textContent = 'Usuário não encontrado.';
+                return;
             }
+
+            // 2. Verificar senha
+            const isMatch = bcrypt.compareSync(password, data.password_hash);
+            if (!isMatch) {
+                message.style.color = 'red';
+                message.textContent = 'Senha incorreta.';
+                return;
+            }
+
+            // 3. Login bem-sucedido - Salvar dados no localStorage e redirecionar
+            localStorage.setItem('user', JSON.stringify({
+                id: data.id,
+                username: data.username
+            }));
+
+            message.style.color = 'green';
+            message.textContent = 'Login realizado com sucesso!';
+
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
         }
     </script>
 </body>
