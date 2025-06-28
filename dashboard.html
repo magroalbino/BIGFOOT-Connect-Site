@@ -2,123 +2,190 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bigfoot Connect - Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bigfoot Connect - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+  <style>
+    .logout-btn {
+      background-color: #ff6b35;
+      color: white;
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+      background-color: #cc5125;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.05);
+    }
+
+    .chart-box {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      justify-content: center;
+      height: 120px;
+      padding-top: 1rem;
+    }
+
+    .bar {
+      width: 20px;
+      background-color: #1f948c;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s;
+    }
+
+    .email-section button {
+      background-color: #1f948c;
+      transition: background 0.2s;
+    }
+
+    .email-section button:hover {
+      background-color: #14635e;
+    }
+
+    .pairing-link a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.2rem;
+      background: #ff6b35;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .pairing-link a:hover {
+      background: #cc5125;
+    }
+  </style>
 </head>
 
 <body class="bg-gradient-to-br">
-    <header class="header">
-        <div class="logo">
-            <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img">
-            <h1>Bigfoot Connect</h1>
-        </div>
-        <nav>
-            <a href="index.html">Login</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
+  <header class="header">
+    <div class="logo">
+      <img src="images/logo.svg" alt="Bigfoot Connect Logo" class="logo-img" />
+      <h1>Bigfoot Connect</h1>
+    </div>
+    <nav>
+      <button class="logout-btn" onclick="logout()">Sair</button>
+    </nav>
+  </header>
 
-    <main class="dashboard-container">
-        <h1 class="dashboard-title animate-fadeIn">Bem-vindo, <span id="username">Usuário</span>!</h1>
+  <main class="dashboard-container">
+    <h1 class="dashboard-title animate-fadeIn">Bem-vindo, <span id="username">Usuário</span>!</h1>
 
-        <div class="cards-container">
-            <div class="card animate-fadeIn" style="animation-delay: 0.1s">
-                <h3>Total de Compartilhamentos</h3>
-                <p class="value">31,070.00</p>
-            </div>
-            <div class="card animate-fadeIn" style="animation-delay: 0.2s">
-                <h3>Compartilhamentos Semanais</h3>
-                <p class="value">500</p>
-            </div>
-            <div class="card animate-fadeIn" style="animation-delay: 0.3s">
-                <h3>Conexões</h3>
-                <p class="value status">10</p>
-            </div>
-        </div>
+    <div class="cards-container">
+      <div class="card animate-fadeIn" style="animation-delay: 0.1s">
+        <h3>Total de Compartilhamentos</h3>
+        <p class="value">31.070 MB</p>
+      </div>
+      <div class="card animate-fadeIn" style="animation-delay: 0.2s">
+        <h3>Compartilhamentos Semanais</h3>
+        <p class="value">500 MB</p>
+      </div>
+      <div class="card animate-fadeIn" style="animation-delay: 0.3s">
+        <h3>Conexões Ativas</h3>
+        <p class="value status">10</p>
+      </div>
+    </div>
 
-        <div class="chart-placeholder animate-fadeIn" style="animation-delay: 0.4s">
-            <h2>Atividade Semanal</h2>
-            <div class="chart-box">
-                <div class="bar" style="height: 70px"></div>
-                <div class="bar" style="height: 60px"></div>
-                <div class="bar" style="height: 50px"></div>
-                <div class="bar" style="height: 40px"></div>
-                <div class="bar" style="height: 30px"></div>
-                <div class="bar" style="height: 20px"></div>
-                <div class="bar" style="height: 10px"></div>
-            </div>
-        </div>
+    <div class="chart-placeholder animate-fadeIn" style="animation-delay: 0.4s">
+      <h2>Atividade Semanal</h2>
+      <div class="chart-box">
+        <div class="bar" style="height: 70px"></div>
+        <div class="bar" style="height: 60px"></div>
+        <div class="bar" style="height: 50px"></div>
+        <div class="bar" style="height: 40px"></div>
+        <div class="bar" style="height: 30px"></div>
+        <div class="bar" style="height: 20px"></div>
+        <div class="bar" style="height: 10px"></div>
+      </div>
+    </div>
 
-        <!-- Email form -->
-        <section class="email-section animate-fadeIn" style="animation-delay: 0.5s">
-            <h2>Adicionar ou Atualizar Email</h2>
-            <form id="emailForm">
-                <input type="email" id="emailInput" placeholder="Digite seu email (opcional)"
-                    style="padding: 0.5rem; border-radius: 5px; width: 100%; margin-bottom: 1rem;">
-                <button type="submit"
-                    style="padding: 0.5rem 1rem; background-color: #1F948C; color: #fff; border: none; border-radius: 5px;">Salvar
-                    Email</button>
-                <p id="emailMessage" style="margin-top: 0.5rem;"></p>
-            </form>
-        </section>
+    <!-- Email form -->
+    <section class="email-section animate-fadeIn" style="animation-delay: 0.5s">
+      <h2>Adicionar ou Atualizar Email</h2>
+      <form id="emailForm">
+        <input type="email" id="emailInput" placeholder="Digite seu email (opcional)"
+          style="padding: 0.5rem; border-radius: 5px; width: 100%; margin-bottom: 1rem;" />
+        <button type="submit">
+          Salvar Email
+        </button>
+        <p id="emailMessage" style="margin-top: 0.5rem;"></p>
+      </form>
+    </section>
 
-        <p class="pairing-link">
-            <a href="#">Parear com Extensão</a>
-        </p>
-    </main>
+    <p class="pairing-link animate-fadeIn" style="animation-delay: 0.6s">
+      <a href="#">Parear com Extensão</a>
+    </p>
+  </main>
 
-    <script>
-        const supabase = window.supabase.createClient(
-            'https://cfvcihpfnxavcwublvcg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-        );
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://cfvcihpfnxavcwublvcg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+    );
 
-        const user = JSON.parse(localStorage.getItem('user'));
-        const usernameEl = document.getElementById('username');
-        const emailInput = document.getElementById('emailInput');
-        const emailMessage = document.getElementById('emailMessage');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const usernameEl = document.getElementById('username');
+    const emailInput = document.getElementById('emailInput');
+    const emailMessage = document.getElementById('emailMessage');
 
-        if (!user || !user.id) {
-            window.location.href = 'index.html';
-        } else {
-            usernameEl.textContent = user.username;
-            loadEmail(user.id);
-        }
+    if (!user || !user.id) {
+      window.location.href = 'index.html';
+    } else {
+      usernameEl.textContent = user.username;
+      loadEmail(user.id);
+    }
 
-        async function loadEmail(userId) {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('email')
-                .eq('id', userId)
-                .single();
+    async function loadEmail(userId) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('id', userId)
+        .single();
 
-            if (data?.email) {
-                emailInput.value = data.email;
-            }
-        }
+      if (data?.email) {
+        emailInput.value = data.email;
+      }
+    }
 
-        document.getElementById('emailForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = emailInput.value.trim();
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
 
-            const { error } = await supabase
-                .from('profiles')
-                .update({ email })
-                .eq('id', user.id);
+      const { error } = await supabase
+        .from('profiles')
+        .update({ email })
+        .eq('id', user.id);
 
-            if (error) {
-                emailMessage.style.color = 'red';
-                emailMessage.textContent = 'Erro ao salvar email.';
-            } else {
-                emailMessage.style.color = 'green';
-                emailMessage.textContent = 'Email salvo com sucesso!';
-            }
-        });
-    </script>
+      if (error) {
+        emailMessage.style.color = 'red';
+        emailMessage.textContent = 'Erro ao salvar email.';
+      } else {
+        emailMessage.style.color = 'green';
+        emailMessage.textContent = 'Email salvo com sucesso!';
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 
 </html>
