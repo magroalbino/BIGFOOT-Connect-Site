@@ -72,6 +72,7 @@
     <form onsubmit="registerUser(event)">
         <h2>Registrar</h2>
         <input type="text" id="username" placeholder="Nome de usuário" required />
+        <input type="email" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Senha" required />
         <button type="submit">Criar conta</button>
         <p id="message"></p>
@@ -86,29 +87,15 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
         );
 
-        function generateDummyEmail(username) {
-            // Gera um email fictício
-            return `${username}@noemail.bigfoot`;
-        }
-
         async function registerUser(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
-            if (!username) {
-                message.style.color = 'red';
-                message.textContent = 'Por favor, insira um nome de usuário.';
-                return;
-            }
-
-            const dummyEmail = generateDummyEmail(username);
-
-            const { data, error } = await supabase.auth.signUp({
-                email: dummyEmail,
-                password
-            });
+            // 1. Criar conta no Supabase Auth
+            const { data, error } = await supabase.auth.signUp({ email, password });
 
             if (error) {
                 message.style.color = 'red';
@@ -118,9 +105,10 @@
 
             const user = data.user;
             if (user) {
+                // 2. Inserir perfil na tabela `profiles`
                 const { error: dbError } = await supabase
                     .from('profiles')
-                    .insert([{ id: user.id, username }]);
+                    .insert([{ id: user.id, email, username }]);
 
                 if (dbError) {
                     message.style.color = 'orange';
@@ -130,8 +118,9 @@
                 }
             }
 
+            // 3. Sucesso
             message.style.color = 'green';
-            message.textContent = 'Conta criada com sucesso!';
+            message.textContent = 'Verifique seu email para confirmar o cadastro.';
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 3000);
