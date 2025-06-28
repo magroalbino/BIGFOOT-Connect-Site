@@ -2,132 +2,156 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registro - BIGFOOT Connect</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #000;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro - BIGFOOT Connect</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-        form {
-            background: #111;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 300px;
-        }
+    form {
+      background: #111;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 320px;
+      box-shadow: 0 0 12px rgba(0, 255, 180, 0.1);
+    }
 
-        input {
-            width: 100%;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 4px;
-        }
+    form h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
 
-        button {
-            width: 100%;
-            padding: 0.5rem;
-            background: #1F948C;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
 
-        button:hover {
-            background: #14635e;
-        }
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      background: #1F948C;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        #message {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            text-align: center;
-        }
+    button:hover {
+      background: #14635e;
+    }
 
-        .login-link {
-            text-align: center;
-            margin-top: 1rem;
-        }
+    #message {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
 
-        .login-link a {
-            color: #1F948C;
-            text-decoration: none;
-        }
+    .login-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
 
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    .login-link a {
+      color: #1F948C;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-    <form id="registerForm">
-        <h2>Registrar</h2>
-        <input type="text" id="username" placeholder="Nome de usuário" required />
-        <input type="password" id="password" placeholder="Senha" required />
-        <button type="submit">Criar conta</button>
-        <p id="message"></p>
-        <div class="login-link">
-            <p>Já tem conta? <a href="index.html">Login</a></p>
-        </div>
-    </form>
+  <form id="registerForm">
+    <h2>Criar Conta</h2>
+    <input type="text" id="username" placeholder="Nome de usuário" required />
+    <input type="email" id="email" placeholder="E-mail (opcional)" />
+    <input type="password" id="password" placeholder="Senha" required />
+    <button type="submit">Registrar</button>
+    <p id="message"></p>
+    <div class="login-link">
+      <p>Já tem conta? <a href="login.html">Entrar</a></p>
+    </div>
+  </form>
 
-    <script>
-        const supabase = window.supabase.createClient(
-            'https://cfvcihpfnxavcwublvcg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-        );
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://cfvcihpfnxavcwublvcg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+    );
 
-        const form = document.getElementById('registerForm');
-        const message = document.getElementById('message');
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
 
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
 
-            if (!username || !password) {
-                message.style.color = 'red';
-                message.textContent = 'Preencha todos os campos.';
-                return;
-            }
+      if (!username || !password) {
+        message.style.color = 'red';
+        message.textContent = 'Preencha todos os campos obrigatórios.';
+        return;
+      }
 
-            // Corrigido: usar dcodeIO.bcrypt
-            const saltRounds = 10;
-            const passwordHash = dcodeIO.bcrypt.hashSync(password, saltRounds);
+      // Verifica se já existe
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-            const { data, error } = await supabase
-                .from('profiles')
-                .insert([{ username: username, password_hash: passwordHash }]);
+      if (existingUser) {
+        message.style.color = 'red';
+        message.textContent = 'Nome de usuário já está em uso.';
+        return;
+      }
 
-            if (error) {
-                if (error.code === '23505') {
-                    message.style.color = 'red';
-                    message.textContent = 'Nome de usuário já está em uso.';
-                } else {
-                    message.style.color = 'red';
-                    message.textContent = 'Erro ao criar conta: ' + error.message;
-                }
-                return;
-            }
+      // Criptografa a senha
+      const saltRounds = 10;
+      const passwordHash = bcrypt.hashSync(password, saltRounds);
 
-            message.style.color = 'green';
-            message.textContent = 'Conta criada com sucesso! Redirecionando...';
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2500);
-        });
-    </script>
+      const { error } = await supabase
+        .from('profiles')
+        .insert([{
+          username,
+          email: email || null,
+          password_hash: passwordHash
+        }]);
+
+      if (error) {
+        message.style.color = 'red';
+        message.textContent = 'Erro ao criar conta: ' + error.message;
+        return;
+      }
+
+      message.style.color = 'green';
+      message.textContent = 'Conta criada com sucesso! Redirecionando...';
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+    });
+  </script>
 </body>
 
 </html>
