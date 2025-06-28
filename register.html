@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro - BIGFOOT Connect</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -80,31 +81,54 @@
     </form>
 
     <script>
+        // Inicializa cliente Supabase
+        const supabase = window.supabase.createClient(
+            'https://cfvcihpfnxavcwublvcg.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+        );
+
         async function registerUser(event) {
             event.preventDefault();
+
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
 
-            const response = await fetch('http://localhost:3000/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
+            // Gerar email fake necessário para criar usuário no Supabase Auth
+            const fakeEmail = `${username}@noemail.bigfoot`;
+
+            // 1. Criar usuário no Supabase Auth
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email: fakeEmail,
+                password: password
             });
 
-            const result = await response.json();
+            if (signUpError) {
+                message.style.color = 'red';
+                message.textContent = 'Erro: ' + signUpError.message;
+                return;
+            }
 
-            if (response.ok) {
+            const user = data.user;
+
+            // 2. Salvar perfil na tabela profiles (usa upsert para evitar conflito)
+            if (user) {
+                const { error: dbError } = await supabase
+                    .from('profiles')
+                    .upsert([{ id: user.id, username }], { onConflict: 'id' });
+
+                if (dbError) {
+                    message.style.color = 'orange';
+                    message.textContent = 'Conta criada, mas erro ao salvar perfil.';
+                    console.error('Erro ao salvar perfil:', dbError);
+                    return;
+                }
+
                 message.style.color = 'green';
-                message.textContent = 'Conta criada com sucesso!';
+                message.textContent = 'Cadastro concluído! Redirecionando...';
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 2000);
-            } else {
-                message.style.color = 'red';
-                message.textContent = result.error || 'Erro desconhecido';
+                }, 3000);
             }
         }
     </script>
