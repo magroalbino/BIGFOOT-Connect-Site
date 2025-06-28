@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Registro - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -80,10 +81,7 @@
         </div>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
-
     <script>
-        // Substitua pela sua chave anon/public key do Supabase
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
@@ -104,17 +102,16 @@
                 return;
             }
 
-            // Gerar hash da senha no cliente
+            // Corrigido: usar dcodeIO.bcrypt
             const saltRounds = 10;
-            const passwordHash = bcrypt.hashSync(password, saltRounds);
+            const passwordHash = dcodeIO.bcrypt.hashSync(password, saltRounds);
 
-            // Inserir no Supabase
             const { data, error } = await supabase
                 .from('profiles')
                 .insert([{ username: username, password_hash: passwordHash }]);
 
             if (error) {
-                if (error.code === '23505') { // Violação de chave única (username duplicado)
+                if (error.code === '23505') {
                     message.style.color = 'red';
                     message.textContent = 'Nome de usuário já está em uso.';
                 } else {
@@ -126,7 +123,6 @@
 
             message.style.color = 'green';
             message.textContent = 'Conta criada com sucesso! Redirecionando...';
-
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 2500);
