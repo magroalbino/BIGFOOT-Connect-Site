@@ -227,15 +227,27 @@
 
 <body>
   <header>
-    <a href="index.html" class="logo">
-      <img src="images/logo.png" alt="BIGFOOT Logo" />
-      <span><strong>BIGFOOT Connect</strong></span>
-    </a>
-    <nav>
-      <a href="login.html">Login</a>
-      <a href="register.html">Criar conta</a>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1a1a1a;">
+  <div class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
+    <img src="images/logo.png" alt="BIGFOOT Logo" style="height: 40px;" />
+    <span><strong>BIGFOOT Connect</strong></span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <nav style="display: flex; gap: 1.5rem;">
+      <a href="login.html" style="color: #FF6B35; text-decoration: none; font-weight: 500;">Login</a>
+      <a href="register.html" style="color: #FF6B35; text-decoration: none; font-weight: 500;">Criar conta</a>
     </nav>
-  </header>
+
+    <!-- Botão Conectar Phantom -->
+    <button id="connectWalletHeader"
+      style="display: flex; align-items: center; gap: 0.5rem; background-color: #1F948C; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer;">
+      <img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" alt="Phantom Logo"
+        style="height: 20px; width: 20px;" />
+      Conectar Carteira
+    </button>
+  </div>
+</header>
 
   <main>
     <h1>Conecte. Compartilhe. Ganhe.</h1>
@@ -367,33 +379,34 @@
 
   <!-- Phantom Wallet Script -->
 <script>
-  const connectBtn = document.getElementById("connectWallet");
-  const walletAddr = document.getElementById("walletAddress");
+  const connectBtnHeader = document.getElementById("connectWalletHeader");
 
-  connectBtn.addEventListener("click", async () => {
+  connectBtnHeader?.addEventListener("click", async () => {
     if (!window.solana || !window.solana.isPhantom) {
       alert("Instale a carteira Phantom para conectar.");
       return;
     }
 
     try {
-      const response = await window.solana.connect();
-      walletAddr.textContent = "Carteira conectada: " + response.publicKey.toString();
+      const res = await window.solana.connect();
+      connectBtnHeader.innerHTML = `<img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" style="height: 20px; width: 20px;" /> ${res.publicKey.toString().slice(0, 4)}...${res.publicKey.toString().slice(-4)}`;
     } catch (err) {
-      walletAddr.textContent = "Erro ao conectar: " + err.message;
+      console.error("Erro ao conectar:", err);
     }
   });
 
-  // Conexão automática se já autorizado
+  // Conexão automática
   window.addEventListener("load", async () => {
     if (window.solana?.isPhantom) {
       try {
         const res = await window.solana.connect({ onlyIfTrusted: true });
-        walletAddr.textContent = "Carteira conectada: " + res.publicKey.toString();
+        connectBtnHeader.innerHTML = `<img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" style="height: 20px; width: 20px;" /> ${res.publicKey.toString().slice(0, 4)}...${res.publicKey.toString().slice(-4)}`;
       } catch (_) {}
     }
   });
 </script>
+
+
 </body>
 
 </html>
