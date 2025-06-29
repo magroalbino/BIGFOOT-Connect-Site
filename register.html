@@ -13,10 +13,29 @@
       background: #000;
       color: #fff;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       margin: 0;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .logo span {
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #FF6B35;
     }
 
     form {
@@ -25,16 +44,18 @@
       border-radius: 8px;
       width: 320px;
       box-shadow: 0 0 12px rgba(0, 255, 180, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     form h2 {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
     }
 
     input {
       width: 100%;
-      margin-bottom: 1rem;
       padding: 0.6rem;
       border: none;
       border-radius: 4px;
@@ -57,14 +78,14 @@
     }
 
     #message {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       font-size: 0.9rem;
       text-align: center;
     }
 
     .login-link {
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       font-size: 0.9rem;
     }
 
@@ -76,10 +97,32 @@
     .login-link a:hover {
       text-decoration: underline;
     }
+
+    .back-home {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .back-home a {
+      color: #ccc;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .back-home a:hover {
+      color: #FF6B35;
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- Logo no topo -->
+  <div class="logo">
+    <img src="images/logo.png" alt="BIGFOOT Logo" />
+    <span>BIGFOOT Connect</span>
+  </div>
+
   <form id="registerForm">
     <h2>Criar Conta</h2>
     <input type="text" id="username" placeholder="Nome de usuário" required />
@@ -87,10 +130,16 @@
     <input type="password" id="password" placeholder="Senha" required />
     <button type="submit">Registrar</button>
     <p id="message"></p>
+
     <div class="login-link">
       <p>Já tem conta? <a href="login.html">Entrar</a></p>
     </div>
   </form>
+
+  <!-- Botão para voltar à home -->
+  <div class="back-home">
+    <a href="index.html">← Voltar para a Home</a>
+  </div>
 
   <script>
     const supabase = window.supabase.createClient(
@@ -114,7 +163,6 @@
         return;
       }
 
-      // Verifica se já existe
       const { data: existingUser } = await supabase
         .from('profiles')
         .select('*')
@@ -127,7 +175,6 @@
         return;
       }
 
-      // Criptografa a senha
       const saltRounds = 10;
       const passwordHash = bcrypt.hashSync(password, saltRounds);
 
