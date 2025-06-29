@@ -100,7 +100,7 @@
       </a>
     </div>
     <div style="display:flex; gap:1rem; align-items:center;">
-      <button class="logout-btn">Sair</button>
+      <button class="logout-btn" aria-label="Sair do sistema">Sair</button>
     </div>
   </header>
 
@@ -126,23 +126,46 @@
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Script de conexão Phantom -->
+  <!-- Script de conexão Phantom e controle de login/logout -->
   <script>
-    const connectWalletBtn = document.getElementById("connectWallet");
-    const walletDisplay = document.getElementById("walletDisplay");
-
-    connectWalletBtn?.addEventListener("click", async () => {
-      if (!window.solana?.isPhantom) {
-        alert("Instale a carteira Phantom para conectar.");
+    document.addEventListener('DOMContentLoaded', () => {
+      // Verifica se está logado, caso contrário redireciona para login
+      if (localStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'login.html';
         return;
       }
 
-      try {
-        const res = await window.solana.connect();
-        walletDisplay.textContent = res.publicKey.toString();
-      } catch (err) {
-        console.error("Erro ao conectar carteira:", err);
+      // Exibe endereço da carteira salvo (se houver)
+      const savedWallet = localStorage.getItem('walletAddress');
+      const walletDisplay = document.getElementById('walletDisplay');
+      if (savedWallet) {
+        walletDisplay.textContent = savedWallet;
       }
+
+      // Logout
+      const logoutBtn = document.querySelector('.logout-btn');
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('walletAddress');
+        window.location.href = 'index.html';
+      });
+
+      // Conectar carteira Phantom
+      const connectWalletBtn = document.getElementById('connectWallet');
+      connectWalletBtn.addEventListener('click', async () => {
+        if (!window.solana?.isPhantom) {
+          alert("Instale a carteira Phantom para conectar.");
+          return;
+        }
+
+        try {
+          const res = await window.solana.connect();
+          walletDisplay.textContent = res.publicKey.toString();
+          localStorage.setItem('walletAddress', res.publicKey.toString());
+        } catch (err) {
+          console.error("Erro ao conectar carteira:", err);
+        }
+      });
     });
   </script>
 </body>
