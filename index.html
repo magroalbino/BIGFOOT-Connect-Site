@@ -269,14 +269,14 @@
 <body>
     <header>
         <div class="logo">
-            <a href="/index/" class="logo-link">
+            <a href="index.html" class="logo-link">
                 <img src="./images/logo.png" alt="BIGFOOT Logo" />
                 <span class="logo-name">BIGFOOT Connect</span>
             </a>
         </div>
         <nav>
-            <a href="/login/">Login</a>
-            <a href="/register/">Criar conta</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Criar conta</a>
         </nav>
     </header>
 
@@ -413,7 +413,7 @@
             if (loggedIn && username) {
                 nav.innerHTML = `
                     <span style="color:#FF6B35; margin-right: 1rem;">Olá, ${username}</span>
-                    <a href="/dashboard/">Dashboard</a>
+                    <a href="dashboard.html">Dashboard</a>
                     <a href="#" id="logout">Sair</a>
                 `;
 
