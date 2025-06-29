@@ -107,7 +107,6 @@
 </head>
 
 <body>
-    <!-- Logo sem link -->
     <div class="logo">
         <img src="images/logo.png" alt="BIGFOOT Logo" />
         <span>BIGFOOT Connect</span>
@@ -125,15 +124,22 @@
         </div>
     </form>
 
-    <!-- Botão para voltar à home -->
     <div class="back-home">
         <a href="index.html">← Voltar para a Home</a>
     </div>
 
-    <!-- Use defer and alternative CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js" defer></script>
-    <script>
-        console.log('bcrypt loaded:', typeof bcrypt !== 'undefined'); // Debug check
+    <!-- Load bcrypt as an ES Module -->
+    <script type="module">
+        // Debug loading
+        console.log('Before bcrypt load');
+
+        // Dynamically import the module
+        import('./js/bcrypt.min.js').then((bcryptModule) => {
+            window.bcrypt = bcryptModule.default; // Expose to global scope
+            console.log('After bcrypt load:', typeof window.bcrypt !== 'undefined');
+        }).catch((err) => {
+            console.error('Error loading bcrypt:', err);
+        });
 
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
@@ -169,13 +175,13 @@
                     return;
                 }
 
-                if (typeof bcrypt === 'undefined') {
+                if (typeof window.bcrypt === 'undefined') {
                     message.style.color = 'red';
                     message.textContent = 'Erro: Biblioteca bcrypt não carregada.';
                     return;
                 }
 
-                const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
+                const isPasswordValid = window.bcrypt.compareSync(password, userData.password_hash);
                 if (!isPasswordValid) {
                     message.style.color = 'red';
                     message.textContent = 'Senha incorreta.';
