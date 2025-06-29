@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
     <style>
+        /* Your existing CSS remains unchanged */
         body {
             font-family: sans-serif;
             background: #000;
@@ -107,7 +107,6 @@
 </head>
 
 <body>
-
     <!-- Logo sem link -->
     <div class="logo">
         <img src="images/logo.png" alt="BIGFOOT Logo" />
@@ -131,6 +130,8 @@
         <a href="index.html">← Voltar para a Home</a>
     </div>
 
+    <!-- Move bcryptjs to the end of body or use defer -->
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
     <script>
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
@@ -153,36 +154,48 @@
                 return;
             }
 
-            const { data: userData, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('username', username)
-                .single();
+            try {
+                const { data: userData, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', username)
+                    .single();
 
-            if (error || !userData) {
+                if (error || !userData) {
+                    message.style.color = 'red';
+                    message.textContent = 'Usuário não encontrado.';
+                    return;
+                }
+
+                // Check if bcrypt is defined
+                if (typeof bcrypt === 'undefined') {
+                    message.style.color = 'red';
+                    message.textContent = 'Erro: Biblioteca bcrypt não carregada.';
+                    return;
+                }
+
+                const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
+                if (!isPasswordValid) {
+                    message.style.color = 'red';
+                    message.textContent = 'Senha incorreta.';
+                    return;
+                }
+
+                localStorage.setItem('user', JSON.stringify({
+                    id: userData.id,
+                    username: userData.username
+                }));
+
+                message.style.color = 'green';
+                message.textContent = 'Login realizado com sucesso!';
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (err) {
                 message.style.color = 'red';
-                message.textContent = 'Usuário não encontrado.';
-                return;
+                message.textContent = 'Erro ao processar login: ' + err.message;
             }
-
-            const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
-            if (!isPasswordValid) {
-                message.style.color = 'red';
-                message.textContent = 'Senha incorreta.';
-                return;
-            }
-
-            localStorage.setItem('user', JSON.stringify({
-                id: userData.id,
-                username: userData.username
-            }));
-
-            message.style.color = 'green';
-            message.textContent = 'Login realizado com sucesso!';
-
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1000);
         }
 
         window.loginUser = loginUser;
