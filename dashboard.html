@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,16 +17,10 @@
       min-height: 100vh;
     }
 
-    header, footer {
+    header,
+    footer {
       background-color: #1a1a1a;
       color: white;
-    }
-
-    nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      color: #FF6B35;
-      font-weight: 500;
     }
 
     main {
@@ -78,18 +73,33 @@
     button.logout-btn:hover {
       background-color: #cc5125;
     }
+
+    .logo a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo a span {
+      color: #FF6B35;
+      font-weight: bold;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- Header -->
-  <header style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
-    <div class="logo" style="display:flex; align-items:center; gap:0.75rem;">
-      <img src="/images/logo.png" alt="BIGFOOT Logo" style="height:40px;" />
-      <span><strong>BIGFOOT Connect</strong></span>
+  <header
+    style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
+    <div class="logo">
+      <a href="index.html">
+        <img src="/images/logo.png" alt="BIGFOOT Logo" style="height:40px;" />
+        <span>BIGFOOT Connect</span>
+      </a>
     </div>
     <div style="display:flex; gap:1rem; align-items:center;">
-      <a href="/" style="color:#FF6B35;">Início</a>
       <button class="logout-btn">Sair</button>
     </div>
   </header>
@@ -136,4 +146,5 @@
     });
   </script>
 </body>
+
 </html>
