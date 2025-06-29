@@ -5,21 +5,246 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BIGFOOT Connect</title>
-    <!-- (estilos mantidos como no seu código original) -->
     <style>
-        /* [Estilos existentes omitidos por brevidade — estão mantidos como no seu código acima] */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0e0e0e;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        .logo-name {
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo img {
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .logo a {
             font-weight: bold;
             font-size: 1.1rem;
             color: #FF6B35;
-            user-select: none;
-            cursor: pointer;
             text-decoration: none;
         }
 
-        .logo-name:hover {
+        .logo a:hover {
             color: #fff;
+        }
+
+        nav a {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #FF6B35;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1rem 2rem;
+        }
+
+        main h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        main p {
+            max-width: 700px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons a {
+            background-color: #FF6B35;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .cta-buttons a:hover {
+            background-color: #cc5125;
+        }
+
+        .hero-image {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 4rem;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.85;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #333;
+            margin: 3rem 0;
+        }
+
+        .whitepaper {
+            text-align: center;
+            padding: 0 1rem 2rem;
+        }
+
+        .whitepaper h2 {
+            font-size: 1.8rem;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
+
+        .whitepaper p {
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .whitepaper a {
+            display: inline-block;
+            background: #1f948c;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .whitepaper a:hover {
+            background: #14635e;
+        }
+
+        .roadmap {
+            margin-top: 4rem;
+            max-width: 700px;
+            text-align: left;
+            padding: 0 1rem 4rem;
+        }
+
+        .roadmap h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .roadmap ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .roadmap li {
+            background: #1a1a1a;
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+            transition: background 0.3s;
+        }
+
+        .roadmap li:hover {
+            background: #FF6B35;
+            color: #000;
+        }
+
+        .roadmap li strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .roadmap li small {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        .socials {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding-bottom: 3rem;
+        }
+
+        .socials a {
+            color: #ccc;
+            transition: color 0.2s;
+        }
+
+        .socials a:hover {
+            color: #FF6B35;
+        }
+
+        .socials svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #1a1a1a;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 480px) {
+            main h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
@@ -27,10 +252,9 @@
 <body>
     <header>
         <div class="logo">
-            <a href="index.html" tabindex="-1">
+            <a href="index.html">
                 <img src="./images/logo.png" alt="BIGFOOT Logo" />
             </a>
-            <!-- Nome agora é link clicável para homepage -->
             <a href="index.html" class="logo-name">BIGFOOT Connect</a>
         </div>
         <nav>
@@ -40,7 +264,6 @@
     </header>
 
     <main>
-        <!-- [Conteúdo original mantido] -->
         <h1>Conecte. Compartilhe. Ganhe.</h1>
         <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e
             ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!</p>
@@ -51,32 +274,62 @@
         </div>
         <img src="./images/logo.png" alt="Preview do App" class="hero-image" />
 
-        <!-- [Restante do conteúdo mantido: whitepaper, roadmap, socials, footer...] -->
+        <div class="divider"></div>
+
+        <section class="whitepaper">
+            <h2>📄 Whitepaper do Projeto</h2>
+            <p>Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por
+                compartilhar sua internet? Confira nosso whitepaper completo.</p>
+            <a href="/docs/whitepaper.pdf" target="_blank">Visualizar / Baixar Whitepaper</a>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="roadmap">
+            <h2>🗺️ Roadmap do Projeto</h2>
+            <ul>
+                <li><strong>Q2 2025 – Lançamento Beta</strong><small>Versão inicial com recursos básicos de
+                        compartilhamento e recompensas.</small></li>
+                <li><strong>Q3 2025 – Integração com Extensão</strong><small>Suporte para pareamento com extensão de
+                        navegador e melhorias de UX.</small></li>
+                <li><strong>Q4 2025 – Plataforma Multiplataforma</strong><small>Apps para Android e iOS, além de
+                        melhorias na estabilidade e segurança.</small></li>
+                <li><strong>Q1 2026 – Expansão da Rede</strong><small>Parcerias estratégicas e expansão da base de
+                        usuários.</small></li>
+                <li><strong>Q2 2026 – Recursos Avançados</strong><small>Novos modelos de recompensas, analytics e
+                        suporte a novos protocolos.</small></li>
+            </ul>
+        </section>
+
+        <div class="socials">
+            <a href="https://github.com/magroalbino/BIGFOOT-Connect-Site" target="_blank" aria-label="GitHub">
+                <!-- GitHub ícone SVG -->
+                <svg viewBox="0 0 24 24" fill="currentColor"> <!-- ... --></svg>
+            </a>
+            <a href="https://twitter.com/BIGFOOT_Connect" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor"> <!-- ... --></svg>
+            </a>
+            <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor"> <!-- ... --></svg>
+            </a>
+        </div>
     </main>
 
     <footer>
         © 2025 BIGFOOT Connect. Todos os direitos reservados.
     </footer>
 
-    <!-- Script para manter login persistente e ajustar links -->
+    <!-- Script para persistência de login -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('user'));
-
             const loginLink = document.getElementById('loginLink');
             const registerLink = document.getElementById('registerLink');
 
             if (user) {
-                // Usuário logado: redireciona botão de login para dashboard
-                if (loginLink) {
-                    loginLink.textContent = 'Dashboard';
-                    loginLink.href = 'dashboard.html';
-                }
-
-                // Esconde botão de registro
-                if (registerLink) {
-                    registerLink.style.display = 'none';
-                }
+                loginLink.textContent = 'Dashboard';
+                loginLink.href = 'dashboard.html';
+                registerLink.style.display = 'none';
             }
         });
     </script>
