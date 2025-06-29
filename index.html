@@ -106,16 +106,14 @@
             border-radius: 12px;
             margin-bottom: 4rem;
 
-            /* Nenhuma animação por padrão */
-            animation-name: none;
+            /* Animação pulsante constante */
+            animation-name: pulse;
             animation-duration: 2s;
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
-            animation-play-state: paused;
-            /* pausa a animação */
+            animation-play-state: running;
         }
 
-        /* Animação pulsante */
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -131,14 +129,6 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-
-        /* Aplica o efeito pulsante ao passar o mouse */
-        .hero-image:hover {
-            animation-name: pulse;
-            animation-play-state: running;
-            /* executa a animação */
-            cursor: pointer;
         }
 
         .divider {
@@ -354,8 +344,8 @@
                              -0.413 0.111-0.849 0.171-1.296 0.171-0.317 0-0.626-0.03-0.928-0.086
                              0.627 1.956 2.444 3.379 4.6 3.419-1.68 1.319-3.809 2.105-6.102 2.105
                              -0.396 0-0.788-0.023-1.175-0.068 2.179 1.397 4.768 2.213 7.557 2.213
-                             9.054 0 14-7.496 14-13.986 0-0.209 0-0.423-0.015-0.637
-                             0.961-0.689 1.8-1.56 2.46-2.548l-0.047-0.02z" />
+                             9.054 0 14-7.496 14-13.986 0-0.209 0-0.423-0.015-0.633
+                             0.962-0.695 1.797-1.562 2.457-2.549z" />
                 </svg>
             </a>
             <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
