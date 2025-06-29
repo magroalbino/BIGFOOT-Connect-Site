@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+    <!-- Corrigido: carregar bcryptjs direto via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
-        /* Your existing CSS remains unchanged */
         body {
             font-family: sans-serif;
             background: #000;
@@ -128,19 +129,7 @@
         <a href="index.html">← Voltar para a Home</a>
     </div>
 
-    <!-- Load bcrypt as an ES Module -->
-    <script type="module">
-        // Debug loading
-        console.log('Before bcrypt load');
-
-        // Dynamically import the module
-        import('./js/bcrypt.min.js').then((bcryptModule) => {
-            window.bcrypt = bcryptModule.default; // Expose to global scope
-            console.log('After bcrypt load:', typeof window.bcrypt !== 'undefined');
-        }).catch((err) => {
-            console.error('Error loading bcrypt:', err);
-        });
-
+    <script>
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
@@ -175,13 +164,13 @@
                     return;
                 }
 
-                if (typeof window.bcrypt === 'undefined') {
+                if (typeof bcrypt === 'undefined') {
                     message.style.color = 'red';
                     message.textContent = 'Erro: Biblioteca bcrypt não carregada.';
                     return;
                 }
 
-                const isPasswordValid = window.bcrypt.compareSync(password, userData.password_hash);
+                const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
                 if (!isPasswordValid) {
                     message.style.color = 'red';
                     message.textContent = 'Senha incorreta.';
@@ -205,6 +194,7 @@
             }
         }
 
+        // Expor globalmente
         window.loginUser = loginUser;
     </script>
 </body>
