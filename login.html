@@ -130,9 +130,11 @@
         <a href="index.html">← Voltar para a Home</a>
     </div>
 
-    <!-- Move bcryptjs to the end of body or use defer -->
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+    <!-- Use defer and alternative CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js" defer></script>
     <script>
+        console.log('bcrypt loaded:', typeof bcrypt !== 'undefined'); // Debug check
+
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
@@ -167,7 +169,6 @@
                     return;
                 }
 
-                // Check if bcrypt is defined
                 if (typeof bcrypt === 'undefined') {
                     message.style.color = 'red';
                     message.textContent = 'Erro: Biblioteca bcrypt não carregada.';
