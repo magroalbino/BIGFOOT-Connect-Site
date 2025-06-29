@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,26 +16,9 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
+    header, nav, footer {
       background-color: #1a1a1a;
-      border-bottom: 1px solid #333;
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .logo img {
-      height: 40px;
-    }
-
     nav a {
       margin-left: 1.5rem;
       text-decoration: none;
@@ -44,11 +26,9 @@
       font-weight: 500;
       transition: color 0.2s;
     }
-
     nav a:hover {
       color: #fff;
     }
-
     main {
       flex: 1;
       display: flex;
@@ -57,20 +37,17 @@
       text-align: center;
       padding: 4rem 1rem 2rem;
     }
-
-    main h1 {
+    h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
-
-    main p {
+    p {
       max-width: 700px;
       font-size: 1.1rem;
       line-height: 1.6;
       margin-bottom: 2rem;
       color: #ccc;
     }
-
     .cta-buttons {
       display: flex;
       gap: 1rem;
@@ -78,7 +55,6 @@
       justify-content: center;
       margin-bottom: 2.5rem;
     }
-
     .cta-buttons a {
       background-color: #FF6B35;
       color: white;
@@ -87,325 +63,176 @@
       text-decoration: none;
       transition: background 0.2s;
     }
-
     .cta-buttons a:hover {
       background-color: #cc5125;
     }
-
     .hero-image {
       max-width: 400px;
       width: 100%;
       border-radius: 12px;
       margin-bottom: 4rem;
     }
-
     .divider {
       width: 100%;
       height: 1px;
       background: #333;
       margin: 3rem 0;
     }
-
-    .whitepaper {
-      text-align: center;
-      padding: 0 1rem 2rem;
+    .section {
+      padding: 2rem 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
     }
-
-    .whitepaper h2 {
-      font-size: 1.8rem;
-      color: #FF6B35;
-      margin-bottom: 1rem;
-    }
-
-    .whitepaper p {
-      color: #ccc;
-      max-width: 700px;
-      margin: 0 auto 1.5rem;
-      font-size: 1.05rem;
-      line-height: 1.5;
-    }
-
-    .whitepaper a {
+    .whitepaper a, .token-section a {
       display: inline-block;
-      background: #1f948c;
+      background: #FF6B35;
       color: white;
-      padding: 0.7rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 8px;
       text-decoration: none;
-      transition: background 0.2s;
+      margin-top: 1rem;
     }
-
-    .whitepaper a:hover {
-      background: #14635e;
+    .whitepaper a:hover, .token-section a:hover {
+      background: #cc5125;
     }
-
-    /* Roadmap */
-    .roadmap {
-      margin-top: 4rem;
-      max-width: 700px;
-      text-align: left;
-      padding: 0 1rem 4rem;
-    }
-
-    .roadmap h2 {
-      color: #FF6B35;
-      margin-bottom: 1rem;
-      font-size: 1.8rem;
-      text-align: center;
-    }
-
     .roadmap ul {
       list-style: none;
       padding: 0;
     }
-
     .roadmap li {
       background: #1a1a1a;
       margin-bottom: 1rem;
-      padding: 1rem 1.5rem;
+      padding: 1rem;
       border-radius: 8px;
-      position: relative;
       box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
-      transition: background 0.3s;
     }
-
     .roadmap li:hover {
       background: #FF6B35;
       color: #000;
     }
-
-    .roadmap li strong {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
-    }
-
-    .roadmap li small {
-      font-size: 0.9rem;
-      color: #bbb;
-    }
-
-    /* Redes sociais - agora no fim da página */
     .socials {
-      margin-top: 2rem;
       display: flex;
-      gap: 2rem;
       justify-content: center;
-      padding-bottom: 3rem;
+      gap: 2rem;
+      margin: 2rem 0;
     }
-
     .socials a {
       color: #ccc;
       transition: color 0.2s;
     }
-
     .socials a:hover {
       color: #FF6B35;
     }
-
-    .socials svg {
-      width: 32px;
-      height: 32px;
-      fill: currentColor;
-    }
-
     footer {
       text-align: center;
       padding: 1rem;
-      background-color: #1a1a1a;
       font-size: 0.9rem;
       color: #777;
     }
-
-    @media (max-width: 480px) {
-      main h1 {
-        font-size: 2rem;
-      }
-    }
   </style>
 </head>
-
 <body>
-    <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1a1a1a;">
-  <div class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
-    <img src="images/logo.png" alt="BIGFOOT Logo" style="height: 40px;" />
-    <span><strong>BIGFOOT Connect</strong></span>
-  </div>
 
-  <div style="display: flex; align-items: center; gap: 1rem;">
-    <nav style="display: flex; gap: 1.5rem;">
-      <a href="login.html" style="color: #FF6B35; text-decoration: none; font-weight: 500;">Login</a>
-      <a href="register.html" style="color: #FF6B35; text-decoration: none; font-weight: 500;">Criar conta</a>
-    </nav>
+  <!-- Header -->
+  <header style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
+    <div class="logo" style="display:flex; align-items:center; gap:0.75rem;">
+      <img src="images/logo.png" alt="BIGFOOT Logo" style="height:40px;" />
+      <span><strong>BIGFOOT Connect</strong></span>
+    </div>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <nav style="display:flex;">
+        <a href="login.html">Login</a>
+        <a href="register.html">Criar conta</a>
+      </nav>
+      <button id="connectWalletHeader" style="display:flex; align-items:center; gap:0.5rem; background:#1F948C; color:white; padding:0.5rem 1rem; border:none; border-radius:6px; cursor:pointer;">
+        <img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" alt="Phantom" style="height:20px; width:20px;" />
+        Conectar Carteira
+      </button>
+    </div>
+  </header>
 
-    <!-- Botão Conectar Phantom -->
-    <button id="connectWalletHeader"
-      style="display: flex; align-items: center; gap: 0.5rem; background-color: #1F948C; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer;">
-      <img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" alt="Phantom Logo"
-        style="height: 20px; width: 20px;" />
-      Conectar Carteira
-    </button>
-  </div>
-</header>
-
+  <!-- Main -->
   <main>
     <h1>Conecte. Compartilhe. Ganhe.</h1>
-    <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e
-      ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!</p>
+    <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e recebe recompensas em <strong>BIG</strong>.</p>
+
     <div class="cta-buttons">
       <a href="/downloads/bigfoot-windows.exe">Windows</a>
       <a href="/downloads/bigfoot-mac.dmg">macOS</a>
       <a href="/downloads/bigfoot-linux.AppImage">Linux</a>
     </div>
+
     <img src="images/logo.png" alt="Preview do App" class="hero-image animate-bounce" />
 
     <div class="divider"></div>
 
-    <section class="whitepaper-token-section" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; padding: 3rem 1rem; max-width: 1100px; margin: 0 auto;">
-  <!-- Whitepaper -->
-  <div style="flex: 1 1 300px; min-width: 280px;">
-    <h2 style="color: #FF6B35; font-size: 1.8rem;">📄 Whitepaper</h2>
-    <p style="color: #ccc; margin-bottom: 1rem;">
-      Leia o documento técnico do BIGFOOT Connect para entender nossa missão, arquitetura descentralizada, tokenomics e como pretendemos redefinir o compartilhamento de banda.
-    </p>
-    <a href="/docs/whitepaper-bigfoot.pdf" target="_blank"
-       style="display: inline-block; background-color: #FF6B35; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none;">
-      📥 Baixar Whitepaper (PDF)
-    </a>
-  </div>
+    <!-- Whitepaper e Token -->
+    <section class="section whitepaper">
+      <h2>📄 Whitepaper</h2>
+      <p>Entenda nossa missão, arquitetura descentralizada, tokenomics e como pretendemos redefinir o compartilhamento de banda.</p>
+      <a href="/docs/whitepaper-bigfoot.pdf" target="_blank">📥 Baixar Whitepaper (PDF)</a>
+    </section>
 
-  <!-- Token BIG -->
-  <div style="flex: 1 1 300px; min-width: 280px;">
-    <h2 style="color: #FF6B35; font-size: 1.8rem;">💰 Token BIG (BIG)</h2>
-    <p style="color: #ccc; margin-bottom: 1rem;">
-      O token <strong>BIG</strong> recompensa usuários que contribuem com largura de banda para a rede descentralizada do BIGFOOT Connect.
-    </p>
-    <p style="color: #aaa; font-size: 0.95rem; word-break: break-word;">
-      <strong>Contrato:</strong><br>
-      <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
-         target="_blank"
-         style="color: #6ee7b7; text-decoration: none;">
-         39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
-      </a>
-    </p>
-  </div>
-</section>
+    <section class="section token-section">
+      <h2>💰 Token BIG (BIG)</h2>
+      <p>O token <strong>BIG</strong> recompensa usuários que contribuem com largura de banda.</p>
+      <p><strong>Contrato:</strong><br/>
+        <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet" target="_blank">39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗</a>
+      </p>
+      <button id="connectWallet" style="margin-top:1rem; background:#1F948C; color:white; padding:0.75rem 1.5rem; border:none; border-radius:8px;">Conectar Carteira Solana (Phantom)</button>
+      <p id="walletAddress" style="margin-top:1rem; color:#6ee7b7;"></p>
+    </section>
 
     <div class="divider"></div>
 
-    <section class="roadmap" id="roadmap">
-      <h2>🗺️ Roadmap do Projeto</h2>
+    <!-- Roadmap -->
+    <section class="section roadmap">
+      <h2>🗺️ Roadmap</h2>
       <ul>
-        <li>
-          <strong>Q2 2025 – Lançamento Beta</strong>
-          <small>Versão inicial com recursos básicos de compartilhamento e recompensas.</small>
-        </li>
-        <li>
-          <strong>Q3 2025 – Integração com Extensão</strong>
-          <small>Suporte para pareamento com extensão de navegador e melhorias de UX.</small>
-        </li>
-        <li>
-          <strong>Q4 2025 – Plataforma Multiplataforma</strong>
-          <small>Apps para Android e iOS, além de melhorias na estabilidade e segurança.</small>
-        </li>
-        <li>
-          <strong>Q1 2026 – Expansão da Rede</strong>
-          <small>Parcerias estratégicas e expansão da base de usuários.</small>
-        </li>
-        <li>
-          <strong>Q2 2026 – Recursos Avançados</strong>
-          <small>Novos modelos de recompensas, analytics e suporte a novos protocolos.</small>
-        </li>
+        <li><strong>Q2 2025 – Lançamento Beta</strong><br/><small>Versão inicial com recursos básicos.</small></li>
+        <li><strong>Q3 2025 – Integração com Extensão</strong><br/><small>Suporte para pareamento com extensão.</small></li>
+        <li><strong>Q4 2025 – Plataforma Multiplataforma</strong><br/><small>Apps para Android e iOS.</small></li>
+        <li><strong>Q1 2026 – Expansão da Rede</strong><br/><small>Parcerias estratégicas.</small></li>
+        <li><strong>Q2 2026 – Recursos Avançados</strong><br/><small>Analytics, recompensas e mais.</small></li>
       </ul>
     </section>
 
-    <div class="socials" aria-label="Redes sociais">
+    <!-- Redes sociais -->
+    <div class="socials">
       <a href="https://github.com/magroalbino/BIGFOOT-Connect-Site" target="_blank" aria-label="GitHub">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M12 0C5.372 0 0 5.372 0 12c0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.334-1.756-1.334-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.108-.775.42-1.304.762-1.604-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.47-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.007-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 2.045.137 3 .404 2.29-1.553 3.295-1.23 3.295-1.23.655 1.653.244 2.873.12 3.176.77.84 1.232 1.91 1.232 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.102.823 2.222 0 1.604-.014 2.896-.014 3.29 0 .322.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.628-5.372-12-12-12z" />
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37...Z"/></svg>
       </a>
       <a href="https://x.com/BIGFOOT_Connect" target="_blank" aria-label="X">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M23.954 4.569a10 10 0 0 1-2.825.775 4.93 4.93 0 0 0 2.163-2.724 9.865 9.865 0 0 1-3.127 1.195 4.916 4.916 0 0 0-8.373 4.482A13.93 13.93 0 0 1 1.671 3.149a4.916 4.916 0 0 0 1.523 6.573 4.903 4.903 0 0 1-2.229-.616c-.054 2.28 1.581 4.415 3.949 4.89a4.902 4.902 0 0 1-2.224.085 4.916 4.916 0 0 0 4.588 3.417 9.867 9.867 0 0 1-6.102 2.105c-.395 0-.787-.023-1.17-.067a13.945 13.945 0 0 0 7.557 2.209c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 0 0 2.457-2.548l-.047-.02z" />
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M23.954 4.569...Z"/></svg>
       </a>
       <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.039-1.852-3.039-1.853 0-2.136 1.445-2.136 2.939v5.669H9.352V9h3.415v1.561h.047c.476-.9 1.637-1.852 3.37-1.852 3.6 0 4.265 2.37 4.265 5.452v6.291zM5.337 7.433c-1.144 0-2.069-.927-2.069-2.07 0-1.143.925-2.07 2.07-2.07 1.143 0 2.068.927 2.068 2.07 0 1.143-.925 2.07-2.07 2.07zm1.777 13.019H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .77 0 1.726v20.547C0 23.23.792 24 1.771 24h20.451c.978 0 1.778-.77 1.778-1.727V1.726C24 .77 23.203 0 22.225 0z" />
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M22.225 0H1.771C...Z"/></svg>
       </a>
     </div>
+
   </main>
 
-  <section class="token-section" style="text-align: center; padding: 3rem 1rem;">
-  <h2 style="color: #FF6B35; font-size: 1.8rem;">💰 Token BIG (BIG)</h2>
-  <p style="color: #ccc; max-width: 700px; margin: 0 auto 1rem;">
-    O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
-  </p>
-  <p style="color: #aaa; font-size: 0.95rem; word-break: break-all;">
-  <strong>Contrato:</strong>
-  <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
-     target="_blank"
-     style="color: #6ee7b7; text-decoration: none;">
-     39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
-  </a>
-</p>
-  </p>
-  <button id="connectWallet" style="margin-top: 1rem; background: #1F948C; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer;">
-    Conectar Carteira Solana (Phantom)
-  </button>
-  <p id="walletAddress" style="margin-top: 1rem; color: #6ee7b7;"></p>
-</section>
-  
+  <!-- Footer -->
   <footer>
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Load bcryptjs from CDN as an ES Module -->
-  <script type="module">
-    console.log('Before bcrypt load');
-    import('https://unpkg.com/bcryptjs@2.4.3/dist/bcrypt.min.js').then((mod) => {
-      window.bcrypt = mod.default; // Expose to global scope
-      console.log('After bcrypt load:', typeof window.bcrypt !== 'undefined');
-    }).catch((err) => {
-      console.error('Error loading bcrypt:', err);
+  <!-- Phantom Wallet Script -->
+  <script>
+    const connectBtnHeader = document.getElementById("connectWalletHeader");
+    connectBtnHeader?.addEventListener("click", async () => {
+      if (!window.solana || !window.solana.isPhantom) {
+        alert("Instale a carteira Phantom para conectar.");
+        return;
+      }
+      try {
+        const res = await window.solana.connect();
+        connectBtnHeader.innerHTML = `<img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" style="height: 20px; width: 20px;" /> ${res.publicKey.toString().slice(0, 4)}...${res.publicKey.toString().slice(-4)}`;
+      } catch (err) {
+        console.error("Erro ao conectar:", err);
+      }
     });
   </script>
 
-  <!-- Phantom Wallet Script -->
-<script>
-  const connectBtnHeader = document.getElementById("connectWalletHeader");
-
-  connectBtnHeader?.addEventListener("click", async () => {
-    if (!window.solana || !window.solana.isPhantom) {
-      alert("Instale a carteira Phantom para conectar.");
-      return;
-    }
-
-    try {
-      const res = await window.solana.connect();
-      connectBtnHeader.innerHTML = `<img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" style="height: 20px; width: 20px;" /> ${res.publicKey.toString().slice(0, 4)}...${res.publicKey.toString().slice(-4)}`;
-    } catch (err) {
-      console.error("Erro ao conectar:", err);
-    }
-  });
-
-  // Conexão automática
-  window.addEventListener("load", async () => {
-    if (window.solana?.isPhantom) {
-      try {
-        const res = await window.solana.connect({ onlyIfTrusted: true });
-        connectBtnHeader.innerHTML = `<img src="https://cryptologos.cc/logos/phantom-phantom-logo.svg?v=026" style="height: 20px; width: 20px;" /> ${res.publicKey.toString().slice(0, 4)}...${res.publicKey.toString().slice(-4)}`;
-      } catch (_) {}
-    }
-  });
-</script>
-
-
 </body>
-
 </html>
