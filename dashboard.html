@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - BIGFOOT Connect</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
       margin: 0;
@@ -74,7 +75,6 @@
       background-color: #cc5125;
     }
 
-    /* Ajustes para o logo + nome igual ao index.html */
     .logo {
       display: flex;
       align-items: center;
@@ -147,33 +147,32 @@
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Script de conexão Phantom e controle de login/logout -->
+  <!-- Script de conexão Phantom e Supabase -->
   <script>
+    const SUPABASE_URL = "https://cfvcihpfnxavcwublvcg.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     document.addEventListener('DOMContentLoaded', () => {
-      // Verifica se está logado, caso contrário redireciona para login
       if (localStorage.getItem('loggedIn') !== 'true') {
         window.location.href = 'login.html';
         return;
       }
 
-      // Exibe endereço da carteira salvo (se houver)
-      const savedWallet = localStorage.getItem('walletAddress');
       const walletDisplay = document.getElementById('walletDisplay');
+      const savedWallet = localStorage.getItem('walletAddress');
       if (savedWallet) {
         walletDisplay.textContent = savedWallet;
       }
 
-      // Logout
-      const logoutBtn = document.querySelector('.logout-btn');
-      logoutBtn.addEventListener('click', () => {
+      document.querySelector('.logout-btn').addEventListener('click', () => {
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('walletAddress');
+        localStorage.removeItem('userId');
         window.location.href = 'index.html';
       });
 
-      // Conectar carteira Phantom
-      const connectWalletBtn = document.getElementById('connectWallet');
-      connectWalletBtn.addEventListener('click', async () => {
+      document.getElementById('connectWallet').addEventListener('click', async () => {
         if (!window.solana?.isPhantom) {
           alert("Instale a carteira Phantom para conectar.");
           return;
@@ -181,8 +180,24 @@
 
         try {
           const res = await window.solana.connect();
-          walletDisplay.textContent = res.publicKey.toString();
-          localStorage.setItem('walletAddress', res.publicKey.toString());
+          const publicKey = res.publicKey.toString();
+          walletDisplay.textContent = publicKey;
+          localStorage.setItem('walletAddress', publicKey);
+
+          // ID local (simulando autenticação)
+          const userId = localStorage.getItem('userId') || crypto.randomUUID();
+          localStorage.setItem('userId', userId);
+
+          const { error } = await supabase
+            .from('profiles')
+            .upsert({ id: userId, wallet_address: publicKey }, { onConflict: 'id' });
+
+          if (error) {
+            console.error("Erro ao salvar na Supabase:", error);
+          } else {
+            console.log("Carteira salva com sucesso.");
+          }
+
         } catch (err) {
           console.error("Erro ao conectar carteira:", err);
         }
