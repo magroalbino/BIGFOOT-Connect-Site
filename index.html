@@ -307,6 +307,20 @@
     </div>
   </main>
 
+  <section class="token-section" style="text-align: center; padding: 3rem 1rem;">
+  <h2 style="color: #FF6B35; font-size: 1.8rem;">💰 Token BIG (BIG)</h2>
+  <p style="color: #ccc; max-width: 700px; margin: 0 auto 1rem;">
+    O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
+  </p>
+  <p style="color: #aaa; font-size: 0.95rem; word-break: break-all;">
+    <strong>Contrato:</strong> <code>So1aNaToKenAdDr3ssExAmp1e123456789</code>
+  </p>
+  <button id="connectWallet" style="margin-top: 1rem; background: #1F948C; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer;">
+    Conectar Carteira Solana (Phantom)
+  </button>
+  <p id="walletAddress" style="margin-top: 1rem; color: #6ee7b7;"></p>
+</section>
+  
   <footer>
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
@@ -321,6 +335,36 @@
       console.error('Error loading bcrypt:', err);
     });
   </script>
+
+  <!-- Phantom Wallet Script -->
+<script>
+  const connectBtn = document.getElementById("connectWallet");
+  const walletAddr = document.getElementById("walletAddress");
+
+  connectBtn.addEventListener("click", async () => {
+    if (!window.solana || !window.solana.isPhantom) {
+      alert("Instale a carteira Phantom para conectar.");
+      return;
+    }
+
+    try {
+      const response = await window.solana.connect();
+      walletAddr.textContent = "Carteira conectada: " + response.publicKey.toString();
+    } catch (err) {
+      walletAddr.textContent = "Erro ao conectar: " + err.message;
+    }
+  });
+
+  // Conexão automática se já autorizado
+  window.addEventListener("load", async () => {
+    if (window.solana?.isPhantom) {
+      try {
+        const res = await window.solana.connect({ onlyIfTrusted: true });
+        walletAddr.textContent = "Carteira conectada: " + res.publicKey.toString();
+      } catch (_) {}
+    }
+  });
+</script>
 </body>
 
 </html>
