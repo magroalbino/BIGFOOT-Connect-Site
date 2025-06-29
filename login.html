@@ -178,6 +178,9 @@
                     return;
                 }
 
+                // Marca o usuário como logado
+                localStorage.setItem('loggedIn', 'true');
+
                 localStorage.setItem('user', JSON.stringify({
                     id: userData.id,
                     username: userData.username

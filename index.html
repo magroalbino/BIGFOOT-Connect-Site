@@ -26,22 +26,36 @@
         }
 
         .logo {
+            /* Container pai apenas */
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+            color: #FF6B35;
         }
 
-        .logo img {
+        .logo-link:hover .logo-name,
+        .logo-link:hover img {
+            color: #cc5125;
+            filter: brightness(0.8);
+        }
+
+        .logo-link img {
             height: 40px;
-            cursor: pointer;
         }
 
         .logo-name {
             font-weight: bold;
             font-size: 1.1rem;
-            color: #FF6B35;
             user-select: none;
-            cursor: default;
+            color: inherit;
+            /* cursor: default; removido para permitir hover */
         }
 
         nav a {
@@ -255,9 +269,9 @@
 <body>
     <header>
         <div class="logo">
-            <a href="index.html" class="logo" style="text-decoration: none;">
+            <a href="index.html" class="logo-link">
                 <img src="./images/logo.png" alt="BIGFOOT Logo" />
-                <span class="logo-name" style="color: #FF6B35;">BIGFOOT Esports</span>
+                <span class="logo-name">BIGFOOT Esports</span>
             </a>
         </div>
         <nav>
@@ -385,33 +399,6 @@
     <footer>
         © 2025 BIGFOOT Connect. Todos os direitos reservados.
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loggedIn = localStorage.getItem('loggedIn') === 'true';
-            const nav = document.querySelector('nav');
-
-            if (loggedIn) {
-                nav.innerHTML = '';
-
-                const dashboardLink = document.createElement('a');
-                dashboardLink.href = 'dashboard.html';
-                dashboardLink.textContent = 'Dashboard';
-                nav.appendChild(dashboardLink);
-
-                const logoutLink = document.createElement('a');
-                logoutLink.href = '#';
-                logoutLink.textContent = 'Sair';
-                logoutLink.style.marginLeft = '1.5rem';
-                logoutLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem('loggedIn');
-                    location.reload();
-                });
-                nav.appendChild(logoutLink);
-            }
-        });
-    </script>
 </body>
 
 </html>
