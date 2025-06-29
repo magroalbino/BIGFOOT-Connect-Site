@@ -96,6 +96,17 @@
             width: 100%;
             border-radius: 12px;
             margin-bottom: 4rem;
+
+            /* Transição suave para transformações */
+            transition: transform 0.3s ease;
+            /* Para deixar mais suave o efeito */
+            will-change: transform;
+        }
+
+        /* Efeito zoom ao passar o mouse */
+        .hero-image:hover {
+            transform: scale(1.05);
+            cursor: pointer;
         }
 
         .divider {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <!-- Corrigido: carregar bcryptjs direto via CDN -->
+    <!-- Carregando bcryptjs via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
         body {
@@ -164,13 +164,14 @@
                     return;
                 }
 
-                if (typeof bcrypt === 'undefined') {
+                if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
                     message.style.color = 'red';
                     message.textContent = 'Erro: Biblioteca bcrypt não carregada.';
                     return;
                 }
 
-                const isPasswordValid = bcrypt.compareSync(password, userData.password_hash);
+                const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
+
                 if (!isPasswordValid) {
                     message.style.color = 'red';
                     message.textContent = 'Senha incorreta.';
