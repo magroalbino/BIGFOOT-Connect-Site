@@ -271,7 +271,7 @@
         <div class="logo">
             <a href="index.html" class="logo-link">
                 <img src="./images/logo.png" alt="BIGFOOT Logo" />
-                <span class="logo-name">BIGFOOT Esports</span>
+                <span class="logo-name">BIGFOOT Connect</span>
             </a>
         </div>
         <nav>
@@ -399,6 +399,39 @@
     <footer>
         © 2025 BIGFOOT Connect. Todos os direitos reservados.
     </footer>
+
+    <script>
+        // Script para manter estado de login e alterar menu da home
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedIn = localStorage.getItem('loggedIn') === 'true';
+            const userJson = localStorage.getItem('user');
+            const username = userJson ? JSON.parse(userJson).username : null;
+
+            const nav = document.querySelector('nav');
+            if (!nav) return;
+
+            if (loggedIn && username) {
+                nav.innerHTML = `
+                    <span style="color:#FF6B35; margin-right: 1rem;">Olá, ${username}</span>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="#" id="logout">Sair</a>
+                `;
+
+                document.getElementById('logout').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('loggedIn');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('walletAddress');
+                    window.location.href = 'index.html';
+                });
+            } else {
+                nav.innerHTML = `
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Criar conta</a>
+                `;
+            }
+        });
+    </script>
 </body>
 
 </html>
