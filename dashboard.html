@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - BIGFOOT Connect</title>
   <link rel="stylesheet" href="/css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
       margin: 0;
@@ -75,6 +74,7 @@
       background-color: #cc5125;
     }
 
+    /* Ajustes para o logo + nome igual ao index.html */
     .logo {
       display: flex;
       align-items: center;
@@ -136,9 +136,11 @@
     </div>
 
     <div class="card">
-      <h2>Carteira conectada</h2>
-      <p>Endereço: <span id="walletDisplay">Não conectado</span></p>
-      <button id="connectWallet" class="logout-btn">Conectar Phantom</button>
+      <h2>Endereço da sua Carteira Solana</h2>
+      <input type="text" id="walletInput" placeholder="Digite seu endereço Solana"
+        style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 0.5rem;" />
+      <button id="saveWalletBtn" class="logout-btn">Salvar endereço</button>
+      <p id="statusMessage" style="margin-top: 0.5rem; color: #FF6B35;"></p>
     </div>
   </main>
 
@@ -147,62 +149,93 @@
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Script de conexão Phantom e Supabase -->
-  <script>
-    const SUPABASE_URL = "https://cfvcihpfnxavcwublvcg.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <!-- Script para integração com Supabase e controle -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    document.addEventListener('DOMContentLoaded', () => {
+    const supabaseUrl = 'https://cfvcihpfnxavcwublvcg.supabase.co'
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    document.addEventListener('DOMContentLoaded', async () => {
       if (localStorage.getItem('loggedIn') !== 'true') {
-        window.location.href = 'login.html';
-        return;
+        window.location.href = 'login.html'
+        return
       }
 
-      const walletDisplay = document.getElementById('walletDisplay');
-      const savedWallet = localStorage.getItem('walletAddress');
-      if (savedWallet) {
-        walletDisplay.textContent = savedWallet;
+      // Pega o id do usuário logado, que você deve salvar no localStorage no login
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        alert('Usuário não identificado. Faça login novamente.')
+        window.location.href = 'login.html'
+        return
       }
 
-      document.querySelector('.logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('loggedIn');
-        localStorage.removeItem('walletAddress');
-        localStorage.removeItem('userId');
-        window.location.href = 'index.html';
-      });
+      const walletInput = document.getElementById('walletInput')
+      const saveBtn = document.getElementById('saveWalletBtn')
+      const statusMessage = document.getElementById('statusMessage')
 
-      document.getElementById('connectWallet').addEventListener('click', async () => {
-        if (!window.solana?.isPhantom) {
-          alert("Instale a carteira Phantom para conectar.");
-          return;
+      // Carregar endereço da carteira salvo no Supabase e localStorage
+      async function loadWallet() {
+        // Primeiro tenta localStorage
+        const savedWalletLocal = localStorage.getItem('walletAddress')
+        if (savedWalletLocal) {
+          walletInput.value = savedWalletLocal
         }
 
-        try {
-          const res = await window.solana.connect();
-          const publicKey = res.publicKey.toString();
-          walletDisplay.textContent = publicKey;
-          localStorage.setItem('walletAddress', publicKey);
+        // Puxa do Supabase para garantir dados atualizados
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('wallet_address')
+          .eq('id', userId)
+          .single()
 
-          // ID local (simulando autenticação)
-          const userId = localStorage.getItem('userId') || crypto.randomUUID();
-          localStorage.setItem('userId', userId);
-
-          const { error } = await supabase
-            .from('profiles')
-            .upsert({ id: userId, wallet_address: publicKey }, { onConflict: 'id' });
-
-          if (error) {
-            console.error("Erro ao salvar na Supabase:", error);
-          } else {
-            console.log("Carteira salva com sucesso.");
-          }
-
-        } catch (err) {
-          console.error("Erro ao conectar carteira:", err);
+        if (error) {
+          console.error('Erro ao buscar wallet do Supabase:', error)
+        } else if (data?.wallet_address) {
+          walletInput.value = data.wallet_address
+          localStorage.setItem('walletAddress', data.wallet_address)
         }
-      });
-    });
+      }
+
+      await loadWallet()
+
+      // Salvar endereço no Supabase e localStorage
+      saveBtn.addEventListener('click', async () => {
+        const walletAddress = walletInput.value.trim()
+
+        if (!walletAddress) {
+          statusMessage.textContent = 'Por favor, insira um endereço válido.'
+          return
+        }
+
+        // Você pode adicionar validação extra aqui para o formato do endereço Solana se quiser
+
+        // Atualiza no Supabase
+        const { error } = await supabase
+          .from('profiles')
+          .update({ wallet_address: walletAddress })
+          .eq('id', userId)
+
+        if (error) {
+          statusMessage.textContent = 'Erro ao salvar endereço. Tente novamente.'
+          console.error(error)
+        } else {
+          localStorage.setItem('walletAddress', walletAddress)
+          statusMessage.textContent = 'Endereço salvo com sucesso!'
+        }
+      })
+
+      // Logout
+      const logoutBtn = document.querySelector('.logout-btn')
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('loggedIn')
+        localStorage.removeItem('walletAddress')
+        localStorage.removeItem('userId')
+        window.location.href = 'index.html'
+      })
+    })
   </script>
 </body>
 
