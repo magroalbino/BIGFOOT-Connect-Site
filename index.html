@@ -311,11 +311,11 @@
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Load bcrypt as an ES Module with absolute path -->
+  <!-- Load bcryptjs from CDN as an ES Module -->
   <script type="module">
     console.log('Before bcrypt load');
-    import('/js/bcrypt.min.js').then((bcryptModule) => {
-      window.bcrypt = bcryptModule.default; // Expose to global scope
+    import('https://unpkg.com/bcryptjs@2.4.3/dist/bcrypt.min.js').then((mod) => {
+      window.bcrypt = mod.default; // Expose to global scope
       console.log('After bcrypt load:', typeof window.bcrypt !== 'undefined');
     }).catch((err) => {
       console.error('Error loading bcrypt:', err);
