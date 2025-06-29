@@ -181,10 +181,8 @@
                 // Marca o usuário como logado
                 localStorage.setItem('loggedIn', 'true');
 
-                localStorage.setItem('user', JSON.stringify({
-                    id: userData.id,
-                    username: userData.username
-                }));
+                // Salva o ID do usuário para identificar nas próximas páginas
+                localStorage.setItem('userId', userData.id);
 
                 message.style.color = 'green';
                 message.textContent = 'Login realizado com sucesso!';
