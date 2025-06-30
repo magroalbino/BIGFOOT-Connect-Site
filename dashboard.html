@@ -190,23 +190,37 @@
 
       saveBtn.addEventListener('click', async () => {
         const walletAddress = walletInput.value.trim()
+        statusMessage.textContent = ''
 
         if (!walletAddress) {
           statusMessage.textContent = 'Por favor, insira um endereço válido.'
           return
         }
 
-        const { error } = await supabase
-          .from('profiles')
-          .update({ wallet_address: walletAddress })
-          .eq('id', userId)
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .update({ wallet_address: walletAddress })
+            .eq('id', userId)
+            .select()
 
-        if (error) {
-          statusMessage.textContent = 'Erro ao salvar endereço. Tente novamente.'
-          console.error(error)
-        } else {
+          if (error) {
+            console.error('Erro ao salvar no Supabase:', error)
+            statusMessage.textContent = 'Erro ao salvar endereço. Tente novamente.'
+            return
+          }
+
+          if (!data || data.length === 0) {
+            statusMessage.textContent = 'Nenhum registro atualizado. Verifique seu usuário.'
+            console.warn('Nenhum registro atualizado para userId:', userId)
+            return
+          }
+
           localStorage.setItem('walletAddress', walletAddress)
           statusMessage.textContent = 'Endereço salvo com sucesso!'
+        } catch (err) {
+          console.error('Exceção ao salvar endereço:', err)
+          statusMessage.textContent = 'Erro inesperado ao salvar endereço.'
         }
       })
 
