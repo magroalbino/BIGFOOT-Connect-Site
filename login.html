@@ -112,6 +112,14 @@
         <span>BIGFOOT Connect</span>
     </div>
 
+    <!-- Seletor de idioma -->
+    <div style="position:absolute; top:1rem; right:1rem;">
+        <select id="langSelect" onchange="setLang(this.value)">
+            <option value="pt-BR">Português</option>
+            <option value="en-US">English</option>
+        </select>
+    </div>
+
     <form onsubmit="loginUser(event)">
         <h2>Entrar</h2>
         <input type="text" id="username" placeholder="Nome de usuário" required />
@@ -198,6 +206,28 @@
         }
 
         window.loginUser = loginUser;
+    </script>
+    <script>
+        function setLang(lang) {
+            localStorage.setItem('lang', lang);
+            location.reload();
+        }
+
+        function applyLang() {
+            const lang = localStorage.getItem('lang') || 'pt-BR';
+            document.getElementById('langSelect').value = lang;
+
+            if (lang === 'en-US') {
+                document.getElementById('login-title').textContent = 'Login';
+                document.getElementById('username').placeholder = 'Username';
+                document.getElementById('password').placeholder = 'Password';
+                document.getElementById('login-btn').textContent = 'Login';
+                document.getElementById('no-account').textContent = "Don't have an account? Register";
+                document.getElementById('back-home').textContent = '← Back to Home';
+            }
+        }
+
+        applyLang();
     </script>
 </body>
 
