@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BIGFOOT Connect</title>
     <style>
         body {
@@ -26,6 +26,7 @@
         }
 
         .logo {
+            /* Container pai apenas */
             display: flex;
             align-items: center;
         }
@@ -49,19 +50,27 @@
             height: 40px;
         }
 
+        .logo-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            user-select: none;
+            color: inherit;
+        }
+
         nav {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-left: auto;
-            /* força alinhamento à direita */
-            width: auto;
+            justify-content: flex-end;
+            gap: 2.5rem;
+            /* espaçamento maior entre os elementos do topo */
+            min-width: 300px;
         }
 
         nav span {
             color: #FF6B35;
             white-space: nowrap;
             margin-right: 0;
+            /* removido margem extra */
         }
 
         nav a {
@@ -74,17 +83,6 @@
 
         nav a:hover {
             color: #fff;
-        }
-
-        #languageSwitcher {
-            margin-left: 1rem;
-            background: #1a1a1a;
-            color: #FF6B35;
-            border: 1px solid #333;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
         }
 
         main {
@@ -200,29 +198,6 @@
             background: #14635e;
         }
 
-        .token-section {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-
-        .token-section h2 {
-            color: #FF6B35;
-            margin-bottom: 1rem;
-        }
-
-        .token-section p {
-            color: #ccc;
-            max-width: 700px;
-            margin: 0 auto 1rem;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        .token-section a {
-            color: #6ee7b7;
-            text-decoration: none;
-        }
-
         .roadmap {
             margin-top: 4rem;
             max-width: 700px;
@@ -302,10 +277,6 @@
             main h1 {
                 font-size: 2rem;
             }
-
-            nav {
-                gap: 0.5rem;
-            }
         }
     </style>
 </head>
@@ -318,10 +289,11 @@
                 <span class="logo-name">BIGFOOT Connect</span>
             </a>
         </div>
-        <nav id="userNav">
-            <!-- Será preenchido pelo JS -->
+        <nav>
+            <!-- Navegação dinâmica via JS -->
         </nav>
-        <select id="languageSwitcher" aria-label="Selecionar idioma">
+        <select id="languageSwitcher"
+            style="margin-left: 1rem; background: #1a1a1a; color: #FF6B35; border: 1px solid #333; padding: 0.25rem 0.5rem; border-radius: 4px;">
             <option value="en">English</option>
             <option value="pt">Português</option>
         </select>
@@ -349,9 +321,9 @@
 
         <div class="divider"></div>
 
-        <section class="token-section">
-            <h2>💰 Token BIG (BIG)</h2>
-            <p>
+        <section class="token-section" style="text-align: center; padding: 3rem 1rem;">
+            <h2 style="color: #FF6B35; font-size: 1.8rem;">💰 Token BIG (BIG)</h2>
+            <p style="color: #ccc; max-width: 700px; margin: 0 auto 1rem;">
                 O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em
                 BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
             </p>
@@ -415,151 +387,179 @@
                     <path d="M23.954 4.569c-0.885 0.392-1.83 0.656-2.825 0.775
                          1.014-0.611 1.794-1.574 2.163-2.724-0.951 0.564-2.005 0.974-3.127 1.195
                          -0.897-0.959-2.178-1.559-3.594-1.559-2.717 0-4.92 2.203-4.92 4.917 0 0.39 0.045 0.765 0.127 1.124
-                         -4.09-0.205-7.72-2.165-10.148-5.144-0.424 0.729-0.666 1.577-0.666 2.476 0 1.708 0.87 3.215 2.188 4.099
-                         -0.807-0.026-1.566-0.247-2.228-0.616v0.061c0 2.385 1.693 4.374 3.946 4.827
-                         -0.413 0.111-0.849 0.171-1.296 0.171-0.317 0-0.626-0.03-0.928-0.086
-                         0.627 1.956 2.444 3.379 4.6 3.419-1.68 1.319-3.809 2.105-6.102 2.105
-                         -0.396 0-0.788-0.023-1.175-0.068 2.179 1.397 4.768 2.213 7.557 2.213
-                         9.054 0 14-7.496 14-13.986 0-0.209 0-0.423-0.015-0.633
-                         0.962-0.695 1.797-1.562 2.457-2.549z" />
-                </svg>
-            </a>
-            <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.039-1.852-3.039-1.853
-      0-2.136 1.445-2.136 2.939v5.669h-3.554v-11.452h3.414v1.561h.049c.476-.9
-      1.637-1.852 3.372-1.852 3.605 0 4.271 2.372 4.271
-      5.455v6.288zm-14.693-13.99c-1.144
-      0-2.07-.926-2.07-2.07 0-1.143.926-2.07
-      2.07-2.07 1.143 0 2.07.927 2.07 2.07
-      0 1.144-.927 2.07-2.07
-      2.07zm1.777 13.99h-3.554v-11.452h3.554v11.452zm14.225-20.452h-20.451c-.979
-      0-1.771.773-1.771
-      1.726v20.549c0 .953.792 1.725 1.771
-      1.725h20.451c.978 0 1.771-.772
-      1.771-1.725v-20.549c0-.953-.793-1.726-1.771-1.726z" />
+                         -4.083-0.205-7.7-2.158-10.126-5.134-0.423 0.722-0.666 1.561-0.666 2.457 0 1.697 0.865 3.197 2.181 4.076
+                         -0.802-0.025-1.56-0.246-2.228-0.616v0.061c0 2.37 1.685 4.342 3.918 4.788
+                         -0.41 0.111-0.84 0.171-1.285 0.171-0.314 0-0.615-0.03-0.912-0.086
+                         0.615 1.92 2.396 3.317 4.5 3.356-1.65 1.292-3.727 2.066-5.991 2.066
+                         -0.39 0-0.779-0.023-1.17-0.067 2.146 1.378 4.694 2.184 7.433 2.184
+                         8.918 0 13.81-7.389 13.81-13.81 0-0.21-0.004-0.42-0.014-0.63
+                         0.949-0.685 1.774-1.54 2.424-2.512z" />
                 </svg>
             </a>
         </div>
     </main>
 
     <footer>
-        © 2025 BIGFOOT Connect. Todos os direitos reservados.
+        © 2023 BIGFOOT Connect. Todos os direitos reservados.
     </footer>
 
     <script>
         const translations = {
             en: {
-                heroTitle: "Connect. Share. Earn.",
-                heroText:
-                    "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
-                downloadWindows: "Windows",
-                downloadMac: "macOS",
-                downloadLinux: "Linux",
-                whitepaperTitle: "📄 Project Whitepaper",
-                whitepaperText:
-                    "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
-                whitepaperBtn: "View / Download Whitepaper",
-                tokenTitle: "💰 BIG Token (BIG)",
-                tokenDesc:
-                    "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
-                roadmapTitle: "🗺️ Project Roadmap",
-                footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
-                login: "Login",
-                register: "Register",
+                helloUser: "Hello",
                 dashboard: "Dashboard",
                 logout: "Logout",
-                hello: "Hello",
+                ctaWindows: "Windows",
+                ctaMac: "macOS",
+                ctaLinux: "Linux",
+                whitepaperTitle: "📄 Project Whitepaper",
+                whitepaperDesc: "Want to know how BIGFOOT Connect works, the technologies behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
+                whitepaperBtn: "View / Download Whitepaper",
+                tokenTitle: "💰 BIG Token (BIG)",
+                tokenDesc: "The BIG is the official token of the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to the decentralization of the network.",
+                tokenContract: "Contract:",
+                roadmapTitle: "🗺️ Project Roadmap",
+                roadmapItems: [
+                    {
+                        title: "Q2 2025 – Beta Launch",
+                        description: "Initial version with basic sharing and rewards features.",
+                    },
+                    {
+                        title: "Q3 2025 – Extension Integration",
+                        description: "Support for pairing with browser extension and UX improvements.",
+                    },
+                    {
+                        title: "Q4 2025 – Cross-platform Support",
+                        description: "Apps for Android and iOS, plus stability and security enhancements.",
+                    },
+                    {
+                        title: "Q1 2026 – Network Expansion",
+                        description: "Strategic partnerships and user base growth.",
+                    },
+                    {
+                        title: "Q2 2026 – Advanced Features",
+                        description: "New reward models, analytics, and support for new protocols.",
+                    },
+                ],
             },
             pt: {
-                heroTitle: "Conecte. Compartilhe. Ganhe.",
-                heroText:
-                    "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
-                downloadWindows: "Windows",
-                downloadMac: "macOS",
-                downloadLinux: "Linux",
+                helloUser: "Olá",
+                dashboard: "Dashboard",
+                logout: "Logout",
+                ctaWindows: "Windows",
+                ctaMac: "macOS",
+                ctaLinux: "Linux",
                 whitepaperTitle: "📄 Whitepaper do Projeto",
-                whitepaperText:
-                    "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
+                whitepaperDesc: "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
                 whitepaperBtn: "Visualizar / Baixar Whitepaper",
                 tokenTitle: "💰 Token BIG (BIG)",
-                tokenDesc:
-                    "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+                tokenDesc: "O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+                tokenContract: "Contrato:",
                 roadmapTitle: "🗺️ Roadmap do Projeto",
-                footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
-                login: "Login",
-                register: "Criar conta",
-                dashboard: "Dashboard",
-                logout: "Sair",
-                hello: "Olá",
-            },
+                roadmapItems: [
+                    {
+                        title: "Q2 2025 – Lançamento Beta",
+                        description: "Versão inicial com recursos básicos de compartilhamento e recompensas.",
+                    },
+                    {
+                        title: "Q3 2025 – Integração com Extensão",
+                        description: "Suporte para pareamento com extensão de navegador e melhorias de UX.",
+                    },
+                    {
+                        title: "Q4 2025 – Plataforma Multiplataforma",
+                        description: "Apps para Android e iOS, além de melhorias na estabilidade e segurança.",
+                    },
+                    {
+                        title: "Q1 2026 – Expansão da Rede",
+                        description: "Parcerias estratégicas e expansão da base de usuários.",
+                    },
+                    {
+                        title: "Q2 2026 – Recursos Avançados",
+                        description: "Novos modelos de recompensas, analytics e suporte a novos protocolos.",
+                    },
+                ],
+            }
         };
 
-        function applyTranslations(lang) {
+        const nav = document.querySelector("nav");
+        const languageSwitcher = document.getElementById("languageSwitcher");
+        const roadmapTitleEl = document.querySelector(".roadmap h2");
+        const roadmapList = document.querySelector(".roadmap ul");
+        const whitepaperSection = document.getElementById("whitepaper");
+        const ctaButtons = document.querySelectorAll(".cta-buttons a");
+        const heroTitle = document.querySelector("main h1");
+        const heroDesc = document.querySelector("main p");
+        const tokenSection = document.querySelector(".token-section h2");
+        const tokenDesc = document.querySelector(".token-section p");
+        const tokenContract = document.querySelector(".token-section p strong");
+        const tokenContractLink = document.querySelector(".token-section p a");
+
+        // Itens do nav (olá, dashboard, logout)
+        function updateNavTexts(lang) {
             const t = translations[lang];
-
-            // Textos fixos da página
-            document.querySelector("main h1").innerHTML = t.heroTitle;
-            document.querySelector("main p").innerHTML = t.heroText;
-
-            const buttons = document.querySelectorAll(".cta-buttons a");
-            buttons[0].textContent = t.downloadWindows;
-            buttons[1].textContent = t.downloadMac;
-            buttons[2].textContent = t.downloadLinux;
-
-            document.querySelector("#whitepaper h2").textContent = t.whitepaperTitle;
-            document.querySelector("#whitepaper p").textContent = t.whitepaperText;
-            document.querySelector("#whitepaper a").textContent = t.whitepaperBtn;
-
-            document.querySelector(".token-section h2").textContent = t.tokenTitle;
-            document.querySelector(".token-section p").innerHTML = t.tokenDesc;
-
-            document.querySelector(".roadmap h2").textContent = t.roadmapTitle;
-            document.querySelector("footer").textContent = t.footerText;
-
-            // Menu de navegação
-            const nav = document.getElementById("userNav");
-            const loggedIn = localStorage.getItem("loggedIn") === "true";
-            const userJson = localStorage.getItem("user");
-            const username = userJson ? JSON.parse(userJson).username : null;
-
-            if (loggedIn && username) {
-                nav.innerHTML = `
-                    <span>${t.hello}, ${username}</span>
-                    <a href="/dashboard">${t.dashboard}</a>
-                    <a href="#" id="logout">${t.logout}</a>
-                `;
-                nav.style.justifyContent = "flex-end";
-
-                document.getElementById("logout").addEventListener("click", (e) => {
-                    e.preventDefault();
-                    localStorage.clear();
-                    window.location.href = "index.html";
-                });
-            } else {
-                nav.innerHTML = `
-                    <a href="login.html">${t.login}</a>
-                    <a href="register.html">${t.register}</a>
-                `;
-                nav.style.justifyContent = "flex-end";
-            }
+            nav.innerHTML = `
+        <span>${t.helloUser}, kraknaknork</span>
+        <a href="/dashboard">${t.dashboard}</a>
+        <a href="/logout">${t.logout}</a>
+      `;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const languageSwitcher = document.getElementById("languageSwitcher");
-
-            // Aplica idioma salvo no localStorage ou padrão pt
-            const savedLang = localStorage.getItem("lang") || "pt";
-            languageSwitcher.value = savedLang;
-            applyTranslations(savedLang);
-
-            // Troca de idioma
-            languageSwitcher.addEventListener("change", (e) => {
-                const lang = e.target.value;
-                localStorage.setItem("lang", lang);
-                applyTranslations(lang);
+        // Atualiza o roadmap
+        function updateRoadmap(lang) {
+            const t = translations[lang];
+            roadmapTitleEl.textContent = t.roadmapTitle;
+            roadmapList.innerHTML = "";
+            t.roadmapItems.forEach(item => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${item.title}</strong><small>${item.description}</small>`;
+                roadmapList.appendChild(li);
             });
+        }
+
+        // Atualiza whitepaper
+        function updateWhitepaper(lang) {
+            const t = translations[lang];
+            whitepaperSection.querySelector("h2").textContent = t.whitepaperTitle;
+            whitepaperSection.querySelector("p").textContent = t.whitepaperDesc;
+            whitepaperSection.querySelector("a").textContent = t.whitepaperBtn;
+        }
+
+        // Atualiza os botões de download
+        function updateCtaButtons(lang) {
+            const t = translations[lang];
+            ctaButtons[0].textContent = t.ctaWindows;
+            ctaButtons[1].textContent = t.ctaMac;
+            ctaButtons[2].textContent = t.ctaLinux;
+        }
+
+        // Atualiza seção token
+        function updateTokenSection(lang) {
+            const t = translations[lang];
+            tokenSection.textContent = t.tokenTitle;
+            tokenDesc.textContent = t.tokenDesc;
+            // Token contract label permanece fixo em "Contrato:" / "Contract:"
+            tokenContract.textContent = t.tokenContract;
+        }
+
+        // Aplica a tradução completa
+        function applyTranslations(lang) {
+            updateNavTexts(lang);
+            updateRoadmap(lang);
+            updateWhitepaper(lang);
+            updateCtaButtons(lang);
+            updateTokenSection(lang);
+        }
+
+        languageSwitcher.addEventListener("change", e => {
+            const lang = e.target.value;
+            applyTranslations(lang);
         });
+
+        // Inicializa com português
+        applyTranslations("pt");
+
+        // Faz o select refletir o idioma inicial
+        languageSwitcher.value = "pt";
     </script>
 </body>
 
