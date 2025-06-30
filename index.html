@@ -59,6 +59,8 @@
 
         nav span {
             color: #FF6B35;
+            margin-right: 2rem;
+            white-space: nowrap;
         }
 
         nav a {
@@ -66,6 +68,7 @@
             color: #FF6B35;
             font-weight: 500;
             transition: color 0.2s;
+            white-space: nowrap;
         }
 
         nav a:hover {
@@ -80,6 +83,7 @@
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         main {
@@ -291,8 +295,8 @@
                 <span class="logo-name">BIGFOOT Connect</span>
             </a>
         </div>
-        <nav>
-            <!-- O conteúdo do nav será gerado via JS -->
+        <nav id="userNav">
+            <!-- Menu será gerado por JS -->
         </nav>
         <select id="languageSwitcher" aria-label="Selecionar idioma">
             <option value="en">English</option>
@@ -409,8 +413,7 @@
       2.07zm1.777 13.019H3.56V9h3.554v11.452zM22.225
       0H1.771C.792 0 0 .77 0 1.726v20.547C0 23.23.792 24
       1.771 24h20.451c.978 0 1.778-.77
-      1.778-1.727V1.726C24 .77 23.203 0
-      22.225 0z" />
+      1.778-1.726V1.726C24 .77 23.203 0 22.225 0z" />
                 </svg>
             </a>
         </div>
@@ -491,17 +494,18 @@
             document.querySelector("footer").textContent = t.footerText;
 
             // Menu de navegação
-            const nav = document.querySelector("nav");
+            const nav = document.getElementById("userNav");
             const loggedIn = localStorage.getItem("loggedIn") === "true";
             const userJson = localStorage.getItem("user");
             const username = userJson ? JSON.parse(userJson).username : null;
 
             if (loggedIn && username) {
                 nav.innerHTML = `
-                    <span style="color:#FF6B35; margin-right: 2rem;">${t.hello}, ${username}</span>
+                    <span>${t.hello}, ${username}</span>
                     <a href="/dashboard">${t.dashboard}</a>
                     <a href="#" id="logout">${t.logout}</a>
                 `;
+                nav.style.justifyContent = "flex-end";
 
                 document.getElementById("logout").addEventListener("click", (e) => {
                     e.preventDefault();
@@ -513,6 +517,7 @@
                     <a href="login.html">${t.login}</a>
                     <a href="register.html">${t.register}</a>
                 `;
+                nav.style.justifyContent = "flex-end";
             }
         }
 
