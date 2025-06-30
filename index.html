@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BIGFOOT Connect</title>
     <style>
         body {
@@ -51,16 +51,16 @@
 
         nav {
             display: flex;
-            align-items: center;
             justify-content: flex-end;
-            gap: 2rem;
-            min-width: 300px;
+            align-items: center;
+            gap: 1rem;
         }
 
         nav span {
             color: #FF6B35;
-            margin-right: 2rem;
             white-space: nowrap;
+            margin-right: 0;
+            /* Removido para que o gap controle o espaçamento */
         }
 
         nav a {
@@ -280,8 +280,7 @@
             }
 
             nav {
-                min-width: auto;
-                gap: 1rem;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -296,7 +295,7 @@
             </a>
         </div>
         <nav id="userNav">
-            <!-- Menu será gerado por JS -->
+            <!-- Será preenchido pelo JS -->
         </nav>
         <select id="languageSwitcher" aria-label="Selecionar idioma">
             <option value="en">English</option>
@@ -411,9 +410,9 @@
       2.07-2.07 1.143 0 2.068.927 2.068
       2.07 0 1.143-.925 2.07-2.07
       2.07zm1.777 13.019H3.56V9h3.554v11.452zM22.225
-      0H1.771C.792 0 0 .77 0 1.726v20.547C0 23.23.792 24
-      1.771 24h20.451c.978 0 1.778-.77
-      1.778-1.726V1.726C24 .77 23.203 0 22.225 0z" />
+      0H1.771C.792 0 0 .774 0 1.726v20.549C0 23.227.792
+      24 1.771 24h20.451C23.203 24 24 23.227 24
+      22.275V1.726C24 .774 23.203 0 22.225 0z" />
                 </svg>
             </a>
         </div>
