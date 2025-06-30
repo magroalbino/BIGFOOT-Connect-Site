@@ -51,16 +51,17 @@
 
         nav {
             display: flex;
-            justify-content: flex-end;
             align-items: center;
             gap: 1rem;
+            margin-left: auto;
+            /* força alinhamento à direita */
+            width: auto;
         }
 
         nav span {
             color: #FF6B35;
             white-space: nowrap;
             margin-right: 0;
-            /* Removido para que o gap controle o espaçamento */
         }
 
         nav a {
@@ -199,6 +200,29 @@
             background: #14635e;
         }
 
+        .token-section {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .token-section h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
+
+        .token-section p {
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .token-section a {
+            color: #6ee7b7;
+            text-decoration: none;
+        }
+
         .roadmap {
             margin-top: 4rem;
             max-width: 700px;
@@ -325,9 +349,9 @@
 
         <div class="divider"></div>
 
-        <section class="token-section" style="text-align: center; padding: 3rem 1rem;">
+        <section class="token-section">
             <h2>💰 Token BIG (BIG)</h2>
-            <p style="color: #ccc; max-width: 700px; margin: 0 auto 1rem;">
+            <p>
                 O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em
                 BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
             </p>
@@ -403,16 +427,17 @@
             <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.039-1.852-3.039-1.853
-      0-2.136 1.445-2.136 2.939v5.669H9.352V9h3.415v1.561h.047c.476-.9
-      1.637-1.852 3.37-1.852 3.6 0 4.265 2.37
-      4.265 5.452v6.291zM5.337 7.433c-1.144
-      0-2.069-.927-2.069-2.07 0-1.143.925-2.07
-      2.07-2.07 1.143 0 2.068.927 2.068
-      2.07 0 1.143-.925 2.07-2.07
-      2.07zm1.777 13.019H3.56V9h3.554v11.452zM22.225
-      0H1.771C.792 0 0 .774 0 1.726v20.549C0 23.227.792
-      24 1.771 24h20.451C23.203 24 24 23.227 24
-      22.275V1.726C24 .774 23.203 0 22.225 0z" />
+      0-2.136 1.445-2.136 2.939v5.669h-3.554v-11.452h3.414v1.561h.049c.476-.9
+      1.637-1.852 3.372-1.852 3.605 0 4.271 2.372 4.271
+      5.455v6.288zm-14.693-13.99c-1.144
+      0-2.07-.926-2.07-2.07 0-1.143.926-2.07
+      2.07-2.07 1.143 0 2.07.927 2.07 2.07
+      0 1.144-.927 2.07-2.07
+      2.07zm1.777 13.99h-3.554v-11.452h3.554v11.452zm14.225-20.452h-20.451c-.979
+      0-1.771.773-1.771
+      1.726v20.549c0 .953.792 1.725 1.771
+      1.725h20.451c.978 0 1.771-.772
+      1.771-1.725v-20.549c0-.953-.793-1.726-1.771-1.726z" />
                 </svg>
             </a>
         </div>
