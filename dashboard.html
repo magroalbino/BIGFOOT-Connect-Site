@@ -74,7 +74,6 @@
       background-color: #cc5125;
     }
 
-    /* Ajustes para o logo + nome igual ao index.html */
     .logo {
       display: flex;
       align-items: center;
@@ -111,7 +110,6 @@
 
 <body>
 
-  <!-- Header -->
   <header
     style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
     <div class="logo">
@@ -125,7 +123,6 @@
     </div>
   </header>
 
-  <!-- Conteúdo principal -->
   <main>
     <h1>Bem-vindo ao seu Painel</h1>
 
@@ -144,12 +141,10 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer>
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
 
-  <!-- Script para integração com Supabase e controle -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -176,13 +171,6 @@
       const statusMessage = document.getElementById('statusMessage')
 
       async function loadWallet() {
-        // Tenta localStorage primeiro
-        const savedWalletLocal = localStorage.getItem('walletAddress')
-        if (savedWalletLocal) {
-          walletInput.value = savedWalletLocal
-        }
-
-        // Puxa do Supabase para garantir dados atualizados
         const { data, error } = await supabase
           .from('profiles')
           .select('wallet_address')
@@ -191,6 +179,7 @@
 
         if (error) {
           console.error('Erro ao buscar wallet do Supabase:', error)
+          statusMessage.textContent = 'Erro ao carregar carteira.'
         } else if (data?.wallet_address) {
           walletInput.value = data.wallet_address
           localStorage.setItem('walletAddress', data.wallet_address)
@@ -207,7 +196,6 @@
           return
         }
 
-        // Atualiza no Supabase
         const { error } = await supabase
           .from('profiles')
           .update({ wallet_address: walletAddress })
@@ -222,12 +210,8 @@
         }
       })
 
-      // Logout
-      const logoutBtn = document.querySelector('.logout-btn')
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('loggedIn')
-        localStorage.removeItem('walletAddress')
-        localStorage.removeItem('userId')
+      document.querySelector('.logout-btn').addEventListener('click', () => {
+        localStorage.clear()
         window.location.href = 'index.html'
       })
     })
