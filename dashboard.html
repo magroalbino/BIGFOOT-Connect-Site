@@ -119,7 +119,12 @@
       </a>
     </div>
     <div style="display:flex; gap:1rem; align-items:center;">
-      <button class="logout-btn" aria-label="Sair do sistema">Sair</button>
+      <button class="logout-btn" aria-label="Sair do sistema" id="logoutBtn">Sair</button>
+      <select id="languageSwitcher" aria-label="Selecionar idioma"
+        style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+      </select>
     </div>
   </header>
 
@@ -228,6 +233,62 @@
         localStorage.clear()
         window.location.href = 'index.html'
       })
+    })
+
+    const translations = {
+      pt: {
+        heading: "Bem-vindo ao seu Painel",
+        progress: "Seu progresso",
+        shared: "Você já compartilhou:",
+        rewards: "Recompensas acumuladas:",
+        walletTitle: "Endereço da sua Carteira Solana",
+        placeholder: "Digite seu endereço Solana",
+        save: "Salvar endereço",
+        logout: "Sair"
+      },
+      en: {
+        heading: "Welcome to your Dashboard",
+        progress: "Your Progress",
+        shared: "You have shared:",
+        rewards: "Accumulated rewards:",
+        walletTitle: "Your Solana Wallet Address",
+        placeholder: "Enter your Solana address",
+        save: "Save address",
+        logout: "Logout"
+      }
+    }
+
+    function applyTranslations(lang) {
+      const t = translations[lang]
+
+      document.querySelector("h1").textContent = t.heading
+      document.querySelectorAll(".card")[0].querySelector("h2").textContent = t.progress
+
+      const shared = document.querySelectorAll(".card")[0].querySelectorAll("p")[0]
+      const rewards = document.querySelectorAll(".card")[0].querySelectorAll("p")[1]
+
+      const sharedVal = shared.querySelector("strong").textContent
+      const rewardsVal = rewards.querySelector("strong").textContent
+
+      shared.innerHTML = `${t.shared} <strong>${sharedVal}</strong>`
+      rewards.innerHTML = `${t.rewards} <strong>${rewardsVal}</strong>`
+
+      const card2 = document.querySelectorAll(".card")[1]
+      card2.querySelector("h2").textContent = t.walletTitle
+      document.getElementById("walletInput").placeholder = t.placeholder
+      document.getElementById("saveWalletBtn").textContent = t.save
+      document.getElementById("logoutBtn").textContent = t.logout
+    }
+
+    const languageSwitcher = document.getElementById("languageSwitcher")
+    const savedLang = localStorage.getItem("lang") || "pt"
+    languageSwitcher.value = savedLang
+    applyTranslations(savedLang)
+
+    languageSwitcher.addEventListener("change", e => {
+      const lang = e.target.value
+      localStorage.setItem("lang", lang)
+      applyTranslations(lang)
     })
   </script>
 </body>
