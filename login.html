@@ -121,19 +121,19 @@
     </div>
 
     <form onsubmit="loginUser(event)">
-        <h2>Entrar</h2>
+        <h2 id="login-title">Entrar</h2>
         <input type="text" id="username" placeholder="Nome de usuário" required />
         <input type="password" id="password" placeholder="Senha" required />
-        <button type="submit">Login</button>
+        <button type="submit" id="login-btn">Login</button>
         <p id="message"></p>
 
         <div class="register-link">
-            <a href="register.html">Não tem conta? Registre-se</a>
+            <a href="register.html" id="no-account">Não tem conta? Registre-se</a>
         </div>
     </form>
 
     <div class="back-home">
-        <a href="index.html">← Voltar para a Home</a>
+        <a href="index.html" id="back-home">← Voltar para a Home</a>
     </div>
 
     <script>
