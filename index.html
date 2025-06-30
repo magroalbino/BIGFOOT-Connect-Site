@@ -367,28 +367,9 @@
         <div class="divider"></div>
 
         <section class="roadmap" id="roadmap">
-            <h2>🗺️ Roadmap do Projeto</h2>
-            <ul>
-                <li>
-                    <strong>Q2 2025 – Lançamento Beta</strong>
-                    <small>Versão inicial com recursos básicos de compartilhamento e recompensas.</small>
-                </li>
-                <li>
-                    <strong>Q3 2025 – Integração com Extensão</strong>
-                    <small>Suporte para pareamento com extensão de navegador e melhorias de UX.</small>
-                </li>
-                <li>
-                    <strong>Q4 2025 – Plataforma Multiplataforma</strong>
-                    <small>Apps para Android e iOS, além de melhorias na estabilidade e segurança.</small>
-                </li>
-                <li>
-                    <strong>Q1 2026 – Expansão da Rede</strong>
-                    <small>Parcerias estratégicas e expansão da base de usuários.</small>
-                </li>
-                <li>
-                    <strong>Q2 2026 – Recursos Avançados</strong>
-                    <small>Novos modelos de recompensas, analytics e suporte a novos protocolos.</small>
-                </li>
+            <h2>🗺️ <span id="roadmap-title">Roadmap do Projeto</span></h2>
+            <ul id="roadmap-list">
+                <!-- Os itens do roadmap serão inseridos dinamicamente via JS -->
             </ul>
         </section>
 
@@ -514,7 +495,33 @@
             document.querySelector(".token-section h2").textContent = t.tokenTitle;
             document.querySelector(".token-section p").innerHTML = t.tokenDesc;
 
-            document.querySelector(".roadmap h2").textContent = t.roadmapTitle;
+            document.getElementById("roadmap-title").textContent = t.roadmapTitle;
+
+            const roadmapItems = {
+                pt: [
+                    { title: "Q2 2025 – Lançamento Beta", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
+                    { title: "Q3 2025 – Integração com Extensão", desc: "Suporte para pareamento com extensão de navegador e melhorias de UX." },
+                    { title: "Q4 2025 – Plataforma Multiplataforma", desc: "Apps para Android e iOS, além de melhorias na estabilidade e segurança." },
+                    { title: "Q1 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
+                    { title: "Q2 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, analytics e suporte a novos protocolos." },
+                ],
+                en: [
+                    { title: "Q2 2025 – Beta Launch", desc: "Initial version with basic sharing features and rewards." },
+                    { title: "Q3 2025 – Extension Integration", desc: "Support for pairing with browser extension and UX improvements." },
+                    { title: "Q4 2025 – Multiplatform Platform", desc: "Apps for Android and iOS, plus improvements in stability and security." },
+                    { title: "Q1 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
+                    { title: "Q2 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
+                ]
+            };
+
+            const roadmapList = document.getElementById("roadmap-list");
+            roadmapList.innerHTML = "";
+
+            roadmapItems[lang].forEach(item => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${item.title}</strong><small>${item.desc}</small>`;
+                roadmapList.appendChild(li);
+            });
             document.querySelector("footer").textContent = t.footerText;
 
             // Menu de navegação
