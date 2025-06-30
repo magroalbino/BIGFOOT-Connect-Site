@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard - BIGFOOT Connect</title>
   <link rel="stylesheet" href="/css/style.css" />
   <style>
@@ -154,7 +154,7 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const supabaseUrl = 'https://cfvcihpfnxavcwublvcg.supabase.co'
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhm...'
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
@@ -164,7 +164,6 @@
         return
       }
 
-      // Pega o id do usuário logado, que você deve salvar no localStorage no login
       const userId = localStorage.getItem('userId')
       if (!userId) {
         alert('Usuário não identificado. Faça login novamente.')
@@ -176,9 +175,8 @@
       const saveBtn = document.getElementById('saveWalletBtn')
       const statusMessage = document.getElementById('statusMessage')
 
-      // Carregar endereço da carteira salvo no Supabase e localStorage
       async function loadWallet() {
-        // Primeiro tenta localStorage
+        // Tenta localStorage primeiro
         const savedWalletLocal = localStorage.getItem('walletAddress')
         if (savedWalletLocal) {
           walletInput.value = savedWalletLocal
@@ -201,7 +199,6 @@
 
       await loadWallet()
 
-      // Salvar endereço no Supabase e localStorage
       saveBtn.addEventListener('click', async () => {
         const walletAddress = walletInput.value.trim()
 
@@ -209,8 +206,6 @@
           statusMessage.textContent = 'Por favor, insira um endereço válido.'
           return
         }
-
-        // Você pode adicionar validação extra aqui para o formato do endereço Solana se quiser
 
         // Atualiza no Supabase
         const { error } = await supabase
