@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - BIGFOOT Connect</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <!-- Carregando bcryptjs via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
         body {
@@ -178,11 +177,13 @@
                     return;
                 }
 
-                // Marca o usuário como logado
+                // Marca como logado e salva ID + nome de usuário
                 localStorage.setItem('loggedIn', 'true');
-
-                // Salva o ID do usuário para identificar nas próximas páginas
                 localStorage.setItem('userId', userData.id);
+                localStorage.setItem('user', JSON.stringify({
+                    id: userData.id,
+                    username: userData.username
+                }));
 
                 message.style.color = 'green';
                 message.textContent = 'Login realizado com sucesso!';
@@ -196,7 +197,6 @@
             }
         }
 
-        // Expor globalmente
         window.loginUser = loginUser;
     </script>
 </body>
