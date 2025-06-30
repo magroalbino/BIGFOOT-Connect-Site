@@ -117,6 +117,14 @@
 
 <body>
 
+  <!-- Seletor de idioma -->
+  <div style="position:absolute; top:1rem; right:1rem;">
+    <select id="langSelect" onchange="setLang(this.value)">
+      <option value="pt-BR">Português</option>
+      <option value="en-US">English</option>
+    </select>
+  </div>
+
   <!-- Logo no topo -->
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
@@ -124,21 +132,21 @@
   </div>
 
   <form id="registerForm">
-    <h2>Criar Conta</h2>
+    <h2 id="create-account">Criar Conta</h2>
     <input type="text" id="username" placeholder="Nome de usuário" required />
     <input type="email" id="email" placeholder="E-mail (opcional)" />
     <input type="password" id="password" placeholder="Senha" required />
-    <button type="submit">Registrar</button>
+    <button type="submit" id="register-btn">Registrar</button>
     <p id="message"></p>
 
     <div class="login-link">
-      <p>Já tem conta? <a href="login.html">Entrar</a></p>
+      <p id="has-account">Já tem conta? <a href="login.html" id="login-link">Entrar</a></p>
     </div>
   </form>
 
   <!-- Botão para voltar à home -->
   <div class="back-home">
-    <a href="index.html">← Voltar para a Home</a>
+    <a href="index.html" id="back-home">← Voltar para a Home</a>
   </div>
 
   <script>
@@ -198,6 +206,29 @@
         window.location.href = 'login.html';
       }, 2000);
     });
+  </script>
+  <script>
+    function setLang(lang) {
+      localStorage.setItem('lang', lang);
+      location.reload();
+    }
+
+    function applyLang() {
+      const lang = localStorage.getItem('lang') || 'pt-BR';
+      document.getElementById('langSelect').value = lang;
+
+      if (lang === 'en-US') {
+        document.getElementById('create-account').textContent = 'Create Account';
+        document.getElementById('username').placeholder = 'Username';
+        document.getElementById('email').placeholder = 'Email (optional)';
+        document.getElementById('password').placeholder = 'Password';
+        document.getElementById('register-btn').textContent = 'Register';
+        document.getElementById('has-account').innerHTML = `Already have an account? <a href="login.html" id="login-link">Login</a>`;
+        document.getElementById('back-home').textContent = '← Back to Home';
+      }
+    }
+
+    applyLang();
   </script>
 </body>
 
