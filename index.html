@@ -277,7 +277,11 @@
         <nav>
             <a href="/login">Login</a>
             <a href="/register">Criar conta</a>
-        </nav>
+        </nav><select id="languageSwitcher" style="margin-left: 1rem; background: #1a1a1a; color: #FF6B35; border: 1px solid #333; padding: 0.25rem 0.5rem; border-radius: 4px;">
+  <option value="en">English</option>
+  <option value="pt">Português</option>
+</select>
+
     </header>
 
     <main>
@@ -432,6 +436,105 @@
             }
         });
     </script>
+    <script>
+    const translations = {
+        en: {
+            heroTitle: "Connect. Share. Earn.",
+            heroText: "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
+            downloadWindows: "Windows",
+            downloadMac: "macOS",
+            downloadLinux: "Linux",
+            whitepaperTitle: "📄 Project Whitepaper",
+            whitepaperText: "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
+            whitepaperBtn: "View / Download Whitepaper",
+            tokenTitle: "💰 BIG Token (BIG)",
+            tokenDesc: "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
+            roadmapTitle: "🗺️ Project Roadmap",
+            footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
+            login: "Login",
+            register: "Register",
+            dashboard: "Dashboard",
+            logout: "Logout",
+        },
+        pt: {
+            heroTitle: "Conecte. Compartilhe. Ganhe.",
+            heroText: "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
+            downloadWindows: "Windows",
+            downloadMac: "macOS",
+            downloadLinux: "Linux",
+            whitepaperTitle: "📄 Whitepaper do Projeto",
+            whitepaperText: "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
+            whitepaperBtn: "Visualizar / Baixar Whitepaper",
+            tokenTitle: "💰 Token BIG (BIG)",
+            tokenDesc: "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+            roadmapTitle: "🗺️ Roadmap do Projeto",
+            footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
+            login: "Login",
+            register: "Criar conta",
+            dashboard: "Dashboard",
+            logout: "Sair",
+        }
+    };
+
+    function applyTranslations(lang) {
+        const t = translations[lang];
+
+        document.querySelector("main h1").innerHTML = t.heroTitle;
+        document.querySelector("main p").innerHTML = t.heroText;
+
+        const buttons = document.querySelectorAll(".cta-buttons a");
+        buttons[0].textContent = t.downloadWindows;
+        buttons[1].textContent = t.downloadMac;
+        buttons[2].textContent = t.downloadLinux;
+
+        document.querySelector("#whitepaper h2").textContent = t.whitepaperTitle;
+        document.querySelector("#whitepaper p").textContent = t.whitepaperText;
+        document.querySelector("#whitepaper a").textContent = t.whitepaperBtn;
+
+        document.querySelector(".token-section h2").textContent = t.tokenTitle;
+        document.querySelector(".token-section p").innerHTML = t.tokenDesc;
+
+        document.querySelector(".roadmap h2").textContent = t.roadmapTitle;
+        document.querySelector("footer").textContent = t.footerText;
+
+        // Navegação
+        const nav = document.querySelector("nav");
+        const loggedIn = localStorage.getItem('loggedIn') === 'true';
+        const userJson = localStorage.getItem('user');
+        const username = userJson ? JSON.parse(userJson).username : null;
+
+        if (loggedIn && username) {
+            nav.innerHTML = `
+                <span style="color:#FF6B35; margin-right: 1rem;">Olá, ${username}</span>
+                <a href="/dashboard">${t.dashboard}</a>
+                <a href="#" id="logout">${t.logout}</a>
+            `;
+
+            document.getElementById('logout').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        } else {
+            nav.innerHTML = `
+                <a href="login.html">${t.login}</a>
+                <a href="register.html">${t.register}</a>
+            `;
+        }
+    }
+
+    // Detecta idioma salvo ou usa inglês por padrão
+    const defaultLang = localStorage.getItem("lang") || "en";
+    document.getElementById("languageSwitcher").value = defaultLang;
+    applyTranslations(defaultLang);
+
+    document.getElementById("languageSwitcher").addEventListener("change", (e) => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyTranslations(lang);
+    });
+</script>
+
 </body>
 
 </html>
