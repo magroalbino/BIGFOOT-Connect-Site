@@ -104,6 +104,35 @@
             color: #FF6B35;
         }
     </style>
+</head>
+
+<body>
+    <div class="logo">
+        <img src="images/logo.png" alt="BIGFOOT Logo" />
+        <span>BIGFOOT Connect</span>
+    </div>
+
+    <select id="languageSwitcher" aria-label="Selecionar idioma" style="margin-bottom: 1rem;">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+    </select>
+
+    <form onsubmit="loginUser(event)">
+        <h2>Entrar</h2>
+        <input type="text" id="username" placeholder="Nome de usuário" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <button type="submit">Login</button>
+        <p id="message"></p>
+
+        <div class="register-link">
+            <a href="register.html">Não tem conta? Registre-se</a>
+        </div>
+    </form>
+
+    <div class="back-home">
+        <a href="index.html">← Voltar para a Home</a>
+    </div>
+
     <script>
         const supabase = window.supabase.createClient(
             'https://cfvcihpfnxavcwublvcg.supabase.co',
@@ -197,7 +226,6 @@
                     return;
                 }
 
-                // Marca como logado e salva ID + nome de usuário
                 localStorage.setItem('loggedIn', 'true');
                 localStorage.setItem('userId', userData.id);
                 localStorage.setItem('user', JSON.stringify({
@@ -211,6 +239,7 @@
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1000);
+
             } catch (err) {
                 message.style.color = 'red';
                 message.textContent = t.loginError + ' ' + err.message;
@@ -232,119 +261,6 @@
                 applyTranslations(lang);
             });
         });
-    </script>
-</head>
-
-<body>
-    <div class="logo">
-        <img src="images/logo.png" alt="BIGFOOT Logo" />
-        <span>BIGFOOT Connect</span>
-    </div>
-
-    <select id="languageSwitcher" aria-label="Selecionar idioma" style="margin-bottom: 1rem;">
-        <option value="pt">Português</option>
-        <option value="en">English</option>
-    </select>
-
-    <form onsubmit="loginUser(event)">
-        <h2>Entrar</h2>
-        <input type="text" id="username" placeholder="Nome de usuário" required />
-        <input type="password" id="password" placeholder="Senha" required />
-        <button type="submit">Login</button>
-        <p id="message"></p>
-
-        <div class="register-link">
-            <a href="register.html">Não tem conta? Registre-se</a>
-        </div>
-    </form>
-
-    <div class="back-home">
-        <a href="index.html">← Voltar para a Home</a>
-    </div>
-
-    <!-- Removed duplicate translations and applyTranslations to fix redeclaration error. -->
-
-    async function loginUser(event) {
-    event.preventDefault();
-
-    const lang = localStorage.getItem("lang") || "pt";
-    const t = translations[lang];
-
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const message = document.getElementById('message');
-
-    message.textContent = '';
-    message.style.color = 'white';
-
-    if (!username || !password) {
-    message.style.color = 'red';
-    message.textContent = t.fillAll;
-    return;
-    }
-
-    try {
-    const { data: userData, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('username', username)
-    .single();
-
-    if (error || !userData) {
-    message.style.color = 'red';
-    message.textContent = t.notFound;
-    return;
-    }
-
-    if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
-    message.style.color = 'red';
-    message.textContent = t.bcryptError;
-    return;
-    }
-
-    const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
-
-    if (!isPasswordValid) {
-    message.style.color = 'red';
-    message.textContent = t.wrongPassword;
-    return;
-    }
-
-    // Marca como logado e salva ID + nome de usuário
-    localStorage.setItem('loggedIn', 'true');
-    localStorage.setItem('userId', userData.id);
-    localStorage.setItem('user', JSON.stringify({
-    id: userData.id,
-    username: userData.username
-    }));
-
-    message.style.color = 'green';
-    message.textContent = t.success;
-
-    setTimeout(() => {
-    window.location.href = 'dashboard.html';
-    }, 1000);
-
-    } catch (err) {
-    message.style.color = 'red';
-    message.textContent = t.loginError + ' ' + err.message;
-    }
-
-    window.loginUser = loginUser;
-
-    document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem("lang") || "pt";
-    const languageSwitcher = document.getElementById("languageSwitcher");
-
-    languageSwitcher.value = savedLang;
-    applyTranslations(savedLang);
-
-    languageSwitcher.addEventListener("change", (e) => {
-    const lang = e.target.value;
-    localStorage.setItem("lang", lang);
-    applyTranslations(lang);
-    });
-    });
     </script>
 </body>
 
