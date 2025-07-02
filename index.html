@@ -454,9 +454,8 @@
         };
 
         function applyTranslations(lang) {
-            const t = loginTranslations[lang];
+            const t = translations[lang];
 
-            // Textos fixos da página
             document.querySelector("main h1").innerHTML = t.heroTitle;
             document.querySelector("main p").innerHTML = t.heroText;
 
@@ -499,9 +498,9 @@
                 li.innerHTML = `<strong>${item.title}</strong><small>${item.desc}</small>`;
                 roadmapList.appendChild(li);
             });
+
             document.querySelector("footer").textContent = t.footerText;
 
-            // Menu de navegação
             const nav = document.getElementById("userNav");
             const loggedIn = localStorage.getItem("loggedIn") === "true";
             const userJson = localStorage.getItem("user");
@@ -531,13 +530,10 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const languageSwitcher = document.getElementById("languageSwitcher");
-
-            // Aplica idioma salvo no localStorage ou padrão pt
             const savedLang = localStorage.getItem("lang") || "pt";
             languageSwitcher.value = savedLang;
             applyTranslations(savedLang);
 
-            // Troca de idioma
             languageSwitcher.addEventListener("change", (e) => {
                 const lang = e.target.value;
                 localStorage.setItem("lang", lang);
