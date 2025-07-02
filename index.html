@@ -1,309 +1,573 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIGFOOT Connect</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Seu CSS original aqui (mantido sem alterações)... */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BIGFOOT Connect</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0e0e0e;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background-color: #1a1a1a;
-      border-bottom: 1px solid #333;
-    }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
 
-    .logo-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      cursor: pointer;
-      color: #FF6B35;
-    }
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+            color: #FF6B35;
+        }
 
-    .logo-link:hover .logo-name,
-    .logo-link:hover img {
-      color: #cc5125;
-      filter: brightness(0.8);
-    }
+        .logo-link:hover .logo-name,
+        .logo-link:hover img {
+            color: #cc5125;
+            filter: brightness(0.8);
+        }
 
-    .logo-link img {
-      height: 40px;
-    }
+        .logo-link img {
+            height: 40px;
+        }
 
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-left: auto;
-      width: auto;
-    }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+            /* força alinhamento à direita */
+            width: auto;
+        }
 
-    nav span {
-      color: #FF6B35;
-      white-space: nowrap;
-      margin-right: 0;
-    }
+        nav span {
+            color: #FF6B35;
+            white-space: nowrap;
+            margin-right: 0;
+        }
 
-    nav a {
-      text-decoration: none;
-      color: #FF6B35;
-      font-weight: 500;
-      transition: color 0.2s;
-      white-space: nowrap;
-    }
+        nav a {
+            text-decoration: none;
+            color: #FF6B35;
+            font-weight: 500;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
 
-    nav a:hover {
-      color: #fff;
-    }
+        nav a:hover {
+            color: #fff;
+        }
 
-    #languageSwitcher {
-      margin-left: 1rem;
-      background: #1a1a1a;
-      color: #FF6B35;
-      border: 1px solid #333;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+        #languageSwitcher {
+            margin-left: 1rem;
+            background: #1a1a1a;
+            color: #FF6B35;
+            border: 1px solid #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
 
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 4rem 1rem 2rem;
-    }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1rem 2rem;
+        }
 
-    main h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
+        main h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
 
-    main p {
-      max-width: 700px;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-      color: #ccc;
-    }
+        main p {
+            max-width: 700px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
 
-    .cta-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 2.5rem;
-    }
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
 
-    .cta-buttons a {
-      background-color: #FF6B35;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
+        .cta-buttons a {
+            background-color: #FF6B35;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
 
-    .cta-buttons a:hover {
-      background-color: #cc5125;
-    }
+        .cta-buttons a:hover {
+            background-color: #cc5125;
+        }
 
-    .hero-image {
-      max-width: 400px;
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 4rem;
-      animation: pulse 2s infinite ease-in-out;
-    }
+        .hero-image {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 4rem;
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
+            animation-name: pulse;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            animation-play-state: running;
+        }
 
-      50% {
-        transform: scale(1.05);
-        opacity: 0.85;
-      }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
 
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.85;
+            }
 
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: #333;
-      margin: 3rem 0;
-    }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-    .whitepaper, .token-section, .roadmap {
-      padding: 2rem 1rem;
-      text-align: center;
-    }
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #333;
+            margin: 3rem 0;
+        }
 
-    .roadmap ul {
-      list-style: none;
-      padding: 0;
-    }
+        .whitepaper {
+            text-align: center;
+            padding: 0 1rem 2rem;
+        }
 
-    .roadmap li {
-      background: #1a1a1a;
-      margin-bottom: 1rem;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
-      transition: background 0.3s;
-    }
+        .whitepaper h2 {
+            font-size: 1.8rem;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
 
-    .roadmap li:hover {
-      background: #FF6B35;
-      color: #000;
-    }
+        .whitepaper p {
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
 
-    .socials {
-      margin-top: 2rem;
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      padding-bottom: 3rem;
-    }
+        .whitepaper a {
+            display: inline-block;
+            background: #1f948c;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
 
-    .socials a {
-      color: #ccc;
-      transition: color 0.2s;
-    }
+        .whitepaper a:hover {
+            background: #14635e;
+        }
 
-    .socials a:hover {
-      color: #FF6B35;
-    }
+        .token-section {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
 
-    .socials svg {
-      width: 32px;
-      height: 32px;
-    }
+        .token-section h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
 
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background-color: #1a1a1a;
-      font-size: 0.9rem;
-      color: #777;
-    }
+        .token-section p {
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
 
-    @media (max-width: 480px) {
-      main h1 {
-        font-size: 2rem;
-      }
+        .token-section a {
+            color: #6ee7b7;
+            text-decoration: none;
+        }
 
-      nav {
-        gap: 0.5rem;
-      }
-    }
-  </style>
+        .roadmap {
+            margin-top: 4rem;
+            max-width: 700px;
+            text-align: left;
+            padding: 0 1rem 4rem;
+        }
+
+        .roadmap h2 {
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .roadmap ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .roadmap li {
+            background: #1a1a1a;
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+            transition: background 0.3s;
+        }
+
+        .roadmap li:hover {
+            background: #FF6B35;
+            color: #000;
+        }
+
+        .roadmap li strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .roadmap li small {
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        .socials {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding-bottom: 3rem;
+        }
+
+        .socials a {
+            color: #ccc;
+            transition: color 0.2s;
+        }
+
+        .socials a:hover {
+            color: #FF6B35;
+        }
+
+        .socials svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #1a1a1a;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 480px) {
+            main h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="logo">
-      <a href="/index" class="logo-link">
-        <img src="./images/logo.png" alt="BIGFOOT Logo" />
-        <span class="logo-name">BIGFOOT Connect</span>
-      </a>
-    </div>
-    <nav id="userNav"></nav>
-    <select id="languageSwitcher" aria-label="Selecionar idioma">
-      <option value="en">English</option>
-      <option value="pt">Português</option>
-    </select>
-  </header>
+    <header>
+        <div class="logo">
+            <a href="/index" class="logo-link">
+                <img src="./images/logo.png" alt="BIGFOOT Logo" />
+                <span class="logo-name">BIGFOOT Connect</span>
+            </a>
+        </div>
+        <nav id="userNav">
+            <!-- Será preenchido pelo JS -->
+        </nav>
+        <select id="languageSwitcher" aria-label="Selecionar idioma">
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+        </select>
+    </header>
 
-  <main>
-    <h1>Conecte. Compartilhe. Ganhe.</h1>
-    <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!</p>
-    <div class="cta-buttons">
-      <a href="/downloads/bigfoot-windows.exe">Windows</a>
-      <a href="/downloads/bigfoot-mac.dmg">macOS</a>
-      <a href="/downloads/bigfoot-linux.AppImage">Linux</a>
-    </div>
-    <img src="./images/logo.png" alt="Preview do App" class="hero-image" />
+    <main>
+        <h1>Conecte. Compartilhe. Ganhe.</h1>
+        <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e
+            ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!</p>
+        <div class="cta-buttons">
+            <a href="/downloads/bigfoot-windows.exe">Windows</a>
+            <a href="/downloads/bigfoot-mac.dmg">macOS</a>
+            <a href="/downloads/bigfoot-linux.AppImage">Linux</a>
+        </div>
+        <img src="./images/logo.png" alt="Preview do App" class="hero-image" />
 
-    <div class="divider"></div>
+        <div class="divider"></div>
 
-    <section class="whitepaper" id="whitepaper">
-      <h2>📄 Whitepaper do Projeto</h2>
-      <p>Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.</p>
-      <a href="/docs/whitepaper.pdf" target="_blank">Visualizar / Baixar Whitepaper</a>
-    </section>
+        <section class="whitepaper" id="whitepaper">
+            <h2>📄 Whitepaper do Projeto</h2>
+            <p>Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por
+                compartilhar sua internet? Confira nosso whitepaper completo.</p>
+            <a href="/docs/whitepaper.pdf" target="_blank">Visualizar / Baixar Whitepaper</a>
+        </section>
 
-    <div class="divider"></div>
+        <div class="divider"></div>
 
-    <section class="token-section">
-      <h2>💰 Token BIG (BIG)</h2>
-      <p>
-        O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
-      </p>
-      <p style="color: #aaa; font-size: 0.95rem; word-break: break-word;">
-        <strong>Contrato:</strong>
-        <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet" target="_blank" style="color: #6ee7b7;">
-          39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
-        </a>
-      </p>
-    </section>
+        <section class="token-section">
+            <h2>💰 Token BIG (BIG)</h2>
+            <p>
+                O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em
+                BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
+            </p>
+            <p style="color: #aaa; font-size: 0.95rem; word-break: break-all;">
+                <strong>Contrato:</strong>
+                <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
+                    target="_blank" style="color: #6ee7b7; text-decoration: none;">
+                    39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
+                </a>
+            </p>
+        </section>
 
-    <div class="divider"></div>
+        <div class="divider"></div>
 
-    <section class="roadmap" id="roadmap">
-      <h2 id="roadmap-title">🗺️ Roadmap do Projeto</h2>
-      <ul id="roadmap-list"></ul>
-    </section>
+        <section class="roadmap" id="roadmap">
+            <h2>🗺️ <span id="roadmap-title">Roadmap do Projeto</span></h2>
+            <ul id="roadmap-list">
+                <!-- Os itens do roadmap serão inseridos dinamicamente via JS -->
+            </ul>
+        </section>
 
-    <div class="socials" aria-label="Redes sociais">
-      <a href="https://discord.gg/mkfmncN5Sa" target="_blank" aria-label="Discord">
-        <!-- Ícone SVG do Discord -->
-        <img src="./icons/discord.svg" alt="Discord" />
-      </a>
-      <a href="https://t.me/+qrkA9s2VTxVhMzcx" target="_blank" aria-label="Telegram">
-        <img src="./icons/telegram.svg" alt="Telegram" />
-      </a>
-      <a href="https://x.com/BIGFOOT_Connect" target="_blank" aria-label="X">
-        <img src="./icons/x.svg" alt="X" />
-      </a>
-      <a href="https://www.youtube.com/@bigfootconnect" target="_blank" aria-label="YouTube">
-        <img src="./icons/youtube.svg" alt="YouTube" />
-      </a>
-    </div>
-  </main>
+        <div class="socials" aria-label="Redes sociais">
+            <a href="https://github.com/magroalbino/BIGFOOT-Connect-Site" target="_blank" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 
+      11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.334-1.756-1.334-1.756-1.09-.745.083-.73.083-.73 
+      1.205.085 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 
+      3.492.997.108-.775.42-1.304.762-1.604-2.665-.3-5.466-1.332-5.466-5.93 
+      0-1.31.47-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 
+      0 0 1.007-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 
+      2.045.137 3 .404 2.29-1.553 3.295-1.23 
+      3.295-1.23.655 1.653.244 2.873.12 
+      3.176.77.84 1.232 1.91 1.232 3.22 
+      0 4.61-2.807 5.625-5.48 5.92.43.37.823 
+      1.102.823 2.222 0 1.604-.014 2.896-.014 
+      3.29 0 .322.216.694.825.576C20.565 21.796 
+      24 17.3 24 12c0-6.628-5.372-12-12-12z" />
+                </svg>
+            </a>
+            <a href="https://twitter.com/BIGFOOT_Connect" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.954 4.569c-0.885 0.392-1.83 0.656-2.825 0.775
+                         1.014-0.611 1.794-1.574 2.163-2.724-0.951 0.564-2.005 0.974-3.127 1.195
+                         -0.897-0.959-2.178-1.559-3.594-1.559-2.717 0-4.92 2.203-4.92 4.917 0 0.39 0.045 0.765 0.127 1.124
+                         -4.09-0.205-7.72-2.165-10.148-5.144-0.424 0.729-0.666 1.577-0.666 2.476 0 1.708 0.87 3.215 2.188 4.099
+                         -0.807-0.026-1.566-0.247-2.228-0.616v0.061c0 2.385 1.693 4.374 3.946 4.827
+                         -0.413 0.111-0.849 0.171-1.296 0.171-0.317 0-0.626-0.03-0.928-0.086
+                         0.627 1.956 2.444 3.379 4.6 3.419-1.68 1.319-3.809 2.105-6.102 2.105
+                         -0.396 0-0.788-0.023-1.175-0.068 2.179 1.397 4.768 2.213 7.557 2.213
+                         9.054 0 14-7.496 14-13.986 0-0.209 0-0.423-0.015-0.633
+                         0.962-0.695 1.797-1.562 2.457-2.549z" />
+                </svg>
+            </a>
+            <a href="https://linkedin.com/in/seuusuario" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.039-1.852-3.039-1.853
+      0-2.136 1.445-2.136 2.939v5.669h-3.554v-11.452h3.414v1.561h.049c.476-.9
+      1.637-1.852 3.372-1.852 3.605 0 4.271 2.372 4.271
+      5.455v6.288zm-14.693-13.99c-1.144
+      0-2.07-.926-2.07-2.07 0-1.143.926-2.07
+      2.07-2.07 1.143 0 2.07.927 2.07 2.07
+      0 1.144-.927 2.07-2.07
+      2.07zm1.777 13.99h-3.554v-11.452h3.554v11.452zm14.225-20.452h-20.451c-.979
+      0-1.771.773-1.771
+      1.726v20.549c0 .953.792 1.725 1.771
+      1.725h20.451c.978 0 1.771-.772
+      1.771-1.725v-20.549c0-.953-.793-1.726-1.771-1.726z" />
+                </svg>
+            </a>
+        </div>
+    </main>
 
-  <footer>
-    © 2025 BIGFOOT Connect. Todos os direitos reservados.
-  </footer>
+    <footer>
+        © 2025 BIGFOOT Connect. Todos os direitos reservados.
+    </footer>
 
-  <script src="./scripts/app.js"></script>
+    <script>
+        const translations = {
+            en: {
+                heroTitle: "Connect. Share. Earn.",
+                heroText:
+                    "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
+                downloadWindows: "Windows",
+                downloadMac: "macOS",
+                downloadLinux: "Linux",
+                whitepaperTitle: "📄 Project Whitepaper",
+                whitepaperText:
+                    "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
+                whitepaperBtn: "View / Download Whitepaper",
+                tokenTitle: "💰 BIG Token (BIG)",
+                tokenDesc:
+                    "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
+                roadmapTitle: "🗺️ Project Roadmap",
+                footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
+                login: "Login",
+                register: "Register",
+                dashboard: "Dashboard",
+                logout: "Logout",
+                hello: "Hello",
+            },
+            pt: {
+                heroTitle: "Conecte. Compartilhe. Ganhe.",
+                heroText:
+                    "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
+                downloadWindows: "Windows",
+                downloadMac: "macOS",
+                downloadLinux: "Linux",
+                whitepaperTitle: "📄 Whitepaper do Projeto",
+                whitepaperText:
+                    "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
+                whitepaperBtn: "Visualizar / Baixar Whitepaper",
+                tokenTitle: "💰 Token BIG (BIG)",
+                tokenDesc:
+                    "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+                roadmapTitle: "🗺️ Roadmap do Projeto",
+                footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
+                login: "Login",
+                register: "Criar conta",
+                dashboard: "Dashboard",
+                logout: "Sair",
+                hello: "Olá",
+            },
+        };
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+
+            // Textos fixos da página
+            document.querySelector("main h1").innerHTML = t.heroTitle;
+            document.querySelector("main p").innerHTML = t.heroText;
+
+            const buttons = document.querySelectorAll(".cta-buttons a");
+            buttons[0].textContent = t.downloadWindows;
+            buttons[1].textContent = t.downloadMac;
+            buttons[2].textContent = t.downloadLinux;
+
+            document.querySelector("#whitepaper h2").textContent = t.whitepaperTitle;
+            document.querySelector("#whitepaper p").textContent = t.whitepaperText;
+            document.querySelector("#whitepaper a").textContent = t.whitepaperBtn;
+
+            document.querySelector(".token-section h2").textContent = t.tokenTitle;
+            document.querySelector(".token-section p").innerHTML = t.tokenDesc;
+
+            document.getElementById("roadmap-title").textContent = t.roadmapTitle;
+
+            const roadmapItems = {
+                pt: [
+                    { title: "Q2 2025 – Lançamento Beta", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
+                    { title: "Q3 2025 – Integração com Extensão", desc: "Suporte para pareamento com extensão de navegador e melhorias de UX." },
+                    { title: "Q4 2025 – Plataforma Multiplataforma", desc: "Apps para Android e iOS, além de melhorias na estabilidade e segurança." },
+                    { title: "Q1 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
+                    { title: "Q2 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, analytics e suporte a novos protocolos." },
+                ],
+                en: [
+                    { title: "Q2 2025 – Beta Launch", desc: "Initial version with basic sharing features and rewards." },
+                    { title: "Q3 2025 – Extension Integration", desc: "Support for pairing with browser extension and UX improvements." },
+                    { title: "Q4 2025 – Multiplatform Platform", desc: "Apps for Android and iOS, plus improvements in stability and security." },
+                    { title: "Q1 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
+                    { title: "Q2 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
+                ]
+            };
+
+            const roadmapList = document.getElementById("roadmap-list");
+            roadmapList.innerHTML = "";
+
+            roadmapItems[lang].forEach(item => {
+                const li = document.createElement("li");
+                li.innerHTML = <strong>${item.title}</strong><small>${item.desc}</small>;
+                roadmapList.appendChild(li);
+            });
+            document.querySelector("footer").textContent = t.footerText;
+
+            // Menu de navegação
+            const nav = document.getElementById("userNav");
+            const loggedIn = localStorage.getItem("loggedIn") === "true";
+            const userJson = localStorage.getItem("user");
+            const username = userJson ? JSON.parse(userJson).username : null;
+
+            if (loggedIn && username) {
+                nav.innerHTML = 
+                    <span>${t.hello}, ${username}</span>
+                    <a href="/dashboard">${t.dashboard}</a>
+                    <a href="#" id="logout">${t.logout}</a>
+                ;
+                nav.style.justifyContent = "flex-end";
+
+                document.getElementById("logout").addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.clear();
+                    window.location.href = "index.html";
+                });
+            } else {
+                nav.innerHTML = 
+                    <a href="login.html">${t.login}</a>
+                    <a href="register.html">${t.register}</a>
+                ;
+                nav.style.justifyContent = "flex-end";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const languageSwitcher = document.getElementById("languageSwitcher");
+
+            // Aplica idioma salvo no localStorage ou padrão pt
+            const savedLang = localStorage.getItem("lang") || "pt";
+            languageSwitcher.value = savedLang;
+            applyTranslations(savedLang);
+
+            // Troca de idioma
+            languageSwitcher.addEventListener("change", (e) => {
+                const lang = e.target.value;
+                localStorage.setItem("lang", lang);
+                applyTranslations(lang);
+            });
+        });
+    </script>
 </body>
+
 </html>
