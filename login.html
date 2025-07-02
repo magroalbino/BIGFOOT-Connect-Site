@@ -2,266 +2,268 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - BIGFOOT Connect</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - BIGFOOT Connect</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
-        .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
 
-        .logo img {
-            height: 60px;
-        }
+    .logo img {
+      height: 60px;
+    }
 
-        .logo span {
-            margin-top: 0.5rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #FF6B35;
-        }
+    .logo span {
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #FF6B35;
+    }
 
-        form {
-            background: #111;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-        }
+    form {
+      background: #111;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
 
-        input {
-            width: 100%;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 4px;
-        }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
+    }
 
-        button {
-            width: 100%;
-            padding: 0.5rem;
-            background: #FF6B35;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    button {
+      width: 100%;
+      padding: 0.5rem;
+      background: #FF6B35;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        button:hover {
-            background: #cc5125;
-        }
+    button:hover {
+      background: #cc5125;
+    }
 
-        #message {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            text-align: center;
-        }
+    #message {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
 
-        .register-link {
-            margin-top: 1rem;
-            text-align: center;
-        }
+    .register-link,
+    .back-home {
+      text-align: center;
+    }
 
-        .register-link a {
-            color: #FF6B35;
-            text-decoration: none;
-        }
+    .register-link {
+      margin-top: 1rem;
+    }
 
-        .register-link a:hover {
-            text-decoration: underline;
-        }
+    .back-home {
+      margin-top: 1.5rem;
+    }
 
-        .back-home {
-            margin-top: 1.5rem;
-            text-align: center;
-        }
+    .register-link a,
+    .back-home a {
+      color: #FF6B35;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
 
-        .back-home a {
-            color: #ccc;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
+    .register-link a:hover,
+    .back-home a:hover {
+      text-decoration: underline;
+    }
 
-        .back-home a:hover {
-            color: #FF6B35;
-        }
-    </style>
+    #languageSwitcher {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #111;
+      color: #FF6B35;
+      border: 1px solid #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="logo">
-        <img src="images/logo.png" alt="BIGFOOT Logo" />
-        <span>BIGFOOT Connect</span>
+  <select id="languageSwitcher">
+    <option value="en">English</option>
+    <option value="pt">Português</option>
+  </select>
+
+  <div class="logo">
+    <img src="images/logo.png" alt="BIGFOOT Logo" />
+    <span>BIGFOOT Connect</span>
+  </div>
+
+  <form onsubmit="loginUser(event)">
+    <h2>Entrar</h2>
+    <input type="text" id="username" placeholder="Nome de usuário" required />
+    <input type="password" id="password" placeholder="Senha" required />
+    <button type="submit">Login</button>
+    <p id="message"></p>
+
+    <div class="register-link">
+      <a href="register.html">Não tem conta? Registre-se</a>
     </div>
+  </form>
 
-    <select id="languageSwitcher" aria-label="Selecionar idioma" style="margin-bottom: 1rem;">
-        <option value="pt">Português</option>
-        <option value="en">English</option>
-    </select>
+  <div class="back-home">
+    <a href="index.html">← Voltar para a Home</a>
+  </div>
 
-    <form onsubmit="loginUser(event)">
-        <h2>Entrar</h2>
-        <input type="text" id="username" placeholder="Nome de usuário" required />
-        <input type="password" id="password" placeholder="Senha" required />
-        <button type="submit">Login</button>
-        <p id="message"></p>
+  <script>
+    const translations = {
+      pt: {
+        title: "Entrar",
+        username: "Nome de usuário",
+        password: "Senha",
+        loginBtn: "Login",
+        noAccount: "Não tem conta? Registre-se",
+        backHome: "← Voltar para a Home",
+        fillAll: "Preencha todos os campos.",
+        notFound: "Usuário não encontrado.",
+        bcryptError: "Erro: Biblioteca bcrypt não carregada.",
+        wrongPassword: "Senha incorreta.",
+        success: "Login realizado com sucesso!",
+        loginError: "Erro ao processar login:"
+      },
+      en: {
+        title: "Login",
+        username: "Username",
+        password: "Password",
+        loginBtn: "Login",
+        noAccount: "Don't have an account? Register",
+        backHome: "← Back to Home",
+        fillAll: "Please fill in all fields.",
+        notFound: "User not found.",
+        bcryptError: "Error: bcrypt library not loaded.",
+        wrongPassword: "Incorrect password.",
+        success: "Login successful!",
+        loginError: "Error during login:"
+      }
+    };
 
-        <div class="register-link">
-            <a href="register.html">Não tem conta? Registre-se</a>
-        </div>
-    </form>
-
-    <div class="back-home">
-        <a href="index.html">← Voltar para a Home</a>
-    </div>
-
-    <script>
-        const supabase = window.supabase.createClient(
-            'https://cfvcihpfnxavcwublvcg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-        );
-
-        const translations = {
-            pt: {
-                title: "Entrar",
-                username: "Nome de usuário",
-                password: "Senha",
-                loginBtn: "Login",
-                noAccount: "Não tem conta? Registre-se",
-                backHome: "← Voltar para a Home",
-                fillAll: "Preencha todos os campos.",
-                notFound: "Usuário não encontrado.",
-                bcryptError: "Erro: Biblioteca bcrypt não carregada.",
-                wrongPassword: "Senha incorreta.",
-                success: "Login realizado com sucesso!"
-            },
-            en: {
-                title: "Login",
-                username: "Username",
-                password: "Password",
-                loginBtn: "Login",
-                noAccount: "Don't have an account? Register",
-                backHome: "← Back to Home",
-                fillAll: "Please fill in all fields.",
-                notFound: "User not found.",
-                bcryptError: "Error: bcrypt library not loaded.",
-                wrongPassword: "Incorrect password.",
-                success: "Login successful!"
-            }
-        };
-
-        function applyTranslations(lang) {
-            const t = translations[lang];
-
-            document.querySelector("form h2").textContent = t.title;
-            document.getElementById("username").placeholder = t.username;
-            document.getElementById("password").placeholder = t.password;
-            document.querySelector("form button").textContent = t.loginBtn;
-            document.querySelector(".register-link a").textContent = t.noAccount;
-            document.querySelector(".back-home a").textContent = t.backHome;
-        }
-    </script>
+    function applyTranslations(lang) {
+      const t = translations[lang];
+      document.querySelector("form h2").textContent = t.title;
+      document.getElementById("username").placeholder = t.username;
+      document.getElementById("password").placeholder = t.password;
+      document.querySelector("form button").textContent = t.loginBtn;
+      document.querySelector(".register-link a").textContent = t.noAccount;
+      document.querySelector(".back-home a").textContent = t.backHome;
+    }
 
     async function loginUser(event) {
-    event.preventDefault();
+      event.preventDefault();
 
-    const lang = localStorage.getItem("lang") || "pt";
-    const t = translations[lang];
+      const lang = localStorage.getItem("lang") || "pt";
+      const t = translations[lang];
 
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const message = document.getElementById('message');
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const message = document.getElementById('message');
 
-    message.textContent = '';
-    message.style.color = 'white';
+      message.textContent = '';
+      message.style.color = 'white';
 
-    if (!username || !password) {
-    message.style.color = 'red';
-    message.textContent = t.fillAll;
-    return;
-    }
+      if (!username || !password) {
+        message.style.color = 'red';
+        message.textContent = t.fillAll;
+        return;
+      }
 
-    try {
-    const { data: userData, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('username', username)
-    .single();
+      try {
+        const { data: userData, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('username', username)
+          .single();
 
-    if (error || !userData) {
-    message.style.color = 'red';
-    message.textContent = t.notFound;
-    return;
-    }
+        if (error || !userData) {
+          message.style.color = 'red';
+          message.textContent = t.notFound;
+          return;
+        }
 
-    if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
-    message.style.color = 'red';
-    message.textContent = t.bcryptError;
-    return;
-    }
+        if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
+          message.style.color = 'red';
+          message.textContent = t.bcryptError;
+          return;
+        }
 
-    const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
+        const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
 
-    if (!isPasswordValid) {
-    message.style.color = 'red';
-    message.textContent = t.wrongPassword;
-    return;
-    }
+        if (!isPasswordValid) {
+          message.style.color = 'red';
+          message.textContent = t.wrongPassword;
+          return;
+        }
 
-    // Marca como logado e salva ID + nome de usuário
-    localStorage.setItem('loggedIn', 'true');
-    localStorage.setItem('userId', userData.id);
-    localStorage.setItem('user', JSON.stringify({
-    id: userData.id,
-    username: userData.username
-    }));
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('userId', userData.id);
+        localStorage.setItem('user', JSON.stringify({
+          id: userData.id,
+          username: userData.username
+        }));
 
-    message.style.color = 'green';
-    message.textContent = t.success;
+        message.style.color = 'green';
+        message.textContent = t.success;
 
-    setTimeout(() => {
-    window.location.href = 'dashboard.html';
-    }, 1000);
-
-    } catch (err) {
-    message.style.color = 'red';
-    message.textContent = t.loginError + ' ' + err.message;
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = t.loginError + ' ' + err.message;
+      }
     }
 
     window.loginUser = loginUser;
 
     document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem("lang") || "pt";
-    const languageSwitcher = document.getElementById("languageSwitcher");
+      const languageSwitcher = document.getElementById("languageSwitcher");
+      const savedLang = localStorage.getItem("lang") || "pt";
 
-    languageSwitcher.value = savedLang;
-    applyTranslations(savedLang);
+      languageSwitcher.value = savedLang;
+      applyTranslations(savedLang);
 
-    languageSwitcher.addEventListener("change", (e) => {
-    const lang = e.target.value;
-    localStorage.setItem("lang", lang);
-    applyTranslations(lang);
+      languageSwitcher.addEventListener("change", (e) => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyTranslations(lang);
+      });
     });
-    });
-    </script>
+  </script>
 </body>
 
 </html>
