@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -12,12 +12,27 @@
       font-family: sans-serif;
       background: #000;
       color: #fff;
+      margin: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    select#languageSwitcher {
+      background: #111;
+      color: #FF6B35;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
     }
 
     .logo {
@@ -104,44 +119,37 @@
     .back-home a:hover {
       color: #FF6B35;
     }
-
-    select#languageSwitcher {
-      margin-bottom: 1rem;
-      background: #111;
-      color: #FF6B35;
-      border: 1px solid #333;
-      border-radius: 4px;
-      padding: 0.25rem 0.5rem;
-      cursor: pointer;
-    }
   </style>
 </head>
 
 <body>
+  <!-- Seletor de idioma -->
+  <div class="top-bar">
+    <select id="languageSwitcher">
+      <option value="en">English</option>
+      <option value="pt">Português</option>
+    </select>
+  </div>
+
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
     <span>BIGFOOT Connect</span>
   </div>
 
-  <select id="languageSwitcher" aria-label="Idioma">
-    <option value="pt">Português</option>
-    <option value="en">English</option>
-  </select>
-
   <form onsubmit="loginUser(event)">
-    <h2 id="form-title">Entrar</h2>
-    <input type="text" id="username" placeholder="Nome de usuário" required />
-    <input type="password" id="password" placeholder="Senha" required />
+    <h2 id="form-title">Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
     <button type="submit" id="login-button">Login</button>
     <p id="message"></p>
 
     <div class="register-link">
-      <a href="register.html" id="register-link">Não tem conta? Registre-se</a>
+      <a href="register.html" id="register-link">Don't have an account? Register</a>
     </div>
   </form>
 
   <div class="back-home">
-    <a href="index.html" id="back-home">← Voltar para a Home</a>
+    <a href="index.html" id="back-home">← Back to Home</a>
   </div>
 
   <script>
@@ -151,20 +159,6 @@
     );
 
     const translations = {
-      pt: {
-        formTitle: "Entrar",
-        username: "Nome de usuário",
-        password: "Senha",
-        loginBtn: "Login",
-        registerLink: "Não tem conta? Registre-se",
-        backHome: "← Voltar para a Home",
-        fillAll: "Preencha todos os campos.",
-        notFound: "Usuário não encontrado.",
-        bcryptError: "Erro: Biblioteca bcrypt não carregada.",
-        wrongPassword: "Senha incorreta.",
-        success: "Login realizado com sucesso!",
-        loginError: "Erro ao processar login:"
-      },
       en: {
         formTitle: "Login",
         username: "Username",
@@ -178,6 +172,20 @@
         wrongPassword: "Incorrect password.",
         success: "Login successful!",
         loginError: "Error during login:"
+      },
+      pt: {
+        formTitle: "Entrar",
+        username: "Nome de usuário",
+        password: "Senha",
+        loginBtn: "Login",
+        registerLink: "Não tem conta? Registre-se",
+        backHome: "← Voltar para a Home",
+        fillAll: "Preencha todos os campos.",
+        notFound: "Usuário não encontrado.",
+        bcryptError: "Erro: Biblioteca bcrypt não carregada.",
+        wrongPassword: "Senha incorreta.",
+        success: "Login realizado com sucesso!",
+        loginError: "Erro ao processar login:"
       }
     };
 
@@ -194,7 +202,7 @@
     async function loginUser(event) {
       event.preventDefault();
 
-      const lang = localStorage.getItem("lang") || "pt";
+      const lang = localStorage.getItem("lang") || "en";
       const t = translations[lang];
 
       const username = document.getElementById('username').value.trim();
@@ -237,7 +245,6 @@
           return;
         }
 
-        // Marca como logado e salva ID + nome de usuário
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('userId', userData.id);
         localStorage.setItem('user', JSON.stringify({
@@ -258,8 +265,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const savedLang = localStorage.getItem("lang") || "pt";
       const languageSwitcher = document.getElementById("languageSwitcher");
+      const savedLang = localStorage.getItem("lang") || "en";
       languageSwitcher.value = savedLang;
       applyTranslations(savedLang);
 
