@@ -401,145 +401,136 @@
     </footer>
 
     <script>
-        const translations = {
-            en: {
-                heroTitle: "Connect. Share. Earn.",
-                heroText:
-                    "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
-                downloadWindows: "Windows",
-                downloadMac: "macOS",
-                downloadLinux: "Linux",
-                whitepaperTitle: "📄 Project Whitepaper",
-                whitepaperText:
-                    "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
-                whitepaperBtn: "View / Download Whitepaper",
-                tokenTitle: "💰 BIG Token (BIG)",
-                tokenDesc:
-                    "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
-                roadmapTitle: "🗺️ Project Roadmap",
-                footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
-                login: "Login",
-                register: "Register",
-                dashboard: "Dashboard",
-                logout: "Logout",
-                hello: "Hello",
-            },
-            pt: {
-                heroTitle: "Conecte. Compartilhe. Ganhe.",
-                heroText:
-                    "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
-                downloadWindows: "Windows",
-                downloadMac: "macOS",
-                downloadLinux: "Linux",
-                whitepaperTitle: "📄 Whitepaper do Projeto",
-                whitepaperText:
-                    "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
-                whitepaperBtn: "Visualizar / Baixar Whitepaper",
-                tokenTitle: "💰 Token BIG (BIG)",
-                tokenDesc:
-                    "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
-                roadmapTitle: "🗺️ Roadmap do Projeto",
-                footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
-                login: "Login",
-                register: "Criar conta",
-                dashboard: "Dashboard",
-                logout: "Sair",
-                hello: "Olá",
-            },
+    const translations = {
+        en: {
+            heroTitle: "Connect. Share. Earn.",
+            heroText:
+                "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
+            downloadWindows: "Windows",
+            whitepaperTitle: "📄 Project Whitepaper",
+            whitepaperText:
+                "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
+            whitepaperBtn: "View / Download Whitepaper",
+            tokenTitle: "💰 BIG Token (BIG)",
+            tokenDesc:
+                "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
+            roadmapTitle: "🗺️ Project Roadmap",
+            footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
+            login: "Login",
+            register: "Register",
+            dashboard: "Dashboard",
+            logout: "Logout",
+            hello: "Hello",
+        },
+        pt: {
+            heroTitle: "Conecte. Compartilhe. Ganhe.",
+            heroText:
+                "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
+            downloadWindows: "Windows",
+            whitepaperTitle: "📄 Whitepaper do Projeto",
+            whitepaperText:
+                "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
+            whitepaperBtn: "Visualizar / Baixar Whitepaper",
+            tokenTitle: "💰 Token BIG (BIG)",
+            tokenDesc:
+                "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+            roadmapTitle: "🗺️ Roadmap do Projeto",
+            footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
+            login: "Login",
+            register: "Criar conta",
+            dashboard: "Dashboard",
+            logout: "Sair",
+            hello: "Olá",
+        },
+    };
+
+    function applyTranslations(lang) {
+        const t = translations[lang];
+
+        // Textos da página
+        document.querySelector("main h1").innerHTML = t.heroTitle;
+        document.querySelector("main p").innerHTML = t.heroText;
+        document.querySelector(".cta-buttons a").textContent = t.downloadWindows;
+
+        document.querySelector("#whitepaper h2").textContent = t.whitepaperTitle;
+        document.querySelector("#whitepaper p").textContent = t.whitepaperText;
+        document.querySelector("#whitepaper a").textContent = t.whitepaperBtn;
+
+        document.querySelector(".token-section h2").textContent = t.tokenTitle;
+        document.querySelector(".token-section p").innerHTML = t.tokenDesc;
+
+        document.getElementById("roadmap-title").textContent = t.roadmapTitle;
+        document.querySelector("footer").textContent = t.footerText;
+
+        // Roadmap
+        const roadmapItems = {
+            pt: [
+                { title: "Q2 2025 – Lançamento Beta", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
+                { title: "Q3 2025 – Integração com Extensão", desc: "Suporte para pareamento com extensão de navegador e melhorias de UX." },
+                { title: "Q4 2025 – Plataforma Multiplataforma", desc: "Apps para Android e iOS, além de melhorias na estabilidade e segurança." },
+                { title: "Q1 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
+                { title: "Q2 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, analytics e suporte a novos protocolos." },
+            ],
+            en: [
+                { title: "Q2 2025 – Beta Launch", desc: "Initial version with basic sharing features and rewards." },
+                { title: "Q3 2025 – Extension Integration", desc: "Support for pairing with browser extension and UX improvements." },
+                { title: "Q4 2025 – Multiplatform Platform", desc: "Apps for Android and iOS, plus improvements in stability and security." },
+                { title: "Q1 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
+                { title: "Q2 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
+            ]
         };
 
-        function applyTranslations(lang) {
-            const t = translations[lang];
-
-            // Textos fixos da página
-            document.querySelector("main h1").innerHTML = t.heroTitle;
-            document.querySelector("main p").innerHTML = t.heroText;
-
-            const buttons = document.querySelectorAll(".cta-buttons a");
-            buttons[0].textContent = t.downloadWindows;
-            buttons[1].textContent = t.downloadMac;
-            buttons[2].textContent = t.downloadLinux;
-
-            document.querySelector("#whitepaper h2").textContent = t.whitepaperTitle;
-            document.querySelector("#whitepaper p").textContent = t.whitepaperText;
-            document.querySelector("#whitepaper a").textContent = t.whitepaperBtn;
-
-            document.querySelector(".token-section h2").textContent = t.tokenTitle;
-            document.querySelector(".token-section p").innerHTML = t.tokenDesc;
-
-            document.getElementById("roadmap-title").textContent = t.roadmapTitle;
-
-            const roadmapItems = {
-                pt: [
-                    { title: "Q2 2025 – Lançamento Beta", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
-                    { title: "Q3 2025 – Integração com Extensão", desc: "Suporte para pareamento com extensão de navegador e melhorias de UX." },
-                    { title: "Q4 2025 – Plataforma Multiplataforma", desc: "Apps para Android e iOS, além de melhorias na estabilidade e segurança." },
-                    { title: "Q1 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
-                    { title: "Q2 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, analytics e suporte a novos protocolos." },
-                ],
-                en: [
-                    { title: "Q2 2025 – Beta Launch", desc: "Initial version with basic sharing features and rewards." },
-                    { title: "Q3 2025 – Extension Integration", desc: "Support for pairing with browser extension and UX improvements." },
-                    { title: "Q4 2025 – Multiplatform Platform", desc: "Apps for Android and iOS, plus improvements in stability and security." },
-                    { title: "Q1 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
-                    { title: "Q2 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
-                ]
-            };
-
-            const roadmapList = document.getElementById("roadmap-list");
-            roadmapList.innerHTML = "";
-
-            roadmapItems[lang].forEach(item => {
-                const li = document.createElement("li");
-                li.innerHTML = `<strong>${item.title}</strong><small>${item.desc}</small>`;
-                roadmapList.appendChild(li);
-            });
-            document.querySelector("footer").textContent = t.footerText;
-
-            // Menu de navegação
-            const nav = document.getElementById("userNav");
-            const loggedIn = localStorage.getItem("loggedIn") === "true";
-            const userJson = localStorage.getItem("user");
-            const username = userJson ? JSON.parse(userJson).username : null;
-
-            if (loggedIn && username) {
-                nav.innerHTML = `
-                    <span>${t.hello}, ${username}</span>
-                    <a href="/dashboard">${t.dashboard}</a>
-                    <a href="#" id="logout">${t.logout}</a>
-                `;
-                nav.style.justifyContent = "flex-end";
-
-                document.getElementById("logout").addEventListener("click", (e) => {
-                    e.preventDefault();
-                    localStorage.clear();
-                    window.location.href = "index.html";
-                });
-            } else {
-                nav.innerHTML = `
-                    <a href="login.html">${t.login}</a>
-                    <a href="register.html">${t.register}</a>
-                `;
-                nav.style.justifyContent = "flex-end";
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const languageSwitcher = document.getElementById("languageSwitcher");
-
-            // Aplica idioma salvo no localStorage ou padrão pt
-            const savedLang = localStorage.getItem("lang") || "pt";
-            languageSwitcher.value = savedLang;
-            applyTranslations(savedLang);
-
-            // Troca de idioma
-            languageSwitcher.addEventListener("change", (e) => {
-                const lang = e.target.value;
-                localStorage.setItem("lang", lang);
-                applyTranslations(lang);
-            });
+        const roadmapList = document.getElementById("roadmap-list");
+        roadmapList.innerHTML = "";
+        roadmapItems[lang].forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${item.title}</strong><small>${item.desc}</small>`;
+            roadmapList.appendChild(li);
         });
-    </script>
+
+        // Menu de navegação
+        const nav = document.getElementById("userNav");
+        const loggedIn = localStorage.getItem("loggedIn") === "true";
+        const userJson = localStorage.getItem("user");
+        const username = userJson ? JSON.parse(userJson).username : null;
+
+        if (loggedIn && username) {
+            nav.innerHTML = `
+                <span>${t.hello}, ${username}</span>
+                <a href="dashboard.html">${t.dashboard}</a>
+                <a href="#" id="logout">${t.logout}</a>
+            `;
+            nav.style.justifyContent = "flex-end";
+
+            document.getElementById("logout").addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = "index.html";
+            });
+        } else {
+            nav.innerHTML = `
+                <a href="login.html">${t.login}</a>
+                <a href="register.html">${t.register}</a>
+            `;
+            nav.style.justifyContent = "flex-end";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const languageSwitcher = document.getElementById("languageSwitcher");
+
+        const savedLang = localStorage.getItem("lang") || "en"; // padrão: inglês
+        languageSwitcher.value = savedLang;
+        applyTranslations(savedLang);
+
+        languageSwitcher.addEventListener("change", (e) => {
+            const lang = e.target.value;
+            localStorage.setItem("lang", lang);
+            applyTranslations(lang);
+        });
+    });
+</script>
+
 </body>
 
 </html>
