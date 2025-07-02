@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - BIGFOOT Connect</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
@@ -17,6 +17,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
 
     .logo {
@@ -75,80 +76,87 @@
       text-align: center;
     }
 
-    .register-link,
-    .back-home {
+    .register-link {
+      margin-top: 1rem;
       text-align: center;
     }
 
-    .register-link {
-      margin-top: 1rem;
+    .register-link a {
+      color: #FF6B35;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
     }
 
     .back-home {
       margin-top: 1.5rem;
+      text-align: center;
     }
 
-    .register-link a,
     .back-home a {
-      color: #FF6B35;
-      text-decoration: none;
+      color: #ccc;
       font-size: 0.9rem;
+      text-decoration: none;
     }
 
-    .register-link a:hover,
     .back-home a:hover {
-      text-decoration: underline;
+      color: #FF6B35;
     }
 
-    #languageSwitcher {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
+    select#languageSwitcher {
+      margin-bottom: 1rem;
       background: #111;
       color: #FF6B35;
       border: 1px solid #333;
-      padding: 0.25rem 0.5rem;
       border-radius: 4px;
+      padding: 0.25rem 0.5rem;
       cursor: pointer;
     }
   </style>
 </head>
 
 <body>
-  <select id="languageSwitcher">
-    <option value="en">English</option>
-    <option value="pt">Português</option>
-  </select>
-
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
     <span>BIGFOOT Connect</span>
   </div>
 
+  <select id="languageSwitcher" aria-label="Idioma">
+    <option value="pt">Português</option>
+    <option value="en">English</option>
+  </select>
+
   <form onsubmit="loginUser(event)">
-    <h2>Entrar</h2>
+    <h2 id="form-title">Entrar</h2>
     <input type="text" id="username" placeholder="Nome de usuário" required />
     <input type="password" id="password" placeholder="Senha" required />
-    <button type="submit">Login</button>
+    <button type="submit" id="login-button">Login</button>
     <p id="message"></p>
 
     <div class="register-link">
-      <a href="register.html">Não tem conta? Registre-se</a>
+      <a href="register.html" id="register-link">Não tem conta? Registre-se</a>
     </div>
   </form>
 
   <div class="back-home">
-    <a href="index.html">← Voltar para a Home</a>
+    <a href="index.html" id="back-home">← Voltar para a Home</a>
   </div>
 
   <script>
+    const supabase = window.supabase.createClient(
+      'https://cfvcihpfnxavcwublvcg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
+    );
+
     const translations = {
       pt: {
-        title: "Entrar",
+        formTitle: "Entrar",
         username: "Nome de usuário",
         password: "Senha",
         loginBtn: "Login",
-        noAccount: "Não tem conta? Registre-se",
+        registerLink: "Não tem conta? Registre-se",
         backHome: "← Voltar para a Home",
         fillAll: "Preencha todos os campos.",
         notFound: "Usuário não encontrado.",
@@ -158,11 +166,11 @@
         loginError: "Erro ao processar login:"
       },
       en: {
-        title: "Login",
+        formTitle: "Login",
         username: "Username",
         password: "Password",
         loginBtn: "Login",
-        noAccount: "Don't have an account? Register",
+        registerLink: "Don't have an account? Register",
         backHome: "← Back to Home",
         fillAll: "Please fill in all fields.",
         notFound: "User not found.",
@@ -175,12 +183,12 @@
 
     function applyTranslations(lang) {
       const t = translations[lang];
-      document.querySelector("form h2").textContent = t.title;
+      document.getElementById("form-title").textContent = t.formTitle;
       document.getElementById("username").placeholder = t.username;
       document.getElementById("password").placeholder = t.password;
-      document.querySelector("form button").textContent = t.loginBtn;
-      document.querySelector(".register-link a").textContent = t.noAccount;
-      document.querySelector(".back-home a").textContent = t.backHome;
+      document.getElementById("login-button").textContent = t.loginBtn;
+      document.getElementById("register-link").textContent = t.registerLink;
+      document.getElementById("back-home").textContent = t.backHome;
     }
 
     async function loginUser(event) {
@@ -229,6 +237,7 @@
           return;
         }
 
+        // Marca como logado e salva ID + nome de usuário
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('userId', userData.id);
         localStorage.setItem('user', JSON.stringify({
@@ -248,12 +257,9 @@
       }
     }
 
-    window.loginUser = loginUser;
-
     document.addEventListener("DOMContentLoaded", () => {
-      const languageSwitcher = document.getElementById("languageSwitcher");
       const savedLang = localStorage.getItem("lang") || "pt";
-
+      const languageSwitcher = document.getElementById("languageSwitcher");
       languageSwitcher.value = savedLang;
       applyTranslations(savedLang);
 
@@ -263,6 +269,8 @@
         applyTranslations(lang);
       });
     });
+
+    window.loginUser = loginUser;
   </script>
 </body>
 
