@@ -151,8 +151,7 @@
                 notFound: "Usuário não encontrado.",
                 bcryptError: "Erro: Biblioteca bcrypt não carregada.",
                 wrongPassword: "Senha incorreta.",
-                success: "Login realizado com sucesso!",
-                loginError: "Erro ao processar login:"
+                success: "Login realizado com sucesso!"
             },
             en: {
                 title: "Login",
@@ -165,13 +164,13 @@
                 notFound: "User not found.",
                 bcryptError: "Error: bcrypt library not loaded.",
                 wrongPassword: "Incorrect password.",
-                success: "Login successful!",
-                loginError: "Error during login:"
+                success: "Login successful!"
             }
         };
 
         function applyTranslations(lang) {
             const t = translations[lang];
+
             document.querySelector("form h2").textContent = t.title;
             document.getElementById("username").placeholder = t.username;
             document.getElementById("password").placeholder = t.password;
@@ -179,88 +178,89 @@
             document.querySelector(".register-link a").textContent = t.noAccount;
             document.querySelector(".back-home a").textContent = t.backHome;
         }
+    </script>
 
-        async function loginUser(event) {
-            event.preventDefault();
+    async function loginUser(event) {
+    event.preventDefault();
 
-            const lang = localStorage.getItem("lang") || "pt";
-            const t = translations[lang];
+    const lang = localStorage.getItem("lang") || "pt";
+    const t = translations[lang];
 
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const message = document.getElementById('message');
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const message = document.getElementById('message');
 
-            message.textContent = '';
-            message.style.color = 'white';
+    message.textContent = '';
+    message.style.color = 'white';
 
-            if (!username || !password) {
-                message.style.color = 'red';
-                message.textContent = t.fillAll;
-                return;
-            }
+    if (!username || !password) {
+    message.style.color = 'red';
+    message.textContent = t.fillAll;
+    return;
+    }
 
-            try {
-                const { data: userData, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('username', username)
-                    .single();
+    try {
+    const { data: userData, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('username', username)
+    .single();
 
-                if (error || !userData) {
-                    message.style.color = 'red';
-                    message.textContent = t.notFound;
-                    return;
-                }
+    if (error || !userData) {
+    message.style.color = 'red';
+    message.textContent = t.notFound;
+    return;
+    }
 
-                if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
-                    message.style.color = 'red';
-                    message.textContent = t.bcryptError;
-                    return;
-                }
+    if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
+    message.style.color = 'red';
+    message.textContent = t.bcryptError;
+    return;
+    }
 
-                const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
+    const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
 
-                if (!isPasswordValid) {
-                    message.style.color = 'red';
-                    message.textContent = t.wrongPassword;
-                    return;
-                }
+    if (!isPasswordValid) {
+    message.style.color = 'red';
+    message.textContent = t.wrongPassword;
+    return;
+    }
 
-                localStorage.setItem('loggedIn', 'true');
-                localStorage.setItem('userId', userData.id);
-                localStorage.setItem('user', JSON.stringify({
-                    id: userData.id,
-                    username: userData.username
-                }));
+    // Marca como logado e salva ID + nome de usuário
+    localStorage.setItem('loggedIn', 'true');
+    localStorage.setItem('userId', userData.id);
+    localStorage.setItem('user', JSON.stringify({
+    id: userData.id,
+    username: userData.username
+    }));
 
-                message.style.color = 'green';
-                message.textContent = t.success;
+    message.style.color = 'green';
+    message.textContent = t.success;
 
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
+    setTimeout(() => {
+    window.location.href = 'dashboard.html';
+    }, 1000);
 
-            } catch (err) {
-                message.style.color = 'red';
-                message.textContent = t.loginError + ' ' + err.message;
-            }
-        }
+    } catch (err) {
+    message.style.color = 'red';
+    message.textContent = t.loginError + ' ' + err.message;
+    }
 
-        window.loginUser = loginUser;
+    window.loginUser = loginUser;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem("lang") || "pt";
-            const languageSwitcher = document.getElementById("languageSwitcher");
+    document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "pt";
+    const languageSwitcher = document.getElementById("languageSwitcher");
 
-            languageSwitcher.value = savedLang;
-            applyTranslations(savedLang);
+    languageSwitcher.value = savedLang;
+    applyTranslations(savedLang);
 
-            languageSwitcher.addEventListener("change", (e) => {
-                const lang = e.target.value;
-                localStorage.setItem("lang", lang);
-                applyTranslations(lang);
-            });
-        });
+    languageSwitcher.addEventListener("change", (e) => {
+    const lang = e.target.value;
+    localStorage.setItem("lang", lang);
+    applyTranslations(lang);
+    });
+    });
     </script>
 </body>
 
