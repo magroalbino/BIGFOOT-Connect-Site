@@ -20,6 +20,18 @@
       margin: 0;
     }
 
+    #languageSwitcher {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #111;
+      color: #FF6B35;
+      border: 1px solid #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
     .logo {
       display: flex;
       flex-direction: column;
@@ -116,32 +128,74 @@
 </head>
 
 <body>
+  <select id="languageSwitcher">
+    <option value="en">English</option>
+    <option value="pt">Português</option>
+  </select>
 
-  <!-- Logo no topo -->
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
     <span>BIGFOOT Connect</span>
   </div>
 
   <form id="registerForm">
-    <h2>Criar Conta</h2>
+    <h2 id="title">Criar Conta</h2>
     <input type="text" id="username" placeholder="Nome de usuário" required />
     <input type="email" id="email" placeholder="E-mail (opcional)" />
     <input type="password" id="password" placeholder="Senha" required />
-    <button type="submit">Registrar</button>
+    <button type="submit" id="registerBtn">Registrar</button>
     <p id="message"></p>
 
     <div class="login-link">
-      <p>Já tem conta? <a href="login.html">Entrar</a></p>
+      <p><a href="login.html" id="loginLink">Já tem conta? Entrar</a></p>
     </div>
   </form>
 
-  <!-- Botão para voltar à home -->
   <div class="back-home">
-    <a href="index.html">← Voltar para a Home</a>
+    <a href="index.html" id="backHome">← Voltar para a Home</a>
   </div>
 
   <script>
+    const translations = {
+      pt: {
+        title: "Criar Conta",
+        username: "Nome de usuário",
+        email: "E-mail (opcional)",
+        password: "Senha",
+        register: "Registrar",
+        loginLink: "Já tem conta? Entrar",
+        backHome: "← Voltar para a Home",
+        fillRequired: "Preencha todos os campos obrigatórios.",
+        userTaken: "Nome de usuário já está em uso.",
+        success: "Conta criada com sucesso! Redirecionando...",
+        error: "Erro ao criar conta:"
+      },
+      en: {
+        title: "Create Account",
+        username: "Username",
+        email: "Email (optional)",
+        password: "Password",
+        register: "Register",
+        loginLink: "Already have an account? Log in",
+        backHome: "← Back to Home",
+        fillRequired: "Please fill in all required fields.",
+        userTaken: "Username is already taken.",
+        success: "Account created successfully! Redirecting...",
+        error: "Error creating account:"
+      }
+    };
+
+    function applyTranslations(lang) {
+      const t = translations[lang];
+      document.getElementById("title").textContent = t.title;
+      document.getElementById("username").placeholder = t.username;
+      document.getElementById("email").placeholder = t.email;
+      document.getElementById("password").placeholder = t.password;
+      document.getElementById("registerBtn").textContent = t.register;
+      document.getElementById("loginLink").textContent = t.loginLink;
+      document.getElementById("backHome").textContent = t.backHome;
+    }
+
     const supabase = window.supabase.createClient(
       'https://cfvcihpfnxavcwublvcg.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
@@ -153,13 +207,16 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      const lang = localStorage.getItem("lang") || "pt";
+      const t = translations[lang];
+
       const username = document.getElementById('username').value.trim();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
       if (!username || !password) {
         message.style.color = 'red';
-        message.textContent = 'Preencha todos os campos obrigatórios.';
+        message.textContent = t.fillRequired;
         return;
       }
 
@@ -171,7 +228,7 @@
 
       if (existingUser) {
         message.style.color = 'red';
-        message.textContent = 'Nome de usuário já está em uso.';
+        message.textContent = t.userTaken;
         return;
       }
 
@@ -188,15 +245,29 @@
 
       if (error) {
         message.style.color = 'red';
-        message.textContent = 'Erro ao criar conta: ' + error.message;
+        message.textContent = `${t.error} ${error.message}`;
         return;
       }
 
       message.style.color = 'green';
-      message.textContent = 'Conta criada com sucesso! Redirecionando...';
+      message.textContent = t.success;
       setTimeout(() => {
         window.location.href = 'login.html';
       }, 2000);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const languageSwitcher = document.getElementById("languageSwitcher");
+      const savedLang = localStorage.getItem("lang") || "pt";
+
+      languageSwitcher.value = savedLang;
+      applyTranslations(savedLang);
+
+      languageSwitcher.addEventListener("change", (e) => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyTranslations(lang);
+      });
     });
   </script>
 </body>
