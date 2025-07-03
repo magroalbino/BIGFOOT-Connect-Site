@@ -234,7 +234,7 @@
       }
 
       const saltRounds = 10;
-      const passwordHash = bcrypt.hashSync(password, saltRounds);
+      const passwordHash = dcodeIO.bcrypt.hashSync(password, saltRounds); // CORRIGIDO
 
       const { error } = await supabase
         .from('profiles')
