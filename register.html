@@ -236,13 +236,18 @@
       const saltRounds = 10;
       const passwordHash = dcodeIO.bcrypt.hashSync(password, saltRounds); // CORRIGIDO
 
-      const { error } = await supabase
-        .from('profiles')
-        .insert([{
-          username,
-          email: email || null,
-          password_hash: passwordHash
-        }]);
+      // Captura ?ref= do link
+const urlParams = new URLSearchParams(window.location.search);
+const ref = urlParams.get("ref");
+
+const { error } = await supabase
+  .from('profiles')
+  .insert([{
+    username,
+    email: email || null,
+    password_hash: passwordHash,
+    referidoPor: ref || null
+  }]);
 
       if (error) {
         message.style.color = 'red';
