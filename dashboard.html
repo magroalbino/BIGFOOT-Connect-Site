@@ -147,6 +147,13 @@
     </div>
   </main>
 
+      <section id="referral" style="background:#111;padding:2rem;border-radius:8px;margin-top:2rem;">
+      <h2 style="color:#FF6B35;">👥 Indique amigos e ganhe BIG</h2>
+      <p>Compartilhe seu link exclusivo:</p>
+      <input type="text" id="refLink" readonly style="width:100%;padding:0.5rem;border-radius:4px;margin-bottom:1rem;background:#222;color:#fff;border:1px solid #444;" />
+      <p id="refCount">Você já indicou <strong>0</strong> pessoas.</p>
+    </section>
+
   <footer>
     © 2025 BIGFOOT Connect. Todos os direitos reservados.
   </footer>
@@ -171,6 +178,17 @@
         window.location.href = 'login.html'
         return
       }
+
+      const user = JSON.parse(localStorage.getItem("user"));
+const refLink = `${window.location.origin}/register.html?ref=${user.username}`;
+document.getElementById("refLink").value = refLink;
+
+const { data: referrals } = await supabase
+  .from('profiles')
+  .select('id')
+  .eq('referidoPor', user.username);
+
+document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.length}</strong> pessoas.`;
 
       const walletInput = document.getElementById('walletInput')
       const saveBtn = document.getElementById('saveWalletBtn')
