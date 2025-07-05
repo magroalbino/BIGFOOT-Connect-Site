@@ -205,7 +205,8 @@
       if (!user) return window.location.href = "login.html";
 
       const userDoc = await db.collection("users").doc(user.uid).get();
-      userData = userDoc.data();
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("user", JSON.stringify({ username: userData.username }));
 
       document.getElementById("walletInput").value = userData.walletAddress || "";
       document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
@@ -256,7 +257,10 @@
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
-      auth.signOut().then(() => location.href = "index.html");
+      auth.signOut().then(() => {
+        localStorage.clear();
+        location.href = "index.html";
+      });
     });
 
     firebase.auth().onAuthStateChanged(user => {
