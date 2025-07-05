@@ -201,39 +201,23 @@
 
     let userData = null;
 
-    async function initDashboard() {
-      const user = auth.currentUser;
+    async function initDashboard(user) {
       if (!user) return window.location.href = "login.html";
 
-      try {
-        const userDoc = await db.collection("users").doc(user.uid).get();
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      userData = userDoc.data();
 
-        if (!userDoc.exists) {
-          // Caso os dados do usuário não existam, faça logout e redirecione para login
-          await auth.signOut();
-          return window.location.href = "login.html";
-        }
+      document.getElementById("walletInput").value = userData.walletAddress || "";
+      document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
+      document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
-        userData = userDoc.data();
+      const refLink = `${window.location.origin}/register.html?ref=${userData.username}`;
+      document.getElementById("refLink").value = refLink;
 
-        document.getElementById("walletInput").value = userData.walletAddress || "";
-        document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
-        document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
+      const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
+      document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
 
-        const refLink = `${window.location.origin}/register.html?ref=${userData.username}`;
-        document.getElementById("refLink").value = refLink;
-
-        const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
-        document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
-
-        renderChart(userData.dailyStats || {});
-
-      } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
-        // Em caso de erro, desconecta o usuário e redireciona para login
-        await auth.signOut();
-        window.location.href = "login.html";
-      }
+      renderChart(userData.dailyStats || {});
     }
 
     function renderChart(data) {
@@ -276,7 +260,7 @@
     });
 
     firebase.auth().onAuthStateChanged(user => {
-      if (user) initDashboard();
+      if (user) initDashboard(user);
       else location.href = "login.html";
     });
 
