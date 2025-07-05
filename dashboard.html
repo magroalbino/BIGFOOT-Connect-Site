@@ -205,8 +205,12 @@
       if (!user) return window.location.href = "login.html";
 
       const userDoc = await db.collection("users").doc(user.uid).get();
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem("user", JSON.stringify({ username: userData.username }));
+userData = userDoc.data();
+
+if (!userData) return;
+
+localStorage.setItem("loggedIn", "true");
+localStorage.setItem("user", JSON.stringify({ username: userData.username }));
 
       document.getElementById("walletInput").value = userData.walletAddress || "";
       document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
@@ -218,7 +222,19 @@
       const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
       document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
 
-      renderChart(userData.dailyStats || {});
+      const usageSnap = await db.collection("users")
+  .doc(user.uid)
+  .collection("dailyUsage")
+  .orderBy("updatedAt", "asc")
+  .get();
+
+const dailyStats = {};
+usageSnap.forEach(doc => {
+  const data = doc.data();
+  dailyStats[doc.id] = (data.shared || 0).toFixed(2);
+});
+
+renderChart(dailyStats);
     }
 
     function renderChart(data) {
