@@ -1,14 +1,11 @@
-export default function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método não permitido' });
-  }
-
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end('Método não permitido');
+  
   const { id, password } = req.body;
 
-  if (!id || !password) {
-    return res.status(400).json({ message: 'ID e senha obrigatórios' });
-  }
+  if (!id || !password) return res.status(400).json({ error: 'ID ou senha ausentes.' });
 
-  // (opcional) salvar no banco de dados aqui
+  // Aqui você pode salvar no Firestore, por exemplo
+  // ou apenas confirmar que chegou tudo bem
   return res.status(200).json({ message: 'Registrado com sucesso' });
 }
