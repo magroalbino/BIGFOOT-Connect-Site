@@ -6,8 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
   <style>
     body {
       font-family: sans-serif;
@@ -124,7 +127,6 @@
 </head>
 
 <body>
-  <!-- Seletor de idioma -->
   <div class="top-bar">
     <select id="languageSwitcher">
       <option value="en">English</option>
@@ -139,7 +141,7 @@
 
   <form onsubmit="loginUser(event)">
     <h2 id="form-title">Login</h2>
-    <input type="text" id="username" placeholder="Username" required />
+    <input type="email" id="username" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <button type="submit" id="login-button">Login</button>
     <p id="message"></p>
@@ -154,37 +156,41 @@
   </div>
 
   <script>
-    const supabase = window.supabase.createClient(
-      'https://cfvcihpfnxavcwublvcg.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-    );
+    // Inicializa Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
+      authDomain: "bigfoot-connect.firebaseapp.com",
+      projectId: "bigfoot-connect",
+      storageBucket: "bigfoot-connect.appspot.com",
+      messagingSenderId: "177999879162",
+      appId: "1:177999879162:web:a1ea739930cac97475e243",
+      measurementId: "G-WEY300P1S7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
     const translations = {
       en: {
         formTitle: "Login",
-        username: "Username",
+        username: "Email",
         password: "Password",
         loginBtn: "Login",
         registerLink: "Don't have an account? Register",
         backHome: "← Back to Home",
         fillAll: "Please fill in all fields.",
-        notFound: "User not found.",
-        bcryptError: "Error: bcrypt library not loaded.",
-        wrongPassword: "Incorrect password.",
+        notFound: "Invalid email or password.",
         success: "Login successful!",
         loginError: "Error during login:"
       },
       pt: {
         formTitle: "Entrar",
-        username: "Nome de usuário",
+        username: "E-mail",
         password: "Senha",
-        loginBtn: "Login",
+        loginBtn: "Entrar",
         registerLink: "Não tem conta? Registre-se",
         backHome: "← Voltar para a Home",
         fillAll: "Preencha todos os campos.",
-        notFound: "Usuário não encontrado.",
-        bcryptError: "Erro: Biblioteca bcrypt não carregada.",
-        wrongPassword: "Senha incorreta.",
+        notFound: "E-mail ou senha inválidos.",
         success: "Login realizado com sucesso!",
         loginError: "Erro ao processar login:"
       }
@@ -206,62 +212,34 @@
       const lang = localStorage.getItem("lang") || "en";
       const t = translations[lang];
 
-      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const message = document.getElementById('message');
 
       message.textContent = '';
       message.style.color = 'white';
 
-      if (!username || !password) {
+      if (!email || !password) {
         message.style.color = 'red';
         message.textContent = t.fillAll;
         return;
       }
 
       try {
-        const { data: userData, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('username', username)
-          .single();
-
-        if (error || !userData) {
-          message.style.color = 'red';
-          message.textContent = t.notFound;
-          return;
-        }
-
-        if (typeof dcodeIO === 'undefined' || typeof dcodeIO.bcrypt === 'undefined') {
-          message.style.color = 'red';
-          message.textContent = t.bcryptError;
-          return;
-        }
-
-        const isPasswordValid = dcodeIO.bcrypt.compareSync(password, userData.password_hash);
-
-        if (!isPasswordValid) {
-          message.style.color = 'red';
-          message.textContent = t.wrongPassword;
-          return;
-        }
-
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('userId', userData.id);
-        localStorage.setItem('user', JSON.stringify({
-          id: userData.id,
-          username: userData.username
-        }));
-
+        await auth.signInWithEmailAndPassword(email, password);
         message.style.color = 'green';
         message.textContent = t.success;
+
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('email', email);
 
         setTimeout(() => {
           window.location.href = 'dashboard.html';
         }, 1000);
       } catch (err) {
         message.style.color = 'red';
-        message.textContent = t.loginError + ' ' + err.message;
+        message.textContent = t.notFound;
+        console.error(t.loginError, err.message);
       }
     }
 
