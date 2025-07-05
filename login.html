@@ -252,10 +252,18 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
+        const user = auth.currentUser;
+
+        // Busca os dados do usuário no Firestore
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        const userData = userDoc.data();
+
+        // Salva no localStorage para personalizar o index.html depois
+        localStorage.setItem('userId', user.uid);
+        localStorage.setItem('username', userData.username);
+
         message.style.color = 'green';
         message.textContent = t.success;
-
-        // Removido o localStorage manual
 
         setTimeout(() => {
           window.location.href = 'dashboard.html';
