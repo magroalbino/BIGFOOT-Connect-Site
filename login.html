@@ -10,6 +10,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <style>
     * {
@@ -180,12 +181,17 @@
       measurementId: "G-WEY300P1S7"
     };
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
     const auth = firebase.auth();
 
     // Define persistência local explícita (opcional, mas recomendado)
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((error) => {
-      console.error("Erro ao definir persistência:", error);
-    });
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(() => {
+    console.log("Persistência LOCAL ativada");
+  })
+  .catch((error) => {
+    console.error("Erro ao definir persistência:", error);
+  });
 
     // Redireciona automaticamente se o usuário já estiver logado
     auth.onAuthStateChanged((user) => {
