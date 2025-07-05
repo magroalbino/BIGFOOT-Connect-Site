@@ -330,16 +330,18 @@
       // Reaplica contagem com tradução se já tiver carregado
       const refCountEl = document.getElementById("referralCount");
       const currentCount = refCountEl.querySelector("strong")?.textContent || "0";
-      refCountEl.innerHTML = t.referralCount.replace("{count}", <strong>${currentCount}</strong>);
+      refCountEl.innerHTML = t.referralCount.replace("{count}", `<strong>${currentCount}</strong>`);
     }
 
-    const lang = localStorage.getItem("lang") || "pt";
-    document.getElementById("languageSwitcher").value = lang;
-    applyTranslations(lang);
-    document.getElementById("languageSwitcher").addEventListener("change", e => {
-      const lang = e.target.value;
-      localStorage.setItem("lang", lang);
+    document.addEventListener("DOMContentLoaded", () => {
+      const lang = localStorage.getItem("lang") || "pt";
+      document.getElementById("languageSwitcher").value = lang;
       applyTranslations(lang);
+      document.getElementById("languageSwitcher").addEventListener("change", e => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyTranslations(lang);
+      });
     });
   </script>
 </body>
