@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-  
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -146,7 +146,6 @@
 
   <form id="registerForm">
     <h2 id="title">Criar Conta</h2>
-    <input type="text" id="username" placeholder="Nome de usuário" required />
     <input type="email" id="email" placeholder="E-mail (obrigatório)" required />
     <input type="password" id="password" placeholder="Senha" required />
     <button type="submit" id="registerBtn">Registrar</button>
@@ -178,7 +177,6 @@
     const translations = {
       pt: {
         title: "Criar Conta",
-        username: "Nome de usuário",
         email: "E-mail (obrigatório)",
         password: "Senha",
         register: "Registrar",
@@ -190,7 +188,6 @@
       },
       en: {
         title: "Create Account",
-        username: "Username",
         email: "Email (required)",
         password: "Password",
         register: "Register",
@@ -205,7 +202,6 @@
     function applyTranslations(lang) {
       const t = translations[lang];
       document.getElementById("title").textContent = t.title;
-      document.getElementById("username").placeholder = t.username;
       document.getElementById("email").placeholder = t.email;
       document.getElementById("password").placeholder = t.password;
       document.getElementById("registerBtn").textContent = t.register;
@@ -218,7 +214,6 @@
 
       const lang = localStorage.getItem("lang") || "pt";
       const t = translations[lang];
-      const username = document.getElementById("username").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const message = document.getElementById("message");
@@ -226,24 +221,20 @@
       message.textContent = "";
       message.style.color = "white";
 
-      if (!username || !email || !password) {
+      if (!email || !password) {
         message.style.color = "red";
         message.textContent = t.fillRequired;
         return;
       }
 
       try {
-        // Cria o usuário no Firebase Authentication
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
 
-        // Captura ref= se existir
         const urlParams = new URLSearchParams(window.location.search);
         const ref = urlParams.get("ref");
 
-        // Salva dados adicionais no Firestore
         await db.collection("users").doc(user.uid).set({
-          username,
           email,
           referidoPor: ref || null,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
