@@ -6,9 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
   <style>
+    /* Seu estilo permanece igual */
     body {
       font-family: sans-serif;
       background: #000;
@@ -142,7 +147,7 @@
   <form id="registerForm">
     <h2 id="title">Criar Conta</h2>
     <input type="text" id="username" placeholder="Nome de usuário" required />
-    <input type="email" id="email" placeholder="E-mail (opcional)" />
+    <input type="email" id="email" placeholder="E-mail (obrigatório)" required />
     <input type="password" id="password" placeholder="Senha" required />
     <button type="submit" id="registerBtn">Registrar</button>
     <p id="message"></p>
@@ -157,30 +162,41 @@
   </div>
 
   <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
+      authDomain: "bigfoot-connect.firebaseapp.com",
+      projectId: "bigfoot-connect",
+      storageBucket: "bigfoot-connect.appspot.com",
+      messagingSenderId: "177999879162",
+      appId: "1:177999879162:web:a1ea739930cac97475e243"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
     const translations = {
       pt: {
         title: "Criar Conta",
         username: "Nome de usuário",
-        email: "E-mail (opcional)",
+        email: "E-mail (obrigatório)",
         password: "Senha",
         register: "Registrar",
         loginLink: "Já tem conta? Entrar",
         backHome: "← Voltar para a Home",
         fillRequired: "Preencha todos os campos obrigatórios.",
-        userTaken: "Nome de usuário já está em uso.",
         success: "Conta criada com sucesso! Redirecionando...",
         error: "Erro ao criar conta:"
       },
       en: {
         title: "Create Account",
         username: "Username",
-        email: "Email (optional)",
+        email: "Email (required)",
         password: "Password",
         register: "Register",
         loginLink: "Already have an account? Log in",
         backHome: "← Back to Home",
         fillRequired: "Please fill in all required fields.",
-        userTaken: "Username is already taken.",
         success: "Account created successfully! Redirecting...",
         error: "Error creating account:"
       }
@@ -197,69 +213,52 @@
       document.getElementById("backHome").textContent = t.backHome;
     }
 
-    const supabase = window.supabase.createClient(
-      'https://cfvcihpfnxavcwublvcg.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmdmNpaHBmbnhhdmN3dWJsdmNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1NjY4OTAsImV4cCI6MjA2NjE0Mjg5MH0.iwakKxIwXa-0v5FEmm5HRkwQIRwqZ0VJJYXqv1SnzQE'
-    );
-
-    const form = document.getElementById('registerForm');
-    const message = document.getElementById('message');
-
-    form.addEventListener('submit', async (event) => {
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const lang = localStorage.getItem("lang") || "pt";
       const t = translations[lang];
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
 
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      message.textContent = "";
+      message.style.color = "white";
 
-      if (!username || !password) {
-        message.style.color = 'red';
+      if (!username || !email || !password) {
+        message.style.color = "red";
         message.textContent = t.fillRequired;
         return;
       }
 
-      const { data: existingUser } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('username', username)
-        .single();
+      try {
+        // Cria o usuário no Firebase Authentication
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-      if (existingUser) {
-        message.style.color = 'red';
-        message.textContent = t.userTaken;
-        return;
-      }
+        // Captura ref= se existir
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get("ref");
 
-      const saltRounds = 10;
-      const passwordHash = dcodeIO.bcrypt.hashSync(password, saltRounds); // CORRIGIDO
+        // Salva dados adicionais no Firestore
+        await db.collection("users").doc(user.uid).set({
+          username,
+          email,
+          referidoPor: ref || null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      // Captura ?ref= do link
-const urlParams = new URLSearchParams(window.location.search);
-const ref = urlParams.get("ref");
+        message.style.color = "green";
+        message.textContent = t.success;
 
-const { error } = await supabase
-  .from('profiles')
-  .insert([{
-    username,
-    email: email || null,
-    password_hash: passwordHash,
-    referidoPor: ref || null
-  }]);
-
-      if (error) {
-        message.style.color = 'red';
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+      } catch (error) {
+        message.style.color = "red";
         message.textContent = `${t.error} ${error.message}`;
-        return;
       }
-
-      message.style.color = 'green';
-      message.textContent = t.success;
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2000);
     });
 
     document.addEventListener("DOMContentLoaded", () => {
