@@ -234,6 +234,12 @@
       try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
+        const user = auth.currentUser;
+await db.collection("users").doc(user.uid).set({
+  email: user.email,
+  username: user.email.split('@')[0],
+  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+}, { merge: true });
 
         const urlParams = new URLSearchParams(window.location.search);
         const ref = urlParams.get("ref");
