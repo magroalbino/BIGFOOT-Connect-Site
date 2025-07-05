@@ -1,18 +1,186 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
+    header, footer {
+      background-color: #1a1a1a;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #FF6B35;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    .card p {
+      color: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    button.logout-btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #FF6B35;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button.logout-btn:hover {
+      background-color: #cc5125;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 40px;
+    }
+
+    .logo a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      cursor: pointer;
+      color: #FF6B35;
+      transition: color 0.2s, filter 0.2s;
+    }
+
+    .logo a:hover span,
+    .logo a:hover img {
+      color: #cc5125;
+      filter: brightness(0.8);
+    }
+
+    .logo a img {
+      height: 40px;
+      transition: filter 0.2s;
+    }
+
+    .logo a span {
+      font-weight: bold;
+    }
+
+    #walletInput {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 0.5rem;
+    }
+
+    #refLink {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    canvas {
+      background: #111;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
+    <div class="logo">
+      <a href="index.html">
+        <img src="/images/logo.png" alt="BIGFOOT Logo" />
+        <span>BIGFOOT Connect</span>
+      </a>
+    </div>
+    <div style="display:flex; gap:1rem; align-items:center;">
+      <button class="logout-btn" id="logoutBtn">Sair</button>
+      <select id="languageSwitcher" style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <h1>Bem-vindo ao seu Painel</h1>
+
+    <div class="card">
+      <h2>Seu progresso</h2>
+      <p>Você já compartilhou: <strong id="sharedAmount">0 GB</strong></p>
+      <p>Recompensas acumuladas: <strong id="rewardsAmount">0 BIG</strong></p>
+      <canvas id="progressChart" width="400" height="150"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Endereço da sua Carteira Solana</h2>
+      <input type="text" id="walletInput" placeholder="Digite seu endereço Solana" />
+      <button id="saveWalletBtn" class="logout-btn">Salvar endereço</button>
+      <p id="statusMessage"></p>
+    </div>
+
+    <div class="card">
+      <h2>👥 Indique amigos e ganhe BIG</h2>
+      <p>Compartilhe seu link exclusivo:</p>
+      <input type="text" id="refLink" readonly />
+      <p id="refCount">Você já indicou <strong>0</strong> pessoas.</p>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 BIGFOOT Connect. Todos os direitos reservados.
+  </footer>
+
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
       authDomain: "bigfoot-connect.firebaseapp.com",
@@ -22,120 +190,109 @@
       appId: "1:177999879162:web:a1ea739930cac97475e243"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const walletInput = document.getElementById("walletInput");
-      const saveWalletBtn = document.getElementById("saveWalletBtn");
-      const statusMessage = document.getElementById("statusMessage");
-      const refLink = document.getElementById("refLink");
-      const refCount = document.getElementById("refCount");
-      const logoutBtn = document.getElementById("logoutBtn");
+    let userData = null;
 
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          window.location.href = "login.html";
-          return;
-        }
+    async function initDashboard() {
+      const user = auth.currentUser;
+      if (!user) return window.location.href = "login.html";
 
-        const userDoc = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userDoc);
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      userData = userDoc.data();
 
-        if (!userSnap.exists()) {
-          console.error("Usuário não encontrado no Firestore.");
-          return;
-        }
+      document.getElementById("walletInput").value = userData.walletAddress || "";
+      document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
+      document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
-        const data = userSnap.data();
-        document.querySelector("h1").textContent = `Bem-vindo ao seu Painel, ${data.username || user.email}`;
-        walletInput.value = data.wallet_address || "";
+      const refLink = `${window.location.origin}/register.html?ref=${userData.username}`;
+      document.getElementById("refLink").value = refLink;
 
-        const shared = data.traffic?.reduce((sum, d) => sum + (d.dataSharedMB || 0), 0) || 0;
-        const rewards = shared * 2.2;
-        document.querySelector(".card p strong").textContent = `${(shared / 1024).toFixed(1)} GB`;
-        document.querySelectorAll(".card p strong")[1].textContent = `${rewards.toFixed(1)} BIG`;
+      const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
+      document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
 
-        renderChart(data.traffic || []);
+      renderChart(userData.dailyStats || {});
+    }
 
-        refLink.value = `${window.location.origin}/register.html?ref=${data.username}`;
-        refCount.innerHTML = `Você já indicou <strong>${data.referrals?.length || 0}</strong> pessoas.`;
+    function renderChart(data) {
+      const labels = Object.keys(data);
+      const values = Object.values(data);
 
-        saveWalletBtn.addEventListener("click", async () => {
-          const address = walletInput.value.trim();
-          if (!address) {
-            statusMessage.textContent = "Por favor, insira um endereço válido.";
-            return;
+      new Chart(document.getElementById("progressChart"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "MB Compartilhados",
+            data: values,
+            borderColor: "#FF6B35",
+            backgroundColor: "rgba(255,107,53,0.2)",
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          plugins: { legend: { labels: { color: "#fff" } } },
+          scales: {
+            x: { ticks: { color: "#fff" } },
+            y: { ticks: { color: "#fff" } }
           }
-          await updateDoc(userDoc, { wallet_address: address });
-          statusMessage.textContent = "Endereço salvo com sucesso!";
-        });
-
-        logoutBtn.addEventListener("click", async () => {
-          await signOut(auth);
-          window.location.href = "index.html";
-        });
+        }
       });
+    }
 
-      function renderChart(data) {
-        const labels = data.map(d => d.date);
-        const values = data.map(d => d.dataSharedMB);
+    document.getElementById("saveWalletBtn").addEventListener("click", async () => {
+      const wallet = document.getElementById("walletInput").value.trim();
+      if (!wallet) return alert("Digite um endereço válido.");
 
-        new Chart(document.getElementById("dataChart"), {
-          type: "line",
-          data: {
-            labels,
-            datasets: [{
-              label: "MB Compartilhados por dia",
-              data: values,
-              borderColor: "#FF6B35",
-              backgroundColor: "rgba(255, 107, 53, 0.3)",
-              fill: true,
-              tension: 0.3
-            }]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: { beginAtZero: true }
-            }
-          }
-        });
+      await db.collection("users").doc(auth.currentUser.uid).update({ walletAddress: wallet });
+      document.getElementById("statusMessage").textContent = "Endereço salvo com sucesso!";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => location.href = "index.html");
+    });
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) initDashboard();
+      else location.href = "login.html";
+    });
+
+    // Tradução
+    const translations = {
+      pt: {
+        heading: "Bem-vindo ao seu Painel", progress: "Seu progresso",
+        shared: "Você já compartilhou:", rewards: "Recompensas acumuladas:",
+        walletTitle: "Endereço da sua Carteira Solana", placeholder: "Digite seu endereço Solana",
+        save: "Salvar endereço", logout: "Sair"
+      },
+      en: {
+        heading: "Welcome to your Dashboard", progress: "Your Progress",
+        shared: "You have shared:", rewards: "Accumulated rewards:",
+        walletTitle: "Your Solana Wallet Address", placeholder: "Enter your Solana address",
+        save: "Save address", logout: "Logout"
       }
+    };
+
+    function applyTranslations(lang) {
+      const t = translations[lang];
+      document.querySelector("h1").textContent = t.heading;
+      document.querySelectorAll(".card")[0].querySelector("h2").textContent = t.progress;
+      document.getElementById("walletInput").placeholder = t.placeholder;
+      document.getElementById("saveWalletBtn").textContent = t.save;
+      document.getElementById("logoutBtn").textContent = t.logout;
+    }
+
+    const lang = localStorage.getItem("lang") || "pt";
+    document.getElementById("languageSwitcher").value = lang;
+    applyTranslations(lang);
+    document.getElementById("languageSwitcher").addEventListener("change", e => {
+      const lang = e.target.value;
+      localStorage.setItem("lang", lang);
+      applyTranslations(lang);
     });
   </script>
-  <style>
-    /* (mesmo CSS que você mandou, mantido) */
-  </style>
-</head>
-
-<body>
-  <header> <!-- igual ao seu --> </header>
-  <main>
-    <h1>Bem-vindo ao seu Painel</h1>
-    <div class="card">
-      <h2>Seu progresso</h2>
-      <p>Você já compartilhou: <strong>0 GB</strong></p>
-      <p>Recompensas acumuladas: <strong>0 BIG</strong></p>
-      <canvas id="dataChart" style="margin-top: 1rem;"></canvas>
-    </div>
-    <div class="card">
-      <h2>Endereço da sua Carteira Solana</h2>
-      <input type="text" id="walletInput" placeholder="Digite seu endereço Solana" />
-      <button id="saveWalletBtn" class="logout-btn">Salvar endereço</button>
-      <p id="statusMessage"></p>
-    </div>
-    <section id="referral" class="card">
-      <h2>👥 Indique amigos e ganhe BIG</h2>
-      <p>Compartilhe seu link exclusivo:</p>
-      <input type="text" id="refLink" readonly />
-      <p id="refCount">Você já indicou <strong>0</strong> pessoas.</p>
-    </section>
-  </main>
-  <footer>
-    © 2025 BIGFOOT Connect. Todos os direitos reservados.
-  </footer>
 </body>
-
 </html>
