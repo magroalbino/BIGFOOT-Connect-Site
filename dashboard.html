@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,7 +22,8 @@
       min-height: 100vh;
     }
 
-    header, footer {
+    header,
+    footer {
       background-color: #1a1a1a;
       color: white;
     }
@@ -134,8 +136,10 @@
     }
   </style>
 </head>
+
 <body>
-  <header style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
+  <header
+    style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
     <div class="logo">
       <a href="index.html">
         <img src="/images/logo.png" alt="BIGFOOT Logo" />
@@ -144,7 +148,8 @@
     </div>
     <div style="display:flex; gap:1rem; align-items:center;">
       <button class="logout-btn" id="logoutBtn">Sair</button>
-      <select id="languageSwitcher" style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
+      <select id="languageSwitcher"
+        style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
         <option value="en">English</option>
         <option value="pt">Português</option>
       </select>
@@ -200,20 +205,35 @@
       const user = auth.currentUser;
       if (!user) return window.location.href = "login.html";
 
-      const userDoc = await db.collection("users").doc(user.uid).get();
-      userData = userDoc.data();
+      try {
+        const userDoc = await db.collection("users").doc(user.uid).get();
 
-      document.getElementById("walletInput").value = userData.walletAddress || "";
-      document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
-      document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
+        if (!userDoc.exists) {
+          // Caso os dados do usuário não existam, faça logout e redirecione para login
+          await auth.signOut();
+          return window.location.href = "login.html";
+        }
 
-      const refLink = `${window.location.origin}/register.html?ref=${userData.username}`;
-      document.getElementById("refLink").value = refLink;
+        userData = userDoc.data();
 
-      const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
-      document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
+        document.getElementById("walletInput").value = userData.walletAddress || "";
+        document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
+        document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
-      renderChart(userData.dailyStats || {});
+        const refLink = `${window.location.origin}/register.html?ref=${userData.username}`;
+        document.getElementById("refLink").value = refLink;
+
+        const referrals = await db.collection("users").where("referredBy", "==", userData.username).get();
+        document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
+
+        renderChart(userData.dailyStats || {});
+
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
+        // Em caso de erro, desconecta o usuário e redireciona para login
+        await auth.signOut();
+        window.location.href = "login.html";
+      }
     }
 
     function renderChart(data) {
@@ -295,4 +315,5 @@
     });
   </script>
 </body>
+
 </html>

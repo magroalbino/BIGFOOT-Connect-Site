@@ -182,6 +182,18 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Define persistência local explícita (opcional, mas recomendado)
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((error) => {
+      console.error("Erro ao definir persistência:", error);
+    });
+
+    // Redireciona automaticamente se o usuário já estiver logado
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
     const translations = {
       en: {
         formTitle: "Login",
@@ -243,8 +255,7 @@
         message.style.color = 'green';
         message.textContent = t.success;
 
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('email', email);
+        // Removido o localStorage manual
 
         setTimeout(() => {
           window.location.href = 'dashboard.html';
