@@ -161,23 +161,23 @@
 
     <div class="card">
       <h2>Seu progresso</h2>
-      <p>Você já compartilhou: <strong id="sharedAmount">0 GB</strong></p>
-      <p>Recompensas acumuladas: <strong id="rewardsAmount">0 BIG</strong></p>
+      <p id="sharedText">Você já compartilhou: <strong id="sharedAmount">0 GB</strong></p>
+      <p id="rewardsText">Recompensas acumuladas: <strong id="rewardsAmount">0 BIG</strong></p>
       <canvas id="progressChart" width="400" height="150"></canvas>
     </div>
 
     <div class="card">
-      <h2>Endereço da sua Carteira Solana</h2>
+      <h2 id="walletTitle">Endereço da sua Carteira Solana</h2>
       <input type="text" id="walletInput" placeholder="Digite seu endereço Solana" />
       <button id="saveWalletBtn" class="logout-btn">Salvar endereço</button>
       <p id="statusMessage"></p>
     </div>
 
     <div class="card">
-      <h2>👥 Indique amigos e ganhe BIG</h2>
-      <p>Compartilhe seu link exclusivo:</p>
+      <h2 id="referralTitle">👥 Indique amigos e ganhe BIG</h2>
+      <p id="referralText">Compartilhe seu link exclusivo:</p>
       <input type="text" id="refLink" readonly />
-      <p id="refCount">Você já indicou <strong>0</strong> pessoas.</p>
+      <p id="referralCount">Você já indicou <strong>0</strong> pessoas.</p>
     </div>
   </main>
 
@@ -205,12 +205,12 @@
       if (!user) return window.location.href = "login.html";
 
       const userDoc = await db.collection("users").doc(user.uid).get();
-userData = userDoc.data();
+      userData = userDoc.data();
 
-if (!userData) return;
+      if (!userData) return;
 
-localStorage.setItem("loggedIn", "true");
-localStorage.setItem("user", JSON.stringify({ username: userData.username }));
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("user", JSON.stringify({ username: userData.username }));
 
       document.getElementById("walletInput").value = userData.walletAddress || "";
       document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
@@ -223,18 +223,18 @@ localStorage.setItem("user", JSON.stringify({ username: userData.username }));
       document.getElementById("refCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
 
       const usageSnap = await db.collection("users")
-  .doc(user.uid)
-  .collection("dailyUsage")
-  .orderBy("updatedAt", "asc")
-  .get();
+        .doc(user.uid)
+        .collection("dailyUsage")
+        .orderBy("updatedAt", "asc")
+        .get();
 
-const dailyStats = {};
-usageSnap.forEach(doc => {
-  const data = doc.data();
-  dailyStats[doc.id] = (data.shared || 0).toFixed(2);
-});
+      const dailyStats = {};
+      usageSnap.forEach(doc => {
+        const data = doc.data();
+        dailyStats[doc.id] = (data.shared || 0).toFixed(2);
+      });
 
-renderChart(dailyStats);
+      renderChart(dailyStats);
     }
 
     function renderChart(data) {
@@ -287,16 +287,30 @@ renderChart(dailyStats);
     // Tradução
     const translations = {
       pt: {
-        heading: "Bem-vindo ao seu Painel", progress: "Seu progresso",
-        shared: "Você já compartilhou:", rewards: "Recompensas acumuladas:",
-        walletTitle: "Endereço da sua Carteira Solana", placeholder: "Digite seu endereço Solana",
-        save: "Salvar endereço", logout: "Sair"
+        heading: "Bem-vindo ao seu Painel",
+        progress: "Seu progresso",
+        shared: "Você já compartilhou:",
+        rewards: "Recompensas acumuladas:",
+        walletTitle: "Endereço da sua Carteira Solana",
+        placeholder: "Digite seu endereço Solana",
+        save: "Salvar endereço",
+        logout: "Sair",
+        referralTitle: "👥 Indique amigos e ganhe BIG",
+        referralText: "Compartilhe seu link exclusivo:",
+        referralCount: "Você já indicou {count} pessoas."
       },
       en: {
-        heading: "Welcome to your Dashboard", progress: "Your Progress",
-        shared: "You have shared:", rewards: "Accumulated rewards:",
-        walletTitle: "Your Solana Wallet Address", placeholder: "Enter your Solana address",
-        save: "Save address", logout: "Logout"
+        heading: "Welcome to your Dashboard",
+        progress: "Your Progress",
+        shared: "You have shared:",
+        rewards: "Accumulated rewards:",
+        walletTitle: "Your Solana Wallet Address",
+        placeholder: "Enter your Solana address",
+        save: "Save address",
+        logout: "Logout",
+        referralTitle: "👥 Invite friends and earn BIG",
+        referralText: "Share your exclusive link:",
+        referralCount: "You have already referred {count} people."
       }
     };
 
@@ -304,9 +318,19 @@ renderChart(dailyStats);
       const t = translations[lang];
       document.querySelector("h1").textContent = t.heading;
       document.querySelectorAll(".card")[0].querySelector("h2").textContent = t.progress;
+      document.getElementById("walletTitle").textContent = t.walletTitle;
       document.getElementById("walletInput").placeholder = t.placeholder;
       document.getElementById("saveWalletBtn").textContent = t.save;
       document.getElementById("logoutBtn").textContent = t.logout;
+      document.getElementById("sharedText").childNodes[0].textContent = t.shared + " ";
+      document.getElementById("rewardsText").childNodes[0].textContent = t.rewards + " ";
+      document.getElementById("referralTitle").textContent = t.referralTitle;
+      document.getElementById("referralText").textContent = t.referralText;
+
+      // Reaplica contagem com tradução se já tiver carregado
+      const refCountEl = document.getElementById("referralCount");
+      const currentCount = refCountEl.querySelector("strong")?.textContent || "0";
+      refCountEl.innerHTML = t.referralCount.replace("{count}", <strong>${currentCount}</strong>);
     }
 
     const lang = localStorage.getItem("lang") || "pt";
