@@ -522,15 +522,17 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const languageSwitcher = document.getElementById("languageSwitcher");
-
             const savedLang = localStorage.getItem("lang") || "en"; // padrão: inglês
             languageSwitcher.value = savedLang;
+
             applyTranslations(savedLang);
+            renderMainContent(savedLang);
 
             languageSwitcher.addEventListener("change", (e) => {
                 const lang = e.target.value;
                 localStorage.setItem("lang", lang);
                 applyTranslations(lang);
+                renderMainContent(lang);
             });
         });
     </script>
