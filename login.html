@@ -155,7 +155,7 @@
 
   <form onsubmit="loginUser(event)">
     <h2 id="form-title">Login</h2>
-    <input type="email" id="username" placeholder="Email" required />
+    <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <button type="submit" id="login-button">Login</button>
     <p id="message"></p>
@@ -238,48 +238,43 @@
     }
 
     async function loginUser(event) {
-      event.preventDefault();
+  event.preventDefault();
 
-      const lang = localStorage.getItem("lang") || "en";
-      const t = translations[lang];
+  const lang = localStorage.getItem("lang") || "en";
+  const t = translations[lang];
 
-      const email = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const message = document.getElementById('message');
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const message = document.getElementById('message');
 
-      message.textContent = '';
-      message.style.color = 'white';
+  message.textContent = '';
+  message.style.color = 'white';
 
-      if (!email || !password) {
-        message.style.color = 'red';
-        message.textContent = t.fillAll;
-        return;
-      }
+  if (!email || !password) {
+    message.style.color = 'red';
+    message.textContent = t.fillAll;
+    return;
+  }
 
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        const user = auth.currentUser;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    const user = auth.currentUser;
 
-        // Busca os dados do usuário no Firestore
-        const userDoc = await db.collection("users").doc(user.uid).get();
-        const userData = userDoc.data();
+    localStorage.setItem('userId', user.uid);
+    localStorage.setItem('userEmail', user.email);
 
-        // Salva no localStorage para personalizar o index.html depois
-        localStorage.setItem('userId', user.uid);
-        localStorage.setItem('username', userData.username);
+    message.style.color = 'green';
+    message.textContent = t.success;
 
-        message.style.color = 'green';
-        message.textContent = t.success;
-
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1000);
-      } catch (err) {
-        message.style.color = 'red';
-        message.textContent = t.notFound;
-        console.error(t.loginError, err.message);
-      }
-    }
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1000);
+  } catch (err) {
+    message.style.color = 'red';
+    message.textContent = t.notFound;
+    console.error(t.loginError, err.message);
+  }
+}
 
     document.addEventListener("DOMContentLoaded", () => {
       const languageSwitcher = document.getElementById("languageSwitcher");

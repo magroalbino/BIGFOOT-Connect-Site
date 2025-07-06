@@ -504,31 +504,31 @@
             });
 
             firebase.auth().onAuthStateChanged((user) => {
-                const nav = document.getElementById("userNav");
+  const nav = document.getElementById("userNav");
 
-                if (user) {
-                    const username = localStorage.getItem("username") || user.email;
+  if (user) {
+    const username = user.email;
 
-                    nav.innerHTML = `
-          <span>${t.hello}, ${username}</span>
-          <a href="dashboard.html">${t.dashboard}</a>
-          <a href="#" id="logout">${t.logout}</a>
-        `;
+    nav.innerHTML = `
+      <span>${t.hello}, ${username}</span>
+      <a href="dashboard.html">${t.dashboard}</a>
+      <a href="#" id="logout">${t.logout}</a>
+    `;
 
-                    document.getElementById("logout").addEventListener("click", (e) => {
-                        e.preventDefault();
-                        firebase.auth().signOut().then(() => {
-                            localStorage.clear();
-                            window.location.href = "index.html";
-                        });
-                    });
-                } else {
-                    nav.innerHTML = `
-          <a href="login.html">${t.login}</a>
-          <a href="register.html">${t.register}</a>
-        `;
-                }
-            });
+    document.getElementById("logout").addEventListener("click", (e) => {
+      e.preventDefault();
+      firebase.auth().signOut().then(() => {
+        localStorage.clear();
+        window.location.href = "index.html";
+      });
+    });
+  } else {
+    nav.innerHTML = `
+      <a href="login.html">${t.login}</a>
+      <a href="register.html">${t.register}</a>
+    `;
+  }
+});
         }
 
         document.addEventListener("DOMContentLoaded", () => {

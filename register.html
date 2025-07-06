@@ -214,53 +214,47 @@
     }
 
     document.getElementById("registerForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
+  event.preventDefault();
 
-      const lang = localStorage.getItem("lang") || "pt";
-      const t = translations[lang];
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const message = document.getElementById("message");
+  const lang = localStorage.getItem("lang") || "pt";
+  const t = translations[lang];
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
 
-      message.textContent = "";
-      message.style.color = "white";
+  message.textContent = "";
+  message.style.color = "white";
 
-      if (!email || !password) {
-        message.style.color = "red";
-        message.textContent = t.fillRequired;
-        return;
-      }
+  if (!email || !password) {
+    message.style.color = "red";
+    message.textContent = t.fillRequired;
+    return;
+  }
 
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        const user = auth.currentUser;
-await db.collection("users").doc(user.uid).set({
-  email: user.email,
-  username: user.email.split('@')[0],
-  createdAt: firebase.firestore.FieldValue.serverTimestamp()
-}, { merge: true });
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const ref = urlParams.get("ref");
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
 
-        await db.collection("users").doc(user.uid).set({
-          email,
-          referidoPor: ref || null,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        message.style.color = "green";
-        message.textContent = t.success;
-
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
-      } catch (error) {
-        message.style.color = "red";
-        message.textContent = `${t.error} ${error.message}`;
-      }
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      referredBy: ref || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    message.style.color = "green";
+    message.textContent = t.success;
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 2000);
+  } catch (error) {
+    message.style.color = "red";
+    message.textContent = `${t.error} ${error.message}`;
+  }
+});
 
     document.addEventListener("DOMContentLoaded", () => {
       const languageSwitcher = document.getElementById("languageSwitcher");
