@@ -335,7 +335,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const lang = localStorage.getItem("lang") || "pt";
+      const lang = localStorage.getItem("lang") || "en";
       document.getElementById("languageSwitcher").value = lang;
       applyTranslations(lang);
       document.getElementById("languageSwitcher").addEventListener("change", e => {
