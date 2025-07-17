@@ -210,6 +210,17 @@
       else location.href = "login.html";
     });
 
+document.getElementById("copyRefLinkBtn").addEventListener("click", () => {
+  const refLink = document.getElementById("refLink");
+  refLink.select();
+  refLink.setSelectionRange(0, 99999); // Para mobile
+  navigator.clipboard.writeText(refLink.value).then(() => {
+    alert("Link copiado para a área de transferência!");
+  }).catch(() => {
+    alert("Não foi possível copiar o link.");
+  });
+});
+  
     const translations = {
       pt: {
         heading: "Bem-vindo ao seu Painel",
