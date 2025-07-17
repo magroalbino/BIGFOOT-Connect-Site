@@ -58,10 +58,9 @@
       <p id="sharedText">Você já compartilhou: <strong id="sharedAmount">0 GB</strong></p>
       <p id="rewardsText">Recompensas acumuladas: <strong id="rewardsAmount">0 BIG</strong></p>
       <canvas id="progressChart" width="400" height="150"></canvas>
-      <!-- BOTÃO VISÍVEL SOMENTE PARA TESTES/ADM -->
-<button id="seedButton" class="logout-btn" style="margin-top: 1rem; display: none;">
-  Popular dados de uso diário
-</button>
+      <button id="seedButton" class="logout-btn" style="margin-top: 1rem; display: none;">
+        Popular dados de uso diário
+      </button>
     </div>
 
     <div class="card">
@@ -101,16 +100,19 @@
       const userDoc = await db.collection("users").doc(user.uid).get();
       const userData = userDoc.data();
       if (!userData) return;
-      // Exibir botão de teste somente para o admin
-if (user.email === "SEU_EMAIL_AQUI") {
-  document.getElementById("seedButton").style.display = "inline-block";
-  document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
-}
+
+      if (user.email === "SEU_EMAIL_AQUI") {
+        document.getElementById("seedButton").style.display = "inline-block";
+        document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
+      }
 
       localStorage.setItem("loggedIn", "true");
 
       document.getElementById("walletInput").value = userData.walletAddress || "";
-      document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
+
+      const totalMB = userData.sharedMB || 0;
+      const totalGB = (totalMB / 1024).toFixed(2);
+      document.getElementById("sharedAmount").textContent = totalGB + " GB";
       document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
       const encodedEmail = encodeURIComponent(user.email);
@@ -124,7 +126,7 @@ if (user.email === "SEU_EMAIL_AQUI") {
       const dailyStats = {};
       usageSnap.forEach(doc => {
         const data = doc.data();
-        dailyStats[doc.id] = (data.shared || 0).toFixed(2);
+        dailyStats[doc.id] = data.shared ? data.shared.toFixed(2) : "0.00";
       });
 
       renderChart(dailyStats);
@@ -133,31 +135,6 @@ if (user.email === "SEU_EMAIL_AQUI") {
     function renderChart(data) {
       const labels = Object.keys(data);
       const values = Object.values(data);
-
-      // Função para popular dados falsos de uso diário no Firestore
-async function seedDailyUsageData() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const uid = user.uid;
-  const ref = db.collection("users").doc(uid).collection("dailyUsage");
-
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    const yyyyMMdd = date.toISOString().split("T")[0];
-    const sharedMB = Math.floor(Math.random() * 100) + 50;
-
-    await ref.doc(yyyyMMdd).set({
-      shared: sharedMB,
-      updatedAt: new Date()
-    });
-  }
-
-  alert("Dados inseridos com sucesso!");
-  window.location.reload(); // recarrega para atualizar o gráfico
-}
 
       new Chart(document.getElementById("progressChart"), {
         type: "line",
@@ -173,13 +150,44 @@ async function seedDailyUsageData() {
           }]
         },
         options: {
-          plugins: { legend: { labels: { color: "#fff" } } },
+          plugins: {
+            legend: { labels: { color: "#fff" } },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.parsed.y} MB`
+              }
+            }
+          },
           scales: {
             x: { ticks: { color: "#fff" } },
             y: { ticks: { color: "#fff" } }
           }
         }
       });
+    }
+
+    async function seedDailyUsageData() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const uid = user.uid;
+      const ref = db.collection("users").doc(uid).collection("dailyUsage");
+
+      const today = new Date();
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const yyyyMMdd = date.toISOString().split("T")[0];
+        const sharedMB = Math.floor(Math.random() * 100) + 50;
+
+        await ref.doc(yyyyMMdd).set({
+          shared: sharedMB,
+          updatedAt: new Date()
+        });
+      }
+
+      alert("Dados inseridos com sucesso!");
+      window.location.reload();
     }
 
     document.getElementById("saveWalletBtn").addEventListener("click", async () => {
@@ -230,6 +238,17 @@ async function seedDailyUsageData() {
       }
     };
 
+    document.addEventListener("DOMContentLoaded", () => {
+      const lang = localStorage.getItem("lang") || "en";
+      document.getElementById("languageSwitcher").value = lang;
+      applyTranslations(lang);
+      document.getElementById("languageSwitcher").addEventListener("change", e => {
+        const lang = e.target.value;
+        localStorage.setItem("lang", lang);
+        applyTranslations(lang);
+      });
+    });
+
     function applyTranslations(lang) {
       const t = translations[lang];
       document.querySelector("h1").textContent = t.heading;
@@ -247,17 +266,6 @@ async function seedDailyUsageData() {
       const currentCount = refCountEl.querySelector("strong")?.textContent || "0";
       refCountEl.innerHTML = t.referralCount.replace("{count}", `<strong>${currentCount}</strong>`);
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const lang = localStorage.getItem("lang") || "en";
-      document.getElementById("languageSwitcher").value = lang;
-      applyTranslations(lang);
-      document.getElementById("languageSwitcher").addEventListener("change", e => {
-        const lang = e.target.value;
-        localStorage.setItem("lang", lang);
-        applyTranslations(lang);
-      });
-    });
   </script>
 </body>
 
