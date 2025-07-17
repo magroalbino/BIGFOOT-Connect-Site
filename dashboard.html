@@ -74,7 +74,7 @@
       <h2 id="referralTitle">👥 Indique amigos e ganhe BIG</h2>
       <p id="referralText">Compartilhe seu link exclusivo:</p>
       <input type="text" id="refLink" readonly />
-<button class="logout-btn" id="copyRefLinkBtn" style="margin-top: 0.5rem;">Copiar link</button>
+<button class="logout-btn" id="copyRefLinkBtn" style="margin-top: 0.75rem;">Copiar link</button>
 <p id="referralCount">Você já indicou <strong>0</strong> pessoas.</p>
     </div>
   </main>
@@ -234,6 +234,7 @@
         referralTitle: "👥 Indique amigos e ganhe BIG",
         referralText: "Compartilhe seu link exclusivo:",
         referralCount: "Você já indicou {count} pessoas."
+        copyBtn: "Copiar"
       },
       en: {
         heading: "Welcome to your Dashboard",
@@ -247,6 +248,7 @@
         referralTitle: "👥 Invite friends and earn BIG",
         referralText: "Share your exclusive link:",
         referralCount: "You have already referred {count} people."
+        copyBtn: "Copy"
       }
     };
 
@@ -273,6 +275,7 @@
       document.getElementById("rewardsText").childNodes[0].textContent = t.rewards + " ";
       document.getElementById("referralTitle").textContent = t.referralTitle;
       document.getElementById("referralText").textContent = t.referralText;
+      document.getElementById("copyRefLinkBtn").textContent = t.copyBtn;
 
       const refCountEl = document.getElementById("referralCount");
       const currentCount = refCountEl.querySelector("strong")?.textContent || "0";
