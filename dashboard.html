@@ -12,24 +12,134 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/css/style.css" />
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background-color: #0e0e0e; color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
-    header, footer { background-color: #1a1a1a; color: white; }
-    main { flex: 1; padding: 2rem; max-width: 1000px; margin: 0 auto; }
-    h1 { font-size: 2rem; color: #FF6B35; margin-bottom: 1.5rem; text-align: center; }
-    .card { background-color: #1a1a1a; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 0 8px rgba(255, 107, 53, 0.15); }
-    .card h2 { margin-top: 0; color: #fff; }
-    .card p { color: #ccc; }
-    footer { text-align: center; padding: 1rem; font-size: 0.9rem; color: #777; }
-    button.logout-btn { margin-top: 1rem; padding: 0.6rem 1.2rem; background-color: #FF6B35; border: none; border-radius: 6px; color: white; cursor: pointer; }
-    button.logout-btn:hover { background-color: #cc5125; }
-    .logo { display: flex; align-items: center; gap: 0.75rem; height: 40px; }
-    .logo a { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; cursor: pointer; color: #FF6B35; transition: color 0.2s, filter 0.2s; }
-    .logo a:hover span, .logo a:hover img { color: #cc5125; filter: brightness(0.8); }
-    .logo a img { height: 40px; transition: filter 0.2s; }
-    .logo a span { font-weight: bold; }
-    #walletInput { width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 0.5rem; }
-    #refLink { width: 100%; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; background: #222; color: #fff; border: 1px solid #444; }
-    canvas { background: #111; border-radius: 10px; margin-top: 1rem; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header,
+    footer {
+      background-color: #1a1a1a;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #ff6b35;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    .card p {
+      color: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    button.logout-btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #ff6b35;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button.logout-btn:hover {
+      background-color: #cc5125;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 40px;
+    }
+
+    .logo a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      cursor: pointer;
+      color: #ff6b35;
+      transition: color 0.2s, filter 0.2s;
+    }
+
+    .logo a:hover span,
+    .logo a:hover img {
+      color: #cc5125;
+      filter: brightness(0.8);
+    }
+
+    .logo a img {
+      height: 40px;
+      transition: filter 0.2s;
+    }
+
+    .logo a span {
+      font-weight: bold;
+    }
+
+    #walletInput {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 0.5rem;
+    }
+
+    #refLink {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    /* Aqui ajustei o botão para margin-bottom para dar espaçamento embaixo */
+    #copyRefLinkBtn {
+      margin-bottom: 0.75rem;
+    }
+
+    canvas {
+      background: #111;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 
@@ -74,8 +184,8 @@
       <h2 id="referralTitle">👥 Indique amigos e ganhe BIG</h2>
       <p id="referralText">Compartilhe seu link exclusivo:</p>
       <input type="text" id="refLink" readonly />
-<button class="logout-btn" id="copyRefLinkBtn" style="margin-top: 0.75rem;">Copiar link</button>
-<p id="referralCount">Você já indicou <strong>0</strong> pessoas.</p>
+      <button class="logout-btn" id="copyRefLinkBtn">Copiar link</button>
+      <p id="referralCount">Você já indicou <strong>0</strong> pessoas.</p>
     </div>
   </main>
 
@@ -119,17 +229,6 @@
       const encodedEmail = encodeURIComponent(user.email);
       const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
       document.getElementById("refLink").value = refLink;
-
-      document.getElementById("copyRefLinkBtn").addEventListener("click", () => {
-  const refLink = document.getElementById("refLink");
-  refLink.select();
-  refLink.setSelectionRange(0, 99999); // Para mobile
-  navigator.clipboard.writeText(refLink.value).then(() => {
-    alert("Link copiado para a área de transferência!");
-  }).catch(() => {
-    alert("Não foi possível copiar o link.");
-  });
-});
 
       const referrals = await db.collection("users").where("referredBy", "==", user.email).get();
       document.getElementById("referralCount").innerHTML = `Você já indicou <strong>${referrals.size}</strong> pessoas.`;
@@ -205,7 +304,9 @@
     document.getElementById("saveWalletBtn").addEventListener("click", async () => {
       const wallet = document.getElementById("walletInput").value.trim();
       if (!wallet) return alert("Digite um endereço válido.");
-      await db.collection("users").doc(auth.currentUser.uid).update({ walletAddress: wallet });
+      await db.collection("users").doc(auth.currentUser.uid).update({
+        walletAddress: wallet
+      });
       document.getElementById("statusMessage").textContent = "Endereço salvo com sucesso!";
     });
 
@@ -216,11 +317,23 @@
       });
     });
 
+    // Evento de copiar link colocado fora do initDashboard para evitar múltiplos listeners
+    document.getElementById("copyRefLinkBtn").addEventListener("click", () => {
+      const refLink = document.getElementById("refLink");
+      refLink.select();
+      refLink.setSelectionRange(0, 99999); // Para mobile
+      navigator.clipboard.writeText(refLink.value).then(() => {
+        alert("Link copiado para a área de transferência!");
+      }).catch(() => {
+        alert("Não foi possível copiar o link.");
+      });
+    });
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) initDashboard(user);
       else location.href = "login.html";
     });
-  
+
     const translations = {
       pt: {
         heading: "Bem-vindo ao seu Painel",
@@ -233,7 +346,7 @@
         logout: "Sair",
         referralTitle: "👥 Indique amigos e ganhe BIG",
         referralText: "Compartilhe seu link exclusivo:",
-        referralCount: "Você já indicou {count} pessoas."
+        referralCount: "Você já indicou {count} pessoas.",
         copyBtn: "Copiar"
       },
       en: {
@@ -247,7 +360,7 @@
         logout: "Logout",
         referralTitle: "👥 Invite friends and earn BIG",
         referralText: "Share your exclusive link:",
-        referralCount: "You have already referred {count} people."
+        referralCount: "You have already referred {count} people.",
         copyBtn: "Copy"
       }
     };
@@ -256,6 +369,7 @@
       const lang = localStorage.getItem("lang") || "en";
       document.getElementById("languageSwitcher").value = lang;
       applyTranslations(lang);
+
       document.getElementById("languageSwitcher").addEventListener("change", e => {
         const lang = e.target.value;
         localStorage.setItem("lang", lang);
