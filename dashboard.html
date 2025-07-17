@@ -130,7 +130,6 @@
       border: 1px solid #444;
     }
 
-    /* Aqui ajustei o botão para margin-bottom para dar espaçamento embaixo */
     #copyRefLinkBtn {
       margin-bottom: 0.75rem;
     }
@@ -166,7 +165,6 @@
     <div class="card">
       <h2>Seu progresso</h2>
       <p id="sharedText">Você já compartilhou: <strong id="sharedAmount">0 GB</strong></p>
-      <p id="rewardsText">Recompensas acumuladas: <strong id="rewardsAmount">0 BIG</strong></p>
       <canvas id="progressChart" width="400" height="150"></canvas>
       <button id="seedButton" class="logout-btn" style="margin-top: 1rem; display: none;">
         Popular dados de uso diário
@@ -224,7 +222,6 @@
       const totalMB = userData.sharedMB || 0;
       const totalGB = (totalMB / 1024).toFixed(2);
       document.getElementById("sharedAmount").textContent = totalGB + " GB";
-      document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
       const encodedEmail = encodeURIComponent(user.email);
       const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
@@ -262,7 +259,11 @@
         },
         options: {
           plugins: {
-            legend: { labels: { color: "#fff" } },
+            legend: {
+              labels: {
+                color: "#fff"
+              }
+            },
             tooltip: {
               callbacks: {
                 label: ctx => `${ctx.parsed.y} MB`
@@ -270,8 +271,16 @@
             }
           },
           scales: {
-            x: { ticks: { color: "#fff" } },
-            y: { ticks: { color: "#fff" } }
+            x: {
+              ticks: {
+                color: "#fff"
+              }
+            },
+            y: {
+              ticks: {
+                color: "#fff"
+              }
+            }
           }
         }
       });
@@ -317,11 +326,10 @@
       });
     });
 
-    // Evento de copiar link colocado fora do initDashboard para evitar múltiplos listeners
     document.getElementById("copyRefLinkBtn").addEventListener("click", () => {
       const refLink = document.getElementById("refLink");
       refLink.select();
-      refLink.setSelectionRange(0, 99999); // Para mobile
+      refLink.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(refLink.value).then(() => {
         alert("Link copiado para a área de transferência!");
       }).catch(() => {
@@ -339,7 +347,6 @@
         heading: "Bem-vindo ao seu Painel",
         progress: "Seu progresso",
         shared: "Você já compartilhou:",
-        rewards: "Recompensas acumuladas:",
         walletTitle: "Endereço da sua Carteira Solana",
         placeholder: "Digite seu endereço Solana",
         save: "Salvar endereço",
@@ -353,7 +360,6 @@
         heading: "Welcome to your Dashboard",
         progress: "Your Progress",
         shared: "You have shared:",
-        rewards: "Accumulated rewards:",
         walletTitle: "Your Solana Wallet Address",
         placeholder: "Enter your Solana address",
         save: "Save address",
@@ -386,7 +392,6 @@
       document.getElementById("saveWalletBtn").textContent = t.save;
       document.getElementById("logoutBtn").textContent = t.logout;
       document.getElementById("sharedText").childNodes[0].textContent = t.shared + " ";
-      document.getElementById("rewardsText").childNodes[0].textContent = t.rewards + " ";
       document.getElementById("referralTitle").textContent = t.referralTitle;
       document.getElementById("referralText").textContent = t.referralText;
       document.getElementById("copyRefLinkBtn").textContent = t.copyBtn;
