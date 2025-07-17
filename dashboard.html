@@ -10,130 +10,26 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/style.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header,
-    footer {
-      background-color: #1a1a1a;
-      color: white;
-    }
-
-    main {
-      flex: 1;
-      padding: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 2rem;
-      color: #FF6B35;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .card {
-      background-color: #1a1a1a;
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      color: #fff;
-    }
-
-    .card p {
-      color: #ccc;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #777;
-    }
-
-    button.logout-btn {
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background-color: #FF6B35;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-    }
-
-    button.logout-btn:hover {
-      background-color: #cc5125;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      height: 40px;
-    }
-
-    .logo a {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      cursor: pointer;
-      color: #FF6B35;
-      transition: color 0.2s, filter 0.2s;
-    }
-
-    .logo a:hover span,
-    .logo a:hover img {
-      color: #cc5125;
-      filter: brightness(0.8);
-    }
-
-    .logo a img {
-      height: 40px;
-      transition: filter 0.2s;
-    }
-
-    .logo a span {
-      font-weight: bold;
-    }
-
-    #walletInput {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 0.5rem;
-    }
-
-    #refLink {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      background: #222;
-      color: #fff;
-      border: 1px solid #444;
-    }
-
-    canvas {
-      background: #111;
-      border-radius: 10px;
-      margin-top: 1rem;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #0e0e0e; color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+    header, footer { background-color: #1a1a1a; color: white; }
+    main { flex: 1; padding: 2rem; max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2rem; color: #FF6B35; margin-bottom: 1.5rem; text-align: center; }
+    .card { background-color: #1a1a1a; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 0 8px rgba(255, 107, 53, 0.15); }
+    .card h2 { margin-top: 0; color: #fff; }
+    .card p { color: #ccc; }
+    footer { text-align: center; padding: 1rem; font-size: 0.9rem; color: #777; }
+    button.logout-btn { margin-top: 1rem; padding: 0.6rem 1.2rem; background-color: #FF6B35; border: none; border-radius: 6px; color: white; cursor: pointer; }
+    button.logout-btn:hover { background-color: #cc5125; }
+    .logo { display: flex; align-items: center; gap: 0.75rem; height: 40px; }
+    .logo a { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; cursor: pointer; color: #FF6B35; transition: color 0.2s, filter 0.2s; }
+    .logo a:hover span, .logo a:hover img { color: #cc5125; filter: brightness(0.8); }
+    .logo a img { height: 40px; transition: filter 0.2s; }
+    .logo a span { font-weight: bold; }
+    #walletInput { width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 0.5rem; }
+    #refLink { width: 100%; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; background: #222; color: #fff; border: 1px solid #444; }
+    canvas { background: #111; border-radius: 10px; margin-top: 1rem; }
   </style>
 </head>
 
@@ -205,7 +101,7 @@
       const userData = userDoc.data();
       if (!userData) return;
 
-      if (user.email === "fabricioricard23@gmail.com") {
+      if (user.email === "SEU_EMAIL_AQUI") {
         document.getElementById("seedButton").style.display = "inline-block";
         document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
       }
@@ -213,7 +109,10 @@
       localStorage.setItem("loggedIn", "true");
 
       document.getElementById("walletInput").value = userData.walletAddress || "";
-      document.getElementById("sharedAmount").textContent = (userData.sharedGB || 0) + " GB";
+
+      const totalMB = userData.sharedMB || 0;
+      const totalGB = (totalMB / 1024).toFixed(2);
+      document.getElementById("sharedAmount").textContent = totalGB + " GB";
       document.getElementById("rewardsAmount").textContent = (userData.rewardsBIG || 0) + " BIG";
 
       const encodedEmail = encodeURIComponent(user.email);
@@ -227,7 +126,7 @@
       const dailyStats = {};
       usageSnap.forEach(doc => {
         const data = doc.data();
-        dailyStats[doc.id] = (data.shared || 0).toFixed(2);
+        dailyStats[doc.id] = data.shared ? data.shared.toFixed(2) : "0.00";
       });
 
       renderChart(dailyStats);
@@ -251,7 +150,14 @@
           }]
         },
         options: {
-          plugins: { legend: { labels: { color: "#fff" } } },
+          plugins: {
+            legend: { labels: { color: "#fff" } },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.parsed.y} MB`
+              }
+            }
+          },
           scales: {
             x: { ticks: { color: "#fff" } },
             y: { ticks: { color: "#fff" } }
@@ -263,19 +169,23 @@
     async function seedDailyUsageData() {
       const user = auth.currentUser;
       if (!user) return;
+
       const uid = user.uid;
       const ref = db.collection("users").doc(uid).collection("dailyUsage");
+
       const today = new Date();
       for (let i = 0; i < 7; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
         const yyyyMMdd = date.toISOString().split("T")[0];
         const sharedMB = Math.floor(Math.random() * 100) + 50;
+
         await ref.doc(yyyyMMdd).set({
           shared: sharedMB,
           updatedAt: new Date()
         });
       }
+
       alert("Dados inseridos com sucesso!");
       window.location.reload();
     }
@@ -329,7 +239,7 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      const lang = localStorage.getItem("lang") || "pt";
+      const lang = localStorage.getItem("lang") || "en";
       document.getElementById("languageSwitcher").value = lang;
       applyTranslations(lang);
       document.getElementById("languageSwitcher").addEventListener("change", e => {
