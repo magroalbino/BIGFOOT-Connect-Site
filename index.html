@@ -348,9 +348,7 @@
         <div class="cta-buttons">
             <a href="https://mega.nz/file/3Ipk0IbC#2x2CX3JfF1TKrpcNNvuVR2DvfVDmSbbDbXJr_Lz6cyI">Windows</a>
         </div>
-        <div class="installer-warning">
-  🛡️ <strong>Aviso:</strong> O Windows pode alertar com "<em>O Windows protegeu seu computador</em>" ao instalar o BIGFOOT Connect. Isso ocorre porque o instalador ainda não é assinado digitalmente. Para prosseguir, clique em <strong>"Mais informações"</strong> e depois em <strong>"Executar assim mesmo"</strong>. Nosso programa é totalmente seguro e <strong>não contém nada que possa prejudicar o computador do usuário</strong>.
-</div>
+        <div class="installer-warning" id="installerWarning"></div>
         <img src="./images/logo.png" alt="Preview do App" class="hero-image" />
 
         <div class="divider"></div>
@@ -445,6 +443,7 @@
                 heroTitle: "Connect. Share. Earn.",
                 heroText: "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
                 downloadWindows: "Windows",
+                installerWarning: `🛡️ <strong>Notice:</strong> Windows may show "<em>Windows protected your PC</em>" when installing BIGFOOT Connect. Click <strong>"More info"</strong> then <strong>"Run anyway"</strong>. Our app is safe.`,
                 whitepaperTitle: "📄 Project Whitepaper",
                 whitepaperText: "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
                 whitepaperBtn: "View / Download Whitepaper",
@@ -463,6 +462,7 @@
                 heroTitle: "Conecte. Compartilhe. Ganhe.",
                 heroText: "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
                 downloadWindows: "Windows",
+                installerWarning: `🛡️ <strong>Aviso:</strong> O Windows pode exibir "<em>O Windows protegeu seu computador</em>" ao instalar o BIGFOOT Connect. Clique em <strong>"Mais informações"</strong> e depois <strong>"Executar assim mesmo"</strong>. Nosso app é seguro.`,
                 whitepaperTitle: "📄 Whitepaper do Projeto",
                 whitepaperText: "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
                 whitepaperBtn: "Visualizar / Baixar Whitepaper",
@@ -492,6 +492,7 @@
             document.querySelector(".token-section p").innerHTML = t.tokenDesc;
             document.getElementById("contract-label").textContent = t.contractLabel;
             document.getElementById("roadmap-title").textContent = t.roadmapTitle;
+            document.getElementById("installerWarning").innerHTML = t.installerWarning;
             document.querySelector("footer").textContent = t.footerText;
 
             const roadmapItems = {
