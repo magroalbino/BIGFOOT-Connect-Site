@@ -15,21 +15,21 @@
 
 <body>
   <header>
-  <div class="logo">
-    <a href="index.html">
-      <img src="/images/logo.png" alt="BIGFOOT Logo" />
-      <span>BIGFOOT Connect</span>
-    </a>
-  </div>
-  <div>
-    <button class="logout-btn" id="logoutBtn">Sair</button>
-    <select id="languageSwitcher">
-      <option value="en">English</option>
-      <option value="pt">Português</option>
-    </select>
-    <button id="themeToggle" aria-label="Alternar tema">🌙</button>
-  </div>
-</header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="/images/logo.png" alt="BIGFOOT Logo" />
+        <span>BIGFOOT Connect</span>
+      </a>
+    </div>
+    <div>
+      <button class="logout-btn" id="logoutBtn">Sair</button>
+      <select id="languageSwitcher">
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+      </select>
+      <button id="themeToggle" aria-label="Alternar tema">🌙</button>
+    </div>
+  </header>
 
   <main>
     <h1>Bem-vindo ao seu Painel</h1>
@@ -253,23 +253,22 @@
         localStorage.setItem("lang", lang);
         applyTranslations(lang);
       });
+
+      // Suporte ao modo claro/escuro
+      const themeToggle = document.getElementById("themeToggle");
+      const currentTheme = localStorage.getItem("theme") || "dark";
+      if (currentTheme === "light") {
+        document.body.classList.add("light-mode");
+        themeToggle.textContent = "🌞";
+      }
+
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("light-mode");
+        const isLight = document.body.classList.contains("light-mode");
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+        themeToggle.textContent = isLight ? "🌞" : "🌙";
+      });
     });
-
-    // Adiciona suporte ao modo claro/escuro
-  const themeToggle = document.getElementById("themeToggle");
-  const currentTheme = localStorage.getItem("theme") || "dark";
-  if (currentTheme === "light") {
-    document.body.classList.add("light-mode");
-    themeToggle.textContent = "🌞";
-  }
-
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-    const isLight = document.body.classList.contains("light-mode");
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-    themeToggle.textContent = isLight ? "🌞" : "🌙";
-  });
-});
 
     function applyTranslations(lang) {
       const t = translations[lang];
