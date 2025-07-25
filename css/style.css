@@ -10,7 +10,8 @@
     --card-light: #ffffff;
     --border-light: #d0d0d0;
     --hover-light: #e8e8e8;
-    --hover-dark: #d14500; /* Novo: cor de hover mais escura para modo escuro */
+    --hover-dark: #d14500; /* Cor de hover mais escura para modo escuro */
+    --card-dark: #1a1a1a; /* Fundo dos cards no modo escuro */
 }
 
 /* Estilos gerais */
@@ -29,7 +30,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #1a1a1a;
+    background-color: var(--card-dark);
     border-bottom: 1px solid #333;
 }
 
@@ -38,7 +39,8 @@ header {
     align-items: center;
 }
 
-.logo-link {
+.logo-link,
+.logo a {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -48,12 +50,15 @@ header {
 }
 
 .logo-link:hover .logo-name,
-.logo-link:hover img {
-    color: #cc5125;
+.logo-link:hover img,
+.logo a:hover span,
+.logo a:hover img {
+    color: var(--hover-dark);
     filter: brightness(0.8);
 }
 
-.logo-link img {
+.logo-link img,
+.logo a img {
     height: 40px;
 }
 
@@ -85,7 +90,7 @@ nav a:hover {
 
 #languageSwitcher {
     margin-left: 1rem;
-    background: #1a1a1a;
+    background: var(--card-dark);
     color: var(--highlight);
     border: 1px solid #333;
     padding: 0.25rem 0.5rem;
@@ -106,6 +111,7 @@ main {
 main h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
+    color: var(--highlight);
 }
 
 main p {
@@ -249,7 +255,7 @@ main p {
 }
 
 .token-section .contract-text {
-    color: var(--muted-dark); /* Cor do contrato no modo escuro */
+    color: var(--muted-dark);
     font-size: 0.95rem;
     word-break: break-all;
 }
@@ -284,7 +290,7 @@ main p {
 }
 
 .roadmap li:hover {
-    background: var(--hover-dark); /* Cor mais escura para hover no modo escuro */
+    background: var(--hover-dark);
     color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -326,9 +332,78 @@ main p {
 footer {
     text-align: center;
     padding: 1rem;
-    background-color: #1a1a1a;
+    background-color: var(--card-dark);
     font-size: 0.9rem;
     color: #777;
+}
+
+/* Estilos do dashboard */
+.card {
+    background-color: var(--card-dark);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+}
+
+.card h2 {
+    margin-top: 0;
+    color: var(--text-dark);
+}
+
+.card p {
+    color: var(--muted-dark);
+}
+
+button.logout-btn,
+button#saveWalletBtn,
+button#copyRefLinkBtn,
+button#seedButton {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background-color: var(--highlight);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button.logout-btn:hover,
+button#saveWalletBtn:hover,
+button#copyRefLinkBtn:hover,
+button#seedButton:hover {
+    background-color: var(--hover-dark);
+}
+
+#walletInput {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--muted-dark);
+    margin-bottom: 0.5rem;
+    background-color: #222;
+    color: var(--text-dark);
+}
+
+#refLink {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background: #222;
+    color: var(--text-dark);
+    border: 1px solid #444;
+}
+
+#copyRefLinkBtn {
+    margin-bottom: 0.75rem;
+}
+
+canvas {
+    background: #111;
+    border-radius: 10px;
+    margin-top: 1rem;
 }
 
 /* Modo claro */
@@ -338,27 +413,29 @@ body.light-mode {
 }
 
 body.light-mode header {
-    background-color: #ffffff;
+    background-color: var(--card-light);
     color: var(--text-light);
     border-bottom: 1px solid var(--border-light);
 }
 
 body.light-mode nav a,
 body.light-mode .logo-link,
+body.light-mode .logo a,
 body.light-mode #languageSwitcher,
 body.light-mode #themeToggle {
     color: var(--highlight);
 }
 
 body.light-mode nav a:hover {
-    color: #d14500;
+    color: var(--hover-dark);
 }
 
 body.light-mode main p,
 body.light-mode .whitepaper p,
 body.light-mode .token-section p,
 body.light-mode .installer-warning,
-body.light-mode .roadmap li small {
+body.light-mode .roadmap li small,
+body.light-mode .card p {
     color: var(--muted-light);
 }
 
@@ -387,7 +464,7 @@ body.light-mode .roadmap li:hover {
 }
 
 body.light-mode .roadmap li:hover small {
-    color: #fff; /* Garante que o texto small fique visível no hover */
+    color: #fff;
 }
 
 body.light-mode .divider {
@@ -401,9 +478,9 @@ body.light-mode .installer-warning {
 }
 
 body.light-mode #themeToggle {
-    background: #e8e8e8;
+    background: var(--hover-light);
     border: 1px solid #999;
-    color: #333;
+    color: var(--text-light);
 }
 
 body.light-mode .socials a {
@@ -431,7 +508,47 @@ body:not(.light-mode) .socials img:hover {
 }
 
 body.light-mode .token-section .contract-text {
-    color: var(--muted-light); /* Cor do contrato no modo claro */
+    color: var(--muted-light);
+}
+
+body.light-mode .card {
+    background-color: var(--card-light);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .card h2 {
+    color: var(--text-light);
+}
+
+body.light-mode button.logout-btn,
+body.light-mode button#saveWalletBtn,
+body.light-mode button#copyRefLinkBtn,
+body.light-mode button#seedButton {
+    background-color: var(--highlight);
+    color: #fff;
+}
+
+body.light-mode button.logout-btn:hover,
+body.light-mode button#saveWalletBtn:hover,
+body.light-mode button#copyRefLinkBtn:hover,
+body.light-mode button#seedButton:hover {
+    background-color: var(--hover-dark);
+}
+
+body.light-mode #walletInput {
+    border: 1px solid var(--muted-light);
+    background-color: var(--hover-light);
+    color: var(--text-light);
+}
+
+body.light-mode #refLink {
+    background: var(--hover-light);
+    color: var(--text-light);
+    border: 1px solid #ccc;
+}
+
+body.light-mode canvas {
+    background: #f5f5f5;
 }
 
 /* Botão de alternância de tema */
