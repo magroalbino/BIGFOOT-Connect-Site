@@ -11,148 +11,19 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/css/style.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header,
-    footer {
-      background-color: #1a1a1a;
-      color: white;
-    }
-
-    main {
-      flex: 1;
-      padding: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 2rem;
-      color: #ff6b35;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .card {
-      background-color: #1a1a1a;
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      color: #fff;
-    }
-
-    .card p {
-      color: #ccc;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #777;
-    }
-
-    button.logout-btn {
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background-color: #ff6b35;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-    }
-
-    button.logout-btn:hover {
-      background-color: #cc5125;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      height: 40px;
-    }
-
-    .logo a {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      cursor: pointer;
-      color: #ff6b35;
-      transition: color 0.2s, filter 0.2s;
-    }
-
-    .logo a:hover span,
-    .logo a:hover img {
-      color: #cc5125;
-      filter: brightness(0.8);
-    }
-
-    .logo a img {
-      height: 40px;
-      transition: filter 0.2s;
-    }
-
-    .logo a span {
-      font-weight: bold;
-    }
-
-    #walletInput {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 0.5rem;
-    }
-
-    #refLink {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-      background: #222;
-      color: #fff;
-      border: 1px solid #444;
-    }
-
-    #copyRefLinkBtn {
-      margin-bottom: 0.75rem;
-    }
-
-    canvas {
-      background: #111;
-      border-radius: 10px;
-      margin-top: 1rem;
-    }
-  </style>
 </head>
 
 <body>
-  <header style="display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; border-bottom:1px solid #333;">
+  <header>
     <div class="logo">
       <a href="index.html">
         <img src="/images/logo.png" alt="BIGFOOT Logo" />
         <span>BIGFOOT Connect</span>
       </a>
     </div>
-    <div style="display:flex; gap:1rem; align-items:center;">
+    <div>
       <button class="logout-btn" id="logoutBtn">Sair</button>
-      <select id="languageSwitcher" style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
+      <select id="languageSwitcher">
         <option value="en">English</option>
         <option value="pt">Português</option>
       </select>
