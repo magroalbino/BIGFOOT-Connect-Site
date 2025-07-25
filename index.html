@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -169,20 +168,21 @@
             margin: 3rem 0;
         }
 
-.installer-warning {
-  font-size: 0.8rem;
-  color: #ccc;
-  background: #1a1a1a;
-  padding: 0.6rem 1rem;
-  margin-top: 0.4rem; /* Aproxima do botão */
-  margin-bottom: 1.2rem;
-  border-left: 3px solid #FF6B35;
-  border-radius: 5px;
-  max-width: 680px;
-  text-align: left;
-  line-height: 1.5;
-}
-        
+        .installer-warning {
+            font-size: 0.8rem;
+            color: #ccc;
+            background: #1a1a1a;
+            padding: 0.6rem 1rem;
+            margin-top: 0.4rem;
+            /* Aproxima do botão */
+            margin-bottom: 1.2rem;
+            border-left: 3px solid #FF6B35;
+            border-radius: 5px;
+            max-width: 680px;
+            text-align: left;
+            line-height: 1.5;
+        }
+
         .whitepaper {
             text-align: center;
             padding: 0 1rem 2rem;
@@ -323,6 +323,119 @@
                 gap: 0.5rem;
             }
         }
+
+        :root {
+            --bg-dark: #0e0e0e;
+            --text-dark: #fff;
+            --bg-light: #fefefe;
+            --text-light: #1a1a1a;
+            --highlight: #FF6B35;
+            --muted-dark: #ccc;
+            --muted-light: #444;
+            --card-light: #ffffff;
+            --border-light: #e0e0e0;
+            --hover-light: #f0f0f0;
+        }
+
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body.light-mode header {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        body.light-mode nav a,
+        body.light-mode .logo-link,
+        body.light-mode #languageSwitcher,
+        body.light-mode #themeToggle {
+            color: #FF6B35;
+        }
+
+        body.light-mode nav a:hover {
+            color: #d14500;
+        }
+
+        body.light-mode main p,
+        body.light-mode .whitepaper p,
+        body.light-mode .token-section p,
+        body.light-mode .installer-warning,
+        body.light-mode .roadmap li small {
+            color: var(--muted-light);
+        }
+
+        body.light-mode .cta-buttons a {
+            background-color: var(--highlight);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .cta-buttons a:hover {
+            background-color: #e25a1d;
+        }
+
+        body.light-mode .roadmap li {
+            background-color: var(--card-light);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+
+        body.light-mode .roadmap li:hover {
+            background-color: var(--highlight);
+            color: #fff;
+            border-color: var(--highlight);
+        }
+
+        body.light-mode .divider {
+            background: var(--border-light);
+        }
+
+        body.light-mode .installer-warning {
+            background-color: #fff9f5;
+            border-left: 4px solid var(--highlight);
+            padding: 0.5rem 1rem;
+        }
+
+        #themeToggle {
+            margin-left: 1rem;
+            background: transparent;
+            border: 1px solid #333;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            color: var(--highlight);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        body.light-mode #themeToggle {
+            border: 1px solid var(--border-light);
+            background-color: var(--hover-light);
+        }
+
+        /* Ícones sociais modo claro */
+        body[data-theme="light"] .socials img {
+            filter: brightness(0.2) saturate(1.2) contrast(1.5) !important;
+            transition: filter 0.3s ease;
+        }
+
+        /* Hover no modo claro */
+        body[data-theme="light"] .socials img:hover {
+            filter: brightness(0.1) saturate(1.5) contrast(2) !important;
+        }
+
+        /* Estilos para o modo escuro */
+        body[data-theme="dark"] .socials img {
+            filter: brightness(1.2) !important;
+            transition: filter 0.3s ease;
+        }
+
+        /* Hover no modo escuro */
+        body[data-theme="dark"] .socials img:hover {
+            filter: brightness(1.4) !important;
+        }
     </style>
 </head>
 
@@ -341,6 +454,7 @@
             <option value="en">English</option>
             <option value="pt">Português</option>
         </select>
+        <button id="themeToggle" aria-label="Alternar tema" title="Modo Claro/Escuro">🌙</button>
     </header>
 
     <main>
@@ -348,7 +462,8 @@
         <p>Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e
             ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!</p>
         <div class="cta-buttons">
-            <a href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.0.0/BIGFOOT.Connect.Setup.1.0.0.exe">Windows</a>
+            <a
+                href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.0.0/BIGFOOT.Connect.Setup.1.0.0.exe">Windows</a>
         </div>
         <div class="installer-warning" id="installerWarning"></div>
         <img src="./images/logo.png" alt="Preview do App" class="hero-image" />
@@ -370,10 +485,10 @@
                 O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em
                 BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
             </p>
-            <p style="color: #aaa; font-size: 0.95rem; word-break: break-all;">
+            <p style="color: #000000; font-size: 0.95rem; word-break: break-all;">
                 <strong id="contract-label">Contrato:</strong>
                 <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
-                    target="_blank" style="color: #6ee7b7; text-decoration: none;">
+                    target="_blank" style="color: #a00000; text-decoration: none;">
                     39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
                 </a>
             </p>
@@ -523,31 +638,31 @@
             });
 
             firebase.auth().onAuthStateChanged((user) => {
-  const nav = document.getElementById("userNav");
+                const nav = document.getElementById("userNav");
 
-  if (user) {
-    const username = user.email;
+                if (user) {
+                    const username = user.email;
 
-    nav.innerHTML = `
+                    nav.innerHTML = `
       <span>${t.hello}, ${username}</span>
       <a href="dashboard.html">${t.dashboard}</a>
       <a href="#" id="logout">${t.logout}</a>
     `;
 
-    document.getElementById("logout").addEventListener("click", (e) => {
-      e.preventDefault();
-      firebase.auth().signOut().then(() => {
-        localStorage.clear();
-        window.location.href = "index.html";
-      });
-    });
-  } else {
-    nav.innerHTML = `
+                    document.getElementById("logout").addEventListener("click", (e) => {
+                        e.preventDefault();
+                        firebase.auth().signOut().then(() => {
+                            localStorage.clear();
+                            window.location.href = "index.html";
+                        });
+                    });
+                } else {
+                    nav.innerHTML = `
       <a href="login.html">${t.login}</a>
       <a href="register.html">${t.register}</a>
     `;
-  }
-});
+                }
+            });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -560,6 +675,20 @@
                 const lang = e.target.value;
                 localStorage.setItem("lang", lang);
                 applyTranslations(lang);
+            });
+
+            const themeToggle = document.getElementById("themeToggle");
+            const currentTheme = localStorage.getItem("theme") || "dark";
+            if (currentTheme === "light") {
+                document.body.classList.add("light-mode");
+                themeToggle.textContent = "🌞";
+            }
+
+            themeToggle.addEventListener("click", () => {
+                document.body.classList.toggle("light-mode");
+                const isLight = document.body.classList.contains("light-mode");
+                localStorage.setItem("theme", isLight ? "light" : "dark");
+                themeToggle.textContent = isLight ? "🌞" : "🌙";
             });
         });
     </script>
