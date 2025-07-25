@@ -10,6 +10,7 @@
     --card-light: #ffffff;
     --border-light: #d0d0d0;
     --hover-light: #e8e8e8;
+    --hover-dark: #d14500; /* Novo: cor de hover mais escura para modo escuro */
 }
 
 /* Estilos gerais */
@@ -134,7 +135,7 @@ main p {
 }
 
 .cta-buttons a:hover {
-    background-color: #e25a1d;
+    background-color: var(--hover-dark);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -247,6 +248,12 @@ main p {
     text-decoration: none;
 }
 
+.token-section .contract-text {
+    color: var(--muted-dark); /* Cor do contrato no modo escuro */
+    font-size: 0.95rem;
+    word-break: break-all;
+}
+
 .roadmap {
     margin-top: 4rem;
     max-width: 700px;
@@ -273,11 +280,11 @@ main p {
     border-radius: 8px;
     border: 1px solid #444;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: background 0.3s, box-shadow 0.3s;
+    transition: background 0.3s, box-shadow 0.3s, color 0.3s;
 }
 
 .roadmap li:hover {
-    background: var(--highlight);
+    background: var(--hover-dark); /* Cor mais escura para hover no modo escuro */
     color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -362,7 +369,7 @@ body.light-mode .cta-buttons a {
 }
 
 body.light-mode .cta-buttons a:hover {
-    background-color: #e25a1d;
+    background-color: var(--hover-dark);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
 }
 
@@ -377,6 +384,10 @@ body.light-mode .roadmap li:hover {
     background-color: var(--highlight);
     color: #fff;
     border-color: var(--highlight);
+}
+
+body.light-mode .roadmap li:hover small {
+    color: #fff; /* Garante que o texto small fique visível no hover */
 }
 
 body.light-mode .divider {
@@ -419,6 +430,10 @@ body:not(.light-mode) .socials img:hover {
     filter: brightness(1.4);
 }
 
+body.light-mode .token-section .contract-text {
+    color: var(--muted-light); /* Cor do contrato no modo claro */
+}
+
 /* Botão de alternância de tema */
 #themeToggle {
     margin-left: 1rem;
@@ -443,7 +458,7 @@ select:focus {
 body.light-mode a:focus,
 body.light-mode button:focus,
 body.light-mode select:focus {
-    outline: 2px solid #e25a1d;
+    outline: 2px solid var(--hover-dark);
 }
 
 /* Media queries para responsividade */
