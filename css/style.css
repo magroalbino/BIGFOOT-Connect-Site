@@ -12,9 +12,14 @@
     --hover-light: #e8e8e8;
     --hover-dark: #d14500; /* Cor de hover mais escura para modo escuro */
     --card-dark: #1a1a1a; /* Fundo dos cards no modo escuro */
+    --form-dark: #111; /* Fundo do formulário no modo escuro */
 }
 
 /* Estilos gerais */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -60,6 +65,11 @@ header {
 .logo-link img,
 .logo a img {
     height: 40px;
+}
+
+.logo span {
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 nav {
@@ -401,9 +411,96 @@ button#seedButton:hover {
 }
 
 canvas {
-    background: #111;
+    background: var(--form-dark);
     border-radius: 10px;
     margin-top: 1rem;
+}
+
+/* Estilos do login */
+.top-bar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+form {
+    background: var(--form-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+form h2 {
+    color: var(--highlight);
+    margin: 0 0 1rem;
+}
+
+input,
+button {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+}
+
+input {
+    background: #fff;
+    color: #000;
+}
+
+button {
+    background: var(--highlight);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background: var(--hover-dark);
+}
+
+#message {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--muted-dark);
+}
+
+.register-link {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.register-link a {
+    color: var(--highlight);
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+.back-home {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.back-home a {
+    color: var(--muted-dark);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.back-home a:hover {
+    color: var(--highlight);
 }
 
 /* Modo claro */
@@ -435,7 +532,9 @@ body.light-mode .whitepaper p,
 body.light-mode .token-section p,
 body.light-mode .installer-warning,
 body.light-mode .roadmap li small,
-body.light-mode .card p {
+body.light-mode .card p,
+body.light-mode #message,
+body.light-mode .back-home a {
     color: var(--muted-light);
 }
 
@@ -523,7 +622,8 @@ body.light-mode .card h2 {
 body.light-mode button.logout-btn,
 body.light-mode button#saveWalletBtn,
 body.light-mode button#copyRefLinkBtn,
-body.light-mode button#seedButton {
+body.light-mode button#seedButton,
+body.light-mode button {
     background-color: var(--highlight);
     color: #fff;
 }
@@ -531,7 +631,8 @@ body.light-mode button#seedButton {
 body.light-mode button.logout-btn:hover,
 body.light-mode button#saveWalletBtn:hover,
 body.light-mode button#copyRefLinkBtn:hover,
-body.light-mode button#seedButton:hover {
+body.light-mode button#seedButton:hover,
+body.light-mode button:hover {
     background-color: var(--hover-dark);
 }
 
@@ -551,6 +652,22 @@ body.light-mode canvas {
     background: #f5f5f5;
 }
 
+body.light-mode form {
+    background: var(--card-light);
+}
+
+body.light-mode input {
+    background: var(--hover-light);
+    color: var(--text-light);
+    border: 1px solid var(--muted-light);
+}
+
+body.light-mode .top-bar #languageSwitcher {
+    background: var(--hover-light);
+    border: 1px solid var(--muted-light);
+    color: var(--highlight);
+}
+
 /* Botão de alternância de tema */
 #themeToggle {
     margin-left: 1rem;
@@ -566,7 +683,8 @@ body.light-mode canvas {
 /* Estilos de foco para acessibilidade */
 a:focus,
 button:focus,
-select:focus {
+select:focus,
+input:focus {
     outline: 2px solid var(--highlight);
     outline-offset: 2px;
     border-radius: 4px;
@@ -574,7 +692,8 @@ select:focus {
 
 body.light-mode a:focus,
 body.light-mode button:focus,
-body.light-mode select:focus {
+body.light-mode select:focus,
+body.light-mode input:focus {
     outline: 2px solid var(--hover-dark);
 }
 
@@ -585,5 +704,9 @@ body.light-mode select:focus {
     }
     nav {
         gap: 0.5rem;
+    }
+    form {
+        width: 100%;
+        max-width: 320px;
     }
 }
