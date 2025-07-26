@@ -215,12 +215,23 @@ body.light-mode #message {
 #themeToggle {
     background: transparent;
     border: 1px solid #333;
-    padding: 0.3rem 0.6rem;
+    padding: 0.25rem 0.5rem; /* Ajustado para corresponder ao languageSwitcher */
     border-radius: 4px;
     color: var(--highlight);
     cursor: pointer;
     transition: background 0.2s;
     margin-left: 0.5rem;
+    font-size: 1rem; /* Garante consistência no tamanho do texto/ícone */
+    line-height: 1.2; /* Alinhamento vertical consistente */
+    width: auto; /* Evita esticamento */
+    min-width: 2.5rem; /* Tamanho mínimo para consistência */
+    text-align: center; /* Centraliza o ícone */
+}
+
+body.light-mode #themeToggle {
+    border: 1px solid var(--border-light);
+    background-color: var(--hover-light);
+    color: var(--highlight);
 }
   </style>
 </head>
@@ -375,19 +386,26 @@ body.light-mode #message {
       });
 
     const themeToggle = document.getElementById("themeToggle");
-const currentTheme = localStorage.getItem("theme") || "dark";
-if (currentTheme === "light") {
-    document.body.classList.add("light-mode");
-    themeToggle.textContent = "🌞";
-}
+    if (themeToggle) {
+        const currentTheme = localStorage.getItem("theme") || "dark";
+        document.body.setAttribute("data-theme", currentTheme);
+        if (currentTheme === "light") {
+            document.body.classList.add("light-mode");
+            themeToggle.textContent = "🌞";
+        } else {
+            document.body.classList.remove("light-mode");
+            themeToggle.textContent = "🌙";
+        }
 
-themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-    const isLight = document.body.classList.contains("light-mode");
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-    themeToggle.textContent = isLight ? "🌞" : "🌙";
-});
- });   
+        themeToggle.addEventListener("click", () => {
+            const isLight = document.body.classList.toggle("light-mode");
+            const newTheme = isLight ? "light" : "dark";
+            localStorage.setItem("theme", newTheme);
+            document.body.setAttribute("data-theme", newTheme);
+            themeToggle.textContent = isLight ? "🌞" : "🌙";
+        });
+    }
+});  
 
     window.loginUser = loginUser;
   </script>
