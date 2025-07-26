@@ -7,519 +7,126 @@
     <title>BIGFOOT Connect</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #0e0e0e;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #333;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            cursor: pointer;
-            color: #FF6B35;
-        }
-
-        .logo-link:hover .logo-name,
-        .logo-link:hover img {
-            color: #cc5125;
-            filter: brightness(0.8);
-        }
-
-        .logo-link img {
-            height: 40px;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-left: auto;
-            width: auto;
-        }
-
-        nav span {
-            color: #FF6B35;
-            white-space: nowrap;
-            margin-right: 0;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #FF6B35;
-            font-weight: 500;
-            transition: color 0.2s;
-            white-space: nowrap;
-        }
-
-        nav a:hover {
-            color: #fff;
-        }
-
-        #languageSwitcher {
-            margin-left: 1rem;
-            background: #1a1a1a;
-            color: #FF6B35;
-            border: 1px solid #333;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 4rem 1rem 2rem;
-        }
-
-        main h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        main p {
-            max-width: 700px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-            color: #ccc;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .cta-buttons a {
-            background-color: #FF6B35;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .cta-buttons a:hover {
-            background-color: #cc5125;
-        }
-
-        .hero-image {
-            max-width: 400px;
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 4rem;
-            animation-name: pulse;
-            animation-duration: 2s;
-            animation-iteration-count: infinite;
-            animation-timing-function: ease-in-out;
-            animation-play-state: running;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.05);
-                opacity: 0.85;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .divider {
-            width: 100%;
-            height: 1px;
-            background: #333;
-            margin: 3rem 0;
-        }
-
-        .installer-warning {
-            font-size: 0.8rem;
-            color: #ccc;
-            background: #1a1a1a;
-            padding: 0.6rem 1rem;
-            margin-top: 0.4rem;
-            margin-bottom: 1.2rem;
-            border-left: 3px solid #FF6B35;
-            border-radius: 5px;
-            max-width: 680px;
-            text-align: left;
-            line-height: 1.5;
-        }
-
-        .whitepaper {
-            text-align: center;
-            padding: 0 1rem 2rem;
-        }
-
-        .whitepaper h2 {
-            font-size: 1.8rem;
-            color: #FF6B35;
-            margin-bottom: 1rem;
-        }
-
-        .whitepaper p {
-            color: #ccc;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        .whitepaper a {
-            display: inline-block;
-            background: #1f948c;
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .whitepaper a:hover {
-            background: #14635e;
-        }
-
-        .token-section {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-
-        .token-section h2 {
-            color: #FF6B35;
-            margin-bottom: 1rem;
-        }
-
-        .token-section p {
-            color: #ccc;
-            max-width: 700px;
-            margin: 0 auto 1rem;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        .token-section a {
-            color: #6ee7b7;
-            text-decoration: none;
-        }
-
-        .roadmap {
-            margin-top: 4rem;
-            max-width: 700px;
-            text-align: left;
-            padding: 0 1rem 4rem;
-        }
-
-        .roadmap h2 {
-            color: #FF6B35;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            text-align: center;
-        }
-
-        .roadmap ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .roadmap li {
-            background: #1a1a1a;
-            margin-bottom: 1rem;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
-            transition: background 0.3s;
-        }
-
-        .roadmap li:hover {
-            background: #FF6B35;
-        }
-
-        .roadmap li strong {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .roadmap li small {
-    font-size: 0.9rem;
-    color: #ddd; /* Cor mais clara para melhor leitura no modo escuro */
-}
-
-        .socials {
-            margin-top: 2rem;
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            padding-bottom: 3rem;
-        }
-
-        .socials a {
-            color: #ccc;
-            transition: color 0.2s;
-        }
-
-        .socials a:hover {
-            color: #FF6B35;
-        }
-
-        .socials svg {
-            width: 32px;
-            height: 32px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background-color: #1a1a1a;
-            font-size: 0.9rem;
-            color: #777;
-        }
-
-        @media (max-width: 480px) {
-            main h1 {
-                font-size: 2rem;
-            }
-
-            nav {
-                gap: 0.5rem;
-            }
-        }
-
         :root {
-            --bg-dark: #0e0e0e;
-            --text-dark: #fff;
-            --bg-light: #fefefe;
-            --text-light: #1a1a1a;
-            --highlight: #FF6B35;
-            --muted-dark: #ccc;
-            --muted-light: #444;
-            --card-light: #ffffff;
-            --border-light: #e0e0e0;
-            --hover-light: #f0f0f0;
-        }
-
-        body.light-mode {
-            background-color: var(--bg-light);
-            color: var(--text-light);
-        }
-
-        body.light-mode header {
-            background-color: #ffffff;
-            color: #1a1a1a;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        body.light-mode nav a,
-        body.light-mode .logo-link,
-        body.light-mode #languageSwitcher,
-        body.light-mode #themeToggle {
-            color: #FF6B35;
-        }
-
-        body.light-mode nav a:hover {
-            color: #d14500;
-        }
-
-        body.light-mode main p,
-        body.light-mode .whitepaper p,
-        body.light-mode .token-section p,
-        body.light-mode .installer-warning,
-        body.light-mode .roadmap li small {
-            color: var(--muted-light);
-        }
-
-        body.light-mode .cta-buttons a {
-            background-color: var(--highlight);
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        body.light-mode .cta-buttons a:hover {
-            background-color: #e25a1d;
-        }
-
-        body.light-mode .roadmap li {
-            background-color: var(--card-light);
-            color: var(--text-light);
-            border: 1px solid var(--border-light);
-        }
-
-        body.light-mode .roadmap li:hover {
-            background-color: var(--highlight);
-            color: #fff;
-            border-color: var(--highlight);
-        }
-
-        body.light-mode .divider {
-            background: var(--border-light);
-        }
-
-        body.light-mode .installer-warning {
-            background-color: #fff9f5;
-            border-left: 4px solid var(--highlight);
-            padding: 0.5rem 1rem;
-        }
-
-        #themeToggle {
-            margin-left: 1rem;
-            background: transparent;
-            border: 1px solid #333;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            color: var(--highlight);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        body.light-mode #themeToggle {
-            border: 1px solid var(--border-light);
-            background-color: var(--hover-light);
-        }
-
-        /* Ícones sociais modo claro */
-        body[data-theme="light"] .socials img {
-            filter: brightness(0.2) saturate(1.2) contrast(1.5) !important;
-            transition: filter 0.3s ease;
-        }
-
-        /* Hover no modo claro */
-        body[data-theme="light"] .socials img:hover {
-            filter: brightness(0.1) saturate(1.5) contrast(2) !important;
-        }
-
-        /* Estilos para o modo escuro */
-        body[data-theme="dark"] .socials img {
-            filter: brightness(1.2) !important;
-            transition: filter 0.3s ease;
-        }
-
-        /* Hover no modo escuro */
-        body[data-theme="dark"] .socials img:hover {
-            filter: brightness(1.4) !important;
-        }
-
-        /* Melhorar visibilidade no modo escuro */
-        body[data-theme="dark"] #contract-label {
-            color: #fff !important; /* Branco puro para máximo contraste */
-            background: rgba(255, 107, 53, 0.2); /* Fundo laranja translúcido */
-            padding: 0.2rem 0.4rem; /* Espaçamento interno para destaque */
-            border-radius: 4px; /* Bordas arredondadas */
-        }
-
-        body[data-theme="dark"] #roadmap-title {
-            color: #fff !important; /* Branco puro */
-            background: rgba(255, 107, 53, 0.2); /* Fundo laranja translúcido */
-            padding: 0.2rem 0.4rem; /* Espaçamento */
-            border-radius: 4px; /* Bordas arredondadas */
-            display: inline-block; /* Para o fundo se ajustar ao texto */
-        }
-
-        /* Melhorar visibilidade no modo claro */
-        body[data-theme="light"] #contract-label {
-            color: #1a1a1a !important; /* Preto suave, consistente com --text-light */
-            background: rgba(209, 69, 0, 0.1); /* Fundo laranja claro para destaque */
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        body[data-theme="light"] #roadmap-title {
-            color: #1a1a1a !important; /* Preto suave */
-            background: rgba(209, 69, 0, 0.1); /* Fundo laranja claro */
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        /* Melhorar cabeçalho no modo claro */
-        body[data-theme="light"] .logo-link,
-        body[data-theme="light"] nav span,
-        body[data-theme="light"] nav a {
-            color: #d14500 !important; /* Laranja escuro para maior contraste */
-        }
-
-        body[data-theme="light"] nav a:hover {
-            color: #1a1a1a !important; /* Preto suave no hover */
-        }
-
-        /* Estilo base para small no modo escuro */
-        body[data-theme="dark"] .roadmap li small {
-  all: unset;
-  display: inline;
-  color: #fff !important;
-  font-size: 0.95rem !important;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
-  font-weight: 500 !important;
+  --bg: #ffffff;
+  --text: #000000;
+  --primary: #0056b3;
+  --secondary: #f0f0f0;
 }
 
-        /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
-        body[data-theme="dark"] .roadmap li:hover {
-            background: #d14500; /* Laranja mais escuro para contraste */
-            color: #ffffff !important; /* Branco puro para texto principal */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6); /* Sombra pronunciada */
-            border: 1px solid #ff8c5a; /* Borda laranja clara */
-            transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s; /* Transição suave */
-        }
+[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --text: #ffffff;
+  --primary: #3399ff;
+  --secondary: #2a2a2a;
+}
 
-        body[data-theme="dark"] .roadmap li:hover strong {
-            color: #ffffff !important; /* Branco puro para título */
-            font-weight: 700; /* Negrito para destaque */
-        }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+}
 
-        body[data-theme="dark"] .roadmap li:hover small {
-            color: #00ff00 !important; /* Verde limão vibrante para descrição no hover */
-        }
+/* Navegação */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg);
+  padding: 10px 20px;
+}
 
-        /* Melhorar visibilidade do cabeçalho no modo claro */
-        body[data-theme="light"] .logo-link,
-        body[data-theme="light"] nav span,
-        body[data-theme="light"] nav a {
-            color: #1a1a1a !important; /* Preto suave para máximo contraste */
-        }
+nav a,
+nav span {
+  color: var(--text);
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s;
+}
 
-        body[data-theme="light"] .logo-link:hover .logo-name,
-        body[data-theme="light"] .logo-link:hover img {
-            color: #d14500 !important; /* Laranja escuro no hover do logo */
-            filter: brightness(0.8);
-        }
+nav a:hover {
+  color: var(--primary);
+}
 
-        body[data-theme="light"] nav a:hover {
-            color: #d14500 !important; /* Laranja escuro no hover dos links */
-        }
+.logo-link img {
+  height: 30px;
+  vertical-align: middle;
+}
+
+/* Título Centralizado */
+.header-center {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Seções */
+section {
+  padding: 20px;
+}
+
+section h2 {
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+/* Roadmap */
+.roadmap {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.roadmap li {
+  margin-bottom: 15px;
+  background-color: var(--secondary);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.roadmap li small {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: var(--text);
+  text-shadow: none;
+}
+
+/* Visibilidade extra no modo escuro */
+body[data-theme="dark"] .roadmap li small {
+  color: #e0e0e0;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Botões de ícone */
+.icon-button {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  margin: 0 4px;
+  transition: color 0.3s;
+}
+
+.icon-button:hover {
+  color: var(--primary);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-center {
+    margin-top: 20px;
+  }
+}
     </style>
 </head>
 
