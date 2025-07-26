@@ -478,17 +478,20 @@
         }
 
         /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
-        body[data-theme="dark"] .roadmap li:hover {
-            color: #fff !important; /* Branco puro para texto principal */
-        }
+body[data-theme="dark"] .roadmap li:hover {
+    background: rgba(255, 107, 53, 0.8); /* Fundo laranja mais escuro e translúcido */
+    color: #fff !important; /* Branco puro para texto principal */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil para destaque */
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s; /* Transição suave */
+}
 
-        body[data-theme="dark"] .roadmap li:hover strong {
-            color: #fff !important; /* Branco para título */
-        }
+body[data-theme="dark"] .roadmap li:hover strong {
+    color: #fff !important; /* Branco para título */
+}
 
-        body[data-theme="dark"] .roadmap li:hover small {
-            color: #e0e0e0 !important; /* Cinza claro para descrição */
-        }
+body[data-theme="dark"] .roadmap li:hover small {
+    color: #e6e6e6 !important; /* Cinza claro para descrição */
+}
 
         /* Melhorar visibilidade do cabeçalho no modo claro */
         body[data-theme="light"] .logo-link,
