@@ -55,7 +55,6 @@
             align-items: center;
             gap: 1rem;
             margin-left: auto;
-            /* força alinhamento à direita */
             width: auto;
         }
 
@@ -136,7 +135,6 @@
             width: 100%;
             border-radius: 12px;
             margin-bottom: 4rem;
-
             animation-name: pulse;
             animation-duration: 2s;
             animation-iteration-count: infinite;
@@ -174,7 +172,6 @@
             background: #1a1a1a;
             padding: 0.6rem 1rem;
             margin-top: 0.4rem;
-            /* Aproxima do botão */
             margin-bottom: 1.2rem;
             border-left: 3px solid #FF6B35;
             border-radius: 5px;
@@ -435,6 +432,26 @@
         /* Hover no modo escuro */
         body[data-theme="dark"] .socials img:hover {
             filter: brightness(1.4) !important;
+        }
+
+        /* Melhorar visibilidade no modo escuro */
+        body[data-theme="dark"] #contract-label {
+            color: #FF6B35 !important; /* Cor laranja de destaque para visibilidade */
+        }
+
+        body[data-theme="dark"] #roadmap-title {
+            color: #fff !important; /* Branco puro para maior contraste */
+            text-shadow: 0 0 4px rgba(255, 107, 53, 0.5); /* Sombra sutil para destaque */
+        }
+
+        /* Garantir consistência no modo claro */
+        body[data-theme="light"] #contract-label {
+            color: #d14500 !important; /* Laranja escuro para modo claro */
+        }
+
+        body[data-theme="light"] #roadmap-title {
+            color: #1a1a1a !important; /* Cor escura para modo claro */
+            text-shadow: none; /* Remove sombra no modo claro */
         }
     </style>
 </head>
