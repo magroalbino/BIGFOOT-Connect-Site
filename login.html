@@ -137,6 +137,91 @@
     .back-home a:hover {
       color: #FF6B35;
     }
+
+    :root {
+    --bg-dark: #0e0e0e;
+    --text-dark: #fff;
+    --bg-light: #fefefe;
+    --text-light: #1a1a1a;
+    --highlight: #FF6B35;
+    --muted-dark: #ccc;
+    --muted-light: #444;
+    --card-light: #ffffff;
+    --border-light: #e0e0e0;
+    --hover-light: #f0f0f0;
+}
+
+body.light-mode {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+body.light-mode .top-bar {
+    background-color: transparent;
+}
+
+body.light-mode #languageSwitcher,
+body.light-mode #themeToggle {
+    color: var(--highlight);
+    border: 1px solid var(--border-light);
+    background-color: var(--hover-light);
+}
+
+body.light-mode .logo span {
+    color: #d14500; /* Laranja mais escuro para contraste */
+}
+
+body.light-mode form {
+    background-color: var(--card-light);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+}
+
+body.light-mode input {
+    background-color: #f5f5f5; /* Fundo claro para inputs */
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+}
+
+body.light-mode button {
+    background-color: #e25a1d; /* Laranja mais escuro */
+    color: #fff;
+}
+
+body.light-mode button:hover {
+    background-color: #cc5125;
+}
+
+body.light-mode .register-link a {
+    color: #d14500;
+}
+
+body.light-mode .register-link a:hover {
+    color: var(--highlight);
+}
+
+body.light-mode .back-home a {
+    color: var(--muted-light);
+}
+
+body.light-mode .back-home a:hover {
+    color: var(--highlight);
+}
+
+body.light-mode #message {
+    color: var(--text-light);
+}
+
+#themeToggle {
+    background: transparent;
+    border: 1px solid #333;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    color: var(--highlight);
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 0.5rem;
+}
   </style>
 </head>
 
@@ -146,6 +231,7 @@
       <option value="en">English</option>
       <option value="pt">Português</option>
     </select>
+    <button id="themeToggle" aria-label="Alternar tema">🌙</button>
   </div>
 
   <div class="logo">
@@ -287,7 +373,21 @@
         localStorage.setItem("lang", lang);
         applyTranslations(lang);
       });
-    });
+
+    const themeToggle = document.getElementById("themeToggle");
+const currentTheme = localStorage.getItem("theme") || "dark";
+if (currentTheme === "light") {
+    document.body.classList.add("light-mode");
+    themeToggle.textContent = "🌞";
+}
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    themeToggle.textContent = isLight ? "🌞" : "🌙";
+});
+ });   
 
     window.loginUser = loginUser;
   </script>
