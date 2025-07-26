@@ -17,7 +17,6 @@
       box-sizing: border-box;
     }
 
-    /* Seu estilo permanece igual */
     body {
       font-family: sans-serif;
       background: #000;
@@ -134,14 +133,110 @@
     .back-home a:hover {
       color: #FF6B35;
     }
+
+    :root {
+      --bg-dark: #0e0e0e;
+      --text-dark: #fff;
+      --bg-light: #fefefe;
+      --text-light: #1a1a1a;
+      --highlight: #FF6B35;
+      --muted-dark: #ccc;
+      --muted-light: #444;
+      --card-light: #ffffff;
+      --border-light: #e0e0e0;
+      --hover-light: #f0f0f0;
+    }
+
+    body.light-mode {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body.light-mode #languageSwitcher,
+    body.light-mode #themeToggle {
+      color: var(--highlight);
+      border: 1px solid var(--border-light);
+      background-color: var(--hover-light);
+    }
+
+    body.light-mode .logo span {
+      color: #d14500;
+    }
+
+    body.light-mode form {
+      background-color: var(--card-light);
+      color: var(--text-light);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode input {
+      background-color: #f5f5f5;
+      color: var(--text-light);
+      border: 1px solid var(--border-light);
+    }
+
+    body.light-mode button {
+      background-color: #14635e;
+      color: #fff;
+    }
+
+    body.light-mode button:hover {
+      background-color: #0f4c47;
+    }
+
+    body.light-mode .login-link a {
+      color: #14635e;
+    }
+
+    body.light-mode .login-link a:hover {
+      color: #1F948C;
+    }
+
+    body.light-mode .back-home a {
+      color: var(--muted-light);
+    }
+
+    body.light-mode .back-home a:hover {
+      color: var(--highlight);
+    }
+
+    body.light-mode #message {
+      color: var(--text-light);
+    }
+
+    #themeToggle {
+      background: transparent;
+      border: 1px solid #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      color: var(--highlight);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.2;
+      width: auto;
+      min-width: 2.5rem;
+      text-align: center;
+    }
+
+    body.light-mode #themeToggle {
+      border: 1px solid var(--border-light);
+      background-color: var(--hover-light);
+      color: var(--highlight);
+    }
   </style>
 </head>
 
 <body>
-  <select id="languageSwitcher">
-    <option value="en">English</option>
-    <option value="pt">Português</option>
-  </select>
+  <div class="top-bar">
+    <select id="languageSwitcher">
+      <option value="en">English</option>
+      <option value="pt">Português</option>
+    </select>
+    <button id="themeToggle" aria-label="Alternar tema">🌙</button>
+  </div>
 
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
@@ -214,47 +309,47 @@
     }
 
     document.getElementById("registerForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
+      event.preventDefault();
 
-  const lang = localStorage.getItem("lang") || "pt";
-  const t = translations[lang];
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const message = document.getElementById("message");
+      const lang = localStorage.getItem("lang") || "pt";
+      const t = translations[lang];
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
 
-  message.textContent = "";
-  message.style.color = "white";
+      message.textContent = "";
+      message.style.color = "white";
 
-  if (!email || !password) {
-    message.style.color = "red";
-    message.textContent = t.fillRequired;
-    return;
-  }
+      if (!email || !password) {
+        message.style.color = "red";
+        message.textContent = t.fillRequired;
+        return;
+      }
 
-  try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const user = userCredential.user;
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get("ref");
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get("ref");
 
-    await db.collection("users").doc(user.uid).set({
-      email: user.email,
-      referredBy: ref || null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        await db.collection("users").doc(user.uid).set({
+          email: user.email,
+          referredBy: ref || null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        message.style.color = "green";
+        message.textContent = t.success;
+
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+      } catch (error) {
+        message.style.color = "red";
+        message.textContent = `${t.error} ${error.message}`;
+      }
     });
-
-    message.style.color = "green";
-    message.textContent = t.success;
-
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 2000);
-  } catch (error) {
-    message.style.color = "red";
-    message.textContent = `${t.error} ${error.message}`;
-  }
-});
 
     document.addEventListener("DOMContentLoaded", () => {
       const languageSwitcher = document.getElementById("languageSwitcher");
@@ -268,6 +363,26 @@
         localStorage.setItem("lang", lang);
         applyTranslations(lang);
       });
+
+      const themeToggle = document.getElementById("themeToggle");
+      if (!themeToggle) {
+        console.error("Botão themeToggle não encontrado!");
+      } else {
+        const currentTheme = localStorage.getItem("theme") || "dark";
+        console.log("Tema inicial:", currentTheme);
+        document.body.setAttribute("data-theme", currentTheme);
+        document.body.classList.toggle("light-mode", currentTheme === "light");
+        themeToggle.textContent = currentTheme === "light" ? "🌞" : "🌙";
+
+        themeToggle.addEventListener("click", () => {
+          console.log("Botão themeToggle clicado");
+          const isLight = document.body.classList.toggle("light-mode");
+          const newTheme = isLight ? "light" : "dark";
+          localStorage.setItem("theme", newTheme);
+          document.body.setAttribute("data-theme", newTheme);
+          themeToggle.textContent = isLight ? "🌞" : "🌙";
+        });
+      }
     });
   </script>
 </body>
