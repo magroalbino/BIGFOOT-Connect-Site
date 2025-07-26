@@ -470,6 +470,30 @@
         body[data-theme="light"] .logo-link,
         body[data-theme="light"] nav span,
         body[data-theme="light"] nav a {
+            color: #d14500 !important; /* Laranja escuro para maior contraste */
+        }
+
+        body[data-theme="light"] nav a:hover {
+            color: #1a1a1a !important; /* Preto suave no hover */
+        }
+
+        /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
+        body[data-theme="dark"] .roadmap li:hover {
+            color: #fff !important; /* Branco puro para texto principal */
+        }
+
+        body[data-theme="dark"] .roadmap li:hover strong {
+            color: #fff !important; /* Branco para título */
+        }
+
+        body[data-theme="dark"] .roadmap li:hover small {
+            color: #e0e0e0 !important; /* Cinza claro para descrição */
+        }
+
+        /* Melhorar visibilidade do cabeçalho no modo claro */
+        body[data-theme="light"] .logo-link,
+        body[data-theme="light"] nav span,
+        body[data-theme="light"] nav a {
             color: #1a1a1a !important; /* Preto suave para máximo contraste */
         }
 
@@ -481,33 +505,6 @@
 
         body[data-theme="light"] nav a:hover {
             color: #d14500 !important; /* Laranja escuro no hover dos links */
-        }
-
-        /* Melhorar visibilidade do Project Roadmap no modo escuro */
-        body[data-theme="dark"] .roadmap li {
-            background: #252525 !important; /* Cinza mais claro para contraste */
-            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.2); /* Sombra laranja sutil */
-            border: 1px solid #333; /* Borda para definição */
-        }
-
-        body[data-theme="dark"] .roadmap li strong {
-            color: #fff !important; /* Branco puro para título */
-        }
-
-        body[data-theme="dark"] .roadmap li small {
-            color: #e0e0e0 !important; /* Cinza claro para descrição */
-        }
-
-        body[data-theme="dark"] .roadmap li:hover {
-            background: #d14500 !important; /* Laranja escuro para hover */
-            color: #fff !important; /* Branco puro para texto principal */
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4); /* Sombra mais forte no hover */
-            border: 1px solid #FF6B35; /* Borda laranja para destaque */
-        }
-
-        body[data-theme="dark"] .roadmap li:hover strong,
-        body[data-theme="dark"] .roadmap li:hover small {
-            color: #fff !important; /* Branco puro para título e descrição no hover */
         }
     </style>
 </head>
@@ -580,19 +577,19 @@
             <a href="https://discord.gg/mkfmncN5Sa" target="_blank" aria-label="Discord">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
-                        d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.233 18.233 0 0 0-5.487 0 12.66 12.66 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C.533 9.045-.32 13.579.099 18.057a.086.086 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.057.076.076 0 0 0 .084-.027c.461-.63.873-1.295 1.226-1.993a.076.076 0 0 0-.041-.105 13.181 13.181 0 0 1-1.872-.896.076.076 0 0 1-.008-.127c.126-.094.252-.191.371-.291a.074.074 0 0 1 .077-.01c3.927 1.794 8.18 1.794 12.061 0a.074.074 0 0 1 .078.01c.12.1.245.197.371.291a.076.076 0 0 1-.006.127 12.316 12.316 0 0 1-1.874.896.076.076 0 0 0-.041.105c.36.698.772 1.362 1.226 1.993a.076.076 0 0 0 .084.027 19.888 19.888 0 0 0 6.001-3.057.076.076 0 0 0 .03-.057c.5-5.177-.838-9.664-3.568-13.661a.06.06 0 0 0-.032-.027ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.418Zm7.956 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.441 2.419Z" />
+                        d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.233 18.233 0 0 0-5.487 0 12.66 12.66 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C.533 9.045-.32 13.579.099 18.057a.086.086 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.057.076.076 0 0 0 .084-.027c.461-.63.873-1.295 1.226-1.993a.076.076 0 0 0-.041-.105 13.181 13.181 0 0 1-1.872-.896.076.076 0 0 1-.008-.127c.126-.094.252-.191.371-.291a.074.074 0 0 1 .077-.01c3.927 1.794 8.18 1.794 12.061 0a.074.074 0 0 1 .078.01c.12.1.245.197.371.291a.076.076 0 0 1-.006.127 12.316 12.316 0 0 1-1.874.896.076.076 0 0 0-.041.105c.36.698.772 1.362 1.226 1.993a.076.076 0 0 0 .084.027 19.888 19.888 0 0 0 6.001-3.057.076.076 0 0 0 .03-.057c.5-5.177-.838-9.664-3.568-13.661a.06.06 0 0 0-.032-.027ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.955 2.418-2.157 2.418Zm7.956 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.947 2.418-2.157 2.418Z" />
                 </svg>
             </a>
             <a href="https://t.me/+qrkA9s2VTxVhMzcx" target="_blank" aria-label="Telegram">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
-                        d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12-5.372 12-12 12zm5.292 7.665-1.68 8.91c-.45.558-.456.696-.923.435l-2.553-1.885-1.232 1.188c-.136.135-.336.25-.512.25l.184-2.626 4.776-4.318c.207-.184-.046-.287-.322-.104l-5.902 3.791-2.544-.795c-.552-.174-.336-.552.116-.816l9.933-3.826c.46-.173.861.105.713.807z" />
+                        d="M12 0C5.372 0 0 5.373 0 12c0 6.627 5.372 12 12 12s12-5.373 12-12S18.628 0 12 0zm5.292 7.665-1.68 7.92c-.126.558-.456.696-.923.435l-2.553-1.885-1.232 1.188c-.136.135-.25.25-.512.25l.184-2.626 4.776-4.318c.207-.184-.046-.287-.322-.104l-5.902 3.7-2.544-.795c-.552-.174-.563-.552.116-.816l9.933-3.826c.46-.173.861.105.713.807z" />
                 </svg>
             </a>
             <a href="https://x.com/BIGFOOT_Connect" target="_blank" aria-label="X">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path
-                        d="M20.662 3H17.27l-4.42 5.713L8.63 3H3l6.911 9.283L3.3 21h3.393l4.718-6.085L15.48 21h5.52l-7.091-9.576L20.662 3zm-3.663 16h-1.218l-3.8-5.16-4.14 5.16H6.999l5.3-6.644L6.7 5h1.215l3.58 4.865 4.01-5.865h1.224l-5.05 6.434L17 19z" />
+                        d="M20.662 3H17.27l-4.42 5.713L8.63 3H3l6.911 9.283L3.3 21h3.393l4.718-6.085L15.48 21h5.52l-7.091-9.576L20.662 3zm-3.663 16h-1.218l-3.8-5.16-4.14 5.16H6.999l5.3-6.644L6.7 5h1.215l3.58 4.865L15.504 5h1.224l-5.05 6.434L17 19z" />
                 </svg>
             </a>
             <a href="https://www.youtube.com/@bigfootconnect" target="_blank" aria-label="YouTube">
@@ -633,13 +630,13 @@
                 heroTitle: "Connect. Share. Earn.",
                 heroText: "With <strong>BIGFOOT Connect</strong>, you share your idle internet, help decentralize the web, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!",
                 downloadWindows: "Windows",
-                installerWarning: `🛡️ <strong>Notice:</strong> When installing BIGFOOT Connect, Windows might display "<em>Windows protected your PC</em>" because the installer is not digitally signed yet. To continue, click <strong>"More info"</strong> and then <strong>"Run anyway"</strong>. Rest assured, our application is entirely safe and <strong>does not contain any harmful components</strong>.`,
+                installerWarning: `🛡️ <strong>Notice:</strong> When installing BIGFOOT Connect, Windows might display "<em>Windows protected your PC</em>" because the installer is not digitally signed yet. To continue, click <strong>"More info"</strong> and then <strong>"Run anyway"</strong>. Rest assured, our application is completely safe and <strong>does not contain anything that could harm your computer</strong>.`,
                 whitepaperTitle: "📄 Project Whitepaper",
-                whitepaperText: "Want to know how BIGFOOT Connect works, the technologies behind it, and how you’re rewarded for sharing your internet? Check out our full whitepaper.",
+                whitepaperText: "Want to know how BIGFOOT Connect works, the technology behind it, and how you get rewarded for sharing your internet? Check out our full whitepaper.",
                 whitepaperBtn: "View / Download Whitepaper",
-                tokenTitle: "💰 BIG Token ($BIG)",
-                tokenDesc: "The <strong>$BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
-                roadmapTitle: "� Roadmap",
+                tokenTitle: "💰 BIG Token (BIG)",
+                tokenDesc: "The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing idle internet and contributing to network decentralization.",
+                roadmapTitle: "🗺️ Project Roadmap",
                 footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
                 login: "Login",
                 register: "Register",
@@ -649,15 +646,15 @@
                 contractLabel: "Contract:"
             },
             pt: {
-                heroTitle: "Conecte. Compartilhe.",
-                heroText: "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>$BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
+                heroTitle: "Conecte. Compartilhe. Ganhe.",
+                heroText: "Com o <strong>BIGFOOT Connect</strong>, você compartilha sua internet ociosa, ajuda a descentralizar a web e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!",
                 downloadWindows: "Windows",
-                installerWarning: `🛡️🌐 <strong>Aviso:</strong> O Windows pode exibir "<em>O Windows protegeu seu PC</em>" ao instalar o BIGFOOT Connect, pois o instalador ainda não é assinado digitalmente. Para prosseguir, clique em <strong>"Mais informações"</strong> e depois <strong>"Executar mesmo assim"</strong>. Nosso programa é totalmente seguro e <strong>não contém nada que possa prejudicar seu computador</strong>.`,
+                installerWarning: `🛡️ <strong>Aviso:</strong> O Windows pode exibir "<em>O Windows protegeu seu computador</em>" ao instalar o BIGFOOT Connect. Isso ocorre porque o instalador ainda não é assinado digitalmente. Para prosseguir, clique em <strong>"Mais informações"</strong> e depois <strong>"Executar assim mesmo"</strong>. Nosso programa é totalmente seguro e <strong>não contém nada que possa prejudicar o computador do usuário</strong>.`,
                 whitepaperTitle: "📄 Whitepaper do Projeto",
                 whitepaperText: "Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado por compartilhar sua internet? Confira nosso whitepaper completo.",
                 whitepaperBtn: "Visualizar / Baixar Whitepaper",
-                tokenTitle: "💰 Token BIG ($BIG)",
-                tokenDesc: "O <strong>$BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
+                tokenTitle: "💰 Token BIG (BIG)",
+                tokenDesc: "O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.",
                 roadmapTitle: "🗺️ Roadmap do Projeto",
                 footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
                 login: "Login",
