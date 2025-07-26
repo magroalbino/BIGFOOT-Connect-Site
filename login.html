@@ -10,7 +10,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <style>
     * {
@@ -67,14 +67,12 @@
       padding: 2rem;
       border-radius: 8px;
       width: 320px;
-      /* Deixe igual ao register.html para consistência */
       display: flex;
       flex-direction: column;
       gap: 1rem;
       align-items: center;
     }
 
-    /* Uniformizar input e button */
     input,
     button {
       width: 100%;
@@ -85,11 +83,8 @@
     }
 
     input {
-      /* Somente o necessário */
       background: white;
-      /* Se quiser campo branco */
       color: black;
-      /* Texto escuro para contraste */
     }
 
     button {
@@ -139,100 +134,100 @@
     }
 
     :root {
-    --bg-dark: #0e0e0e;
-    --text-dark: #fff;
-    --bg-light: #fefefe;
-    --text-light: #1a1a1a;
-    --highlight: #FF6B35;
-    --muted-dark: #ccc;
-    --muted-light: #444;
-    --card-light: #ffffff;
-    --border-light: #e0e0e0;
-    --hover-light: #f0f0f0;
-}
+      --bg-dark: #0e0e0e;
+      --text-dark: #fff;
+      --bg-light: #fefefe;
+      --text-light: #1a1a1a;
+      --highlight: #FF6B35;
+      --muted-dark: #ccc;
+      --muted-light: #444;
+      --card-light: #ffffff;
+      --border-light: #e0e0e0;
+      --hover-light: #f0f0f0;
+    }
 
-body.light-mode {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-}
+    body.light-mode {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
 
-body.light-mode .top-bar {
-    background-color: transparent;
-}
+    body.light-mode .top-bar {
+      background-color: transparent;
+    }
 
-body.light-mode #languageSwitcher,
-body.light-mode #themeToggle {
-    color: var(--highlight);
-    border: 1px solid var(--border-light);
-    background-color: var(--hover-light);
-}
+    body.light-mode #languageSwitcher,
+    body.light-mode #themeToggle {
+      color: var(--highlight);
+      border: 1px solid var(--border-light);
+      background-color: var(--hover-light);
+    }
 
-body.light-mode .logo span {
-    color: #d14500; /* Laranja mais escuro para contraste */
-}
+    body.light-mode .logo span {
+      color: #d14500;
+    }
 
-body.light-mode form {
-    background-color: var(--card-light);
-    color: var(--text-light);
-    border: 1px solid var(--border-light);
-}
+    body.light-mode form {
+      background-color: var(--card-light);
+      color: var(--text-light);
+      border: 1px solid var(--border-light);
+    }
 
-body.light-mode input {
-    background-color: #f5f5f5; /* Fundo claro para inputs */
-    color: var(--text-light);
-    border: 1px solid var(--border-light);
-}
+    body.light-mode input {
+      background-color: #f5f5f5;
+      color: var(--text-light);
+      border: 1px solid var(--border-light);
+    }
 
-body.light-mode button {
-    background-color: #e25a1d; /* Laranja mais escuro */
-    color: #fff;
-}
+    body.light-mode button {
+      background-color: #e25a1d;
+      color: #fff;
+    }
 
-body.light-mode button:hover {
-    background-color: #cc5125;
-}
+    body.light-mode button:hover {
+      background-color: #cc5125;
+    }
 
-body.light-mode .register-link a {
-    color: #d14500;
-}
+    body.light-mode .register-link a {
+      color: #d14500;
+    }
 
-body.light-mode .register-link a:hover {
-    color: var(--highlight);
-}
+    body.light-mode .register-link a:hover {
+      color: var(--highlight);
+    }
 
-body.light-mode .back-home a {
-    color: var(--muted-light);
-}
+    body.light-mode .back-home a {
+      color: var(--muted-light);
+    }
 
-body.light-mode .back-home a:hover {
-    color: var(--highlight);
-}
+    body.light-mode .back-home a:hover {
+      color: var(--highlight);
+    }
 
-body.light-mode #message {
-    color: var(--text-light);
-}
+    body.light-mode #message {
+      color: var(--text-light);
+    }
 
-#themeToggle {
-    background: transparent;
-    border: 1px solid #333;
-    padding: 0.25rem 0.5rem; /* Ajustado para corresponder ao languageSwitcher */
-    border-radius: 4px;
-    color: var(--highlight);
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-left: 0.5rem;
-    font-size: 1rem; /* Garante consistência no tamanho do texto/ícone */
-    line-height: 1.2; /* Alinhamento vertical consistente */
-    width: auto; /* Evita esticamento */
-    min-width: 2.5rem; /* Tamanho mínimo para consistência */
-    text-align: center; /* Centraliza o ícone */
-}
+    #themeToggle {
+      background: transparent;
+      border: 1px solid #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      color: var(--highlight);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.2;
+      width: auto;
+      min-width: 2.5rem;
+      text-align: center;
+    }
 
-body.light-mode #themeToggle {
-    border: 1px solid var(--border-light);
-    background-color: var(--hover-light);
-    color: var(--highlight);
-}
+    body.light-mode #themeToggle {
+      border: 1px solid var(--border-light);
+      background-color: var(--hover-light);
+      color: var(--highlight);
+    }
   </style>
 </head>
 
@@ -283,12 +278,12 @@ body.light-mode #themeToggle {
 
     // Define persistência local explícita (opcional, mas recomendado)
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-  .then(() => {
-    console.log("Persistência LOCAL ativada");
-  })
-  .catch((error) => {
-    console.error("Erro ao definir persistência:", error);
-  });
+      .then(() => {
+        console.log("Persistência LOCAL ativada");
+      })
+      .catch((error) => {
+        console.error("Erro ao definir persistência:", error);
+      });
 
     // Redireciona automaticamente se o usuário já estiver logado
     auth.onAuthStateChanged((user) => {
@@ -327,7 +322,7 @@ body.light-mode #themeToggle {
     function applyTranslations(lang) {
       const t = translations[lang];
       document.getElementById("form-title").textContent = t.formTitle;
-      document.getElementById("username").placeholder = t.username;
+      document.getElementById("email").placeholder = t.username; // Corrigido de "username" para "email"
       document.getElementById("password").placeholder = t.password;
       document.getElementById("login-button").textContent = t.loginBtn;
       document.getElementById("register-link").textContent = t.registerLink;
@@ -335,43 +330,43 @@ body.light-mode #themeToggle {
     }
 
     async function loginUser(event) {
-  event.preventDefault();
+      event.preventDefault();
 
-  const lang = localStorage.getItem("lang") || "en";
-  const t = translations[lang];
+      const lang = localStorage.getItem("lang") || "en";
+      const t = translations[lang];
 
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const message = document.getElementById('message');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const message = document.getElementById('message');
 
-  message.textContent = '';
-  message.style.color = 'white';
+      message.textContent = '';
+      message.style.color = 'white';
 
-  if (!email || !password) {
-    message.style.color = 'red';
-    message.textContent = t.fillAll;
-    return;
-  }
+      if (!email || !password) {
+        message.style.color = 'red';
+        message.textContent = t.fillAll;
+        return;
+      }
 
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    const user = auth.currentUser;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        const user = auth.currentUser;
 
-    localStorage.setItem('userId', user.uid);
-    localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userId', user.uid);
+        localStorage.setItem('userEmail', user.email);
 
-    message.style.color = 'green';
-    message.textContent = t.success;
+        message.style.color = 'green';
+        message.textContent = t.success;
 
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 1000);
-  } catch (err) {
-    message.style.color = 'red';
-    message.textContent = t.notFound;
-    console.error(t.loginError, err.message);
-  }
-}
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = t.notFound;
+        console.error(t.loginError, err.message);
+      }
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       const languageSwitcher = document.getElementById("languageSwitcher");
@@ -385,31 +380,27 @@ body.light-mode #themeToggle {
         applyTranslations(lang);
       });
 
-    const themeToggle = document.getElementById("themeToggle");
-    if (!themeToggle) {
+      // Código do themeToggle movido para fora do DOMContentLoaded
+      const themeToggle = document.getElementById("themeToggle");
+      if (!themeToggle) {
         console.error("Botão themeToggle não encontrado!");
-    } else {
+      } else {
         const currentTheme = localStorage.getItem("theme") || "dark";
-        console.log("Tema inicial:", currentTheme); // Depuração
+        console.log("Tema inicial:", currentTheme);
         document.body.setAttribute("data-theme", currentTheme);
-        if (currentTheme === "light") {
-            document.body.classList.add("light-mode");
-            themeToggle.textContent = "🌞";
-        } else {
-            document.body.classList.remove("light-mode");
-            themeToggle.textContent = "🌙";
-        }
+        document.body.classList.toggle("light-mode", currentTheme === "light");
+        themeToggle.textContent = currentTheme === "light" ? "🌞" : "🌙";
 
         themeToggle.addEventListener("click", () => {
-            console.log("Botão themeToggle clicado"); // Depuração
-            const isLight = document.body.classList.toggle("light-mode");
-            const newTheme = isLight ? "light" : "dark";
-            localStorage.setItem("theme", newTheme);
-            document.body.setAttribute("data-theme", newTheme);
-            themeToggle.textContent = isLight ? "🌞" : "🌙";
+          console.log("Botão themeToggle clicado");
+          const isLight = document.body.classList.toggle("light-mode");
+          const newTheme = isLight ? "light" : "dark";
+          localStorage.setItem("theme", newTheme);
+          document.body.setAttribute("data-theme", newTheme);
+          themeToggle.textContent = isLight ? "🌞" : "🌙";
         });
-    }
-}); 
+      }
+    });
 
     window.loginUser = loginUser;
   </script>
