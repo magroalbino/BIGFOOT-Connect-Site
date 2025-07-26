@@ -436,22 +436,45 @@
 
         /* Melhorar visibilidade no modo escuro */
         body[data-theme="dark"] #contract-label {
-            color: #FF6B35 !important; /* Cor laranja de destaque para visibilidade */
+            color: #fff !important; /* Branco puro para máximo contraste */
+            background: rgba(255, 107, 53, 0.2); /* Fundo laranja translúcido */
+            padding: 0.2rem 0.4rem; /* Espaçamento interno para destaque */
+            border-radius: 4px; /* Bordas arredondadas */
         }
 
         body[data-theme="dark"] #roadmap-title {
-            color: #fff !important; /* Branco puro para maior contraste */
-            text-shadow: 0 0 4px rgba(255, 107, 53, 0.5); /* Sombra sutil para destaque */
+            color: #fff !important; /* Branco puro */
+            background: rgba(255, 107, 53, 0.2); /* Fundo laranja translúcido */
+            padding: 0.2rem 0.4rem; /* Espaçamento */
+            border-radius: 4px; /* Bordas arredondadas */
+            display: inline-block; /* Para o fundo se ajustar ao texto */
         }
 
-        /* Garantir consistência no modo claro */
+        /* Melhorar visibilidade no modo claro */
         body[data-theme="light"] #contract-label {
-            color: #d14500 !important; /* Laranja escuro para modo claro */
+            color: #1a1a1a !important; /* Preto suave, consistente com --text-light */
+            background: rgba(209, 69, 0, 0.1); /* Fundo laranja claro para destaque */
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
         }
 
         body[data-theme="light"] #roadmap-title {
-            color: #1a1a1a !important; /* Cor escura para modo claro */
-            text-shadow: none; /* Remove sombra no modo claro */
+            color: #1a1a1a !important; /* Preto suave */
+            background: rgba(209, 69, 0, 0.1); /* Fundo laranja claro */
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Melhorar cabeçalho no modo claro */
+        body[data-theme="light"] .logo-link,
+        body[data-theme="light"] nav span,
+        body[data-theme="light"] nav a {
+            color: #d14500 !important; /* Laranja escuro para maior contraste */
+        }
+
+        body[data-theme="light"] nav a:hover {
+            color: #1a1a1a !important; /* Preto suave no hover */
         }
     </style>
 </head>
@@ -502,7 +525,7 @@
                 O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em
                 BIG por compartilharem internet ociosa e contribuírem com a descentralização da rede.
             </p>
-            <p style="color: #000000; font-size: 0.95rem; word-break: break-all;">
+            <p style="font-size: 0.95rem; word-break: break-all;">
                 <strong id="contract-label">Contrato:</strong>
                 <a href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
                     target="_blank" style="color: #a00000; text-decoration: none;">
