@@ -476,6 +476,36 @@
         body[data-theme="light"] nav a:hover {
             color: #1a1a1a !important; /* Preto suave no hover */
         }
+
+        /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
+        body[data-theme="dark"] .roadmap li:hover {
+            color: #fff !important; /* Branco puro para texto principal */
+        }
+
+        body[data-theme="dark"] .roadmap li:hover strong {
+            color: #fff !important; /* Branco para título */
+        }
+
+        body[data-theme="dark"] .roadmap li:hover small {
+            color: #e0e0e0 !important; /* Cinza claro para descrição */
+        }
+
+        /* Melhorar visibilidade do cabeçalho no modo claro */
+        body[data-theme="light"] .logo-link,
+        body[data-theme="light"] nav span,
+        body[data-theme="light"] nav a {
+            color: #1a1a1a !important; /* Preto suave para máximo contraste */
+        }
+
+        body[data-theme="light"] .logo-link:hover .logo-name,
+        body[data-theme="light"] .logo-link:hover img {
+            color: #d14500 !important; /* Laranja escuro no hover do logo */
+            filter: brightness(0.8);
+        }
+
+        body[data-theme="light"] nav a:hover {
+            color: #d14500 !important; /* Laranja escuro no hover dos links */
+        }
     </style>
 </head>
 
