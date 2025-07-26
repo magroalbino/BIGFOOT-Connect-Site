@@ -12,11 +12,43 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/css/style.css" />
   <style>
+    :root {
+      --bg-color: #0e0e0e;
+      --text-color: #fff;
+      --header-bg: #1a1a1a;
+      --card-bg: #1a1a1a;
+      --card-shadow: rgba(255, 107, 53, 0.15);
+      --input-bg: #222;
+      --input-border: #444;
+      --input-text: #fff;
+      --placeholder-text: #ccc;
+      --canvas-bg: #111;
+      --accent-color: #ff6b35;
+      --accent-hover: #cc5125;
+      --footer-text: #777;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --header-bg: #fff;
+      --card-bg: #fff;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --input-bg: #fff;
+      --input-border: #ccc;
+      --input-text: #333;
+      --placeholder-text: #888;
+      --canvas-bg: #fff;
+      --accent-color: #ff6b35;
+      --accent-hover: #cc5125;
+      --footer-text: #555;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #fff;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -24,8 +56,8 @@
 
     header,
     footer {
-      background-color: #1a1a1a;
-      color: white;
+      background-color: var(--header-bg);
+      color: var(--text-color);
     }
 
     main {
@@ -37,47 +69,47 @@
 
     h1 {
       font-size: 2rem;
-      color: #ff6b35;
+      color: var(--accent-color);
       margin-bottom: 1.5rem;
       text-align: center;
     }
 
     .card {
-      background-color: #1a1a1a;
+      background-color: var(--card-bg);
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      box-shadow: 0 0 8px rgba(255, 107, 53, 0.15);
+      box-shadow: 0 0 8px var(--card-shadow);
     }
 
     .card h2 {
       margin-top: 0;
-      color: #fff;
+      color: var(--text-color);
     }
 
     .card p {
-      color: #ccc;
+      color: var(--placeholder-text);
     }
 
     footer {
       text-align: center;
       padding: 1rem;
       font-size: 0.9rem;
-      color: #777;
+      color: var(--footer-text);
     }
 
     button.logout-btn {
       margin-top: 1rem;
       padding: 0.6rem 1.2rem;
-      background-color: #ff6b35;
+      background-color: var(--accent-color);
       border: none;
       border-radius: 6px;
-      color: white;
+      color: var(--text-color);
       cursor: pointer;
     }
 
     button.logout-btn:hover {
-      background-color: #cc5125;
+      background-color: var(--accent-hover);
     }
 
     .logo {
@@ -93,13 +125,13 @@
       gap: 0.75rem;
       text-decoration: none;
       cursor: pointer;
-      color: #ff6b35;
+      color: var(--accent-color);
       transition: color 0.2s, filter 0.2s;
     }
 
     .logo a:hover span,
     .logo a:hover img {
-      color: #cc5125;
+      color: var(--accent-hover);
       filter: brightness(0.8);
     }
 
@@ -116,8 +148,14 @@
       width: 100%;
       padding: 0.5rem;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--input-border);
       margin-bottom: 0.5rem;
+      background: var(--input-bg);
+      color: var(--input-text);
+    }
+
+    #walletInput::placeholder {
+      color: var(--placeholder-text);
     }
 
     #refLink {
@@ -125,9 +163,9 @@
       padding: 0.5rem;
       border-radius: 4px;
       margin-bottom: 0.5rem;
-      background: #222;
-      color: #fff;
-      border: 1px solid #444;
+      background: var(--input-bg);
+      color: var(--input-text);
+      border: 1px solid var(--input-border);
     }
 
     #copyRefLinkBtn {
@@ -135,9 +173,18 @@
     }
 
     canvas {
-      background: #111;
+      background: var(--canvas-bg);
       border-radius: 10px;
       margin-top: 1rem;
+    }
+
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text-color);
+      padding: 0.25rem;
     }
   </style>
 </head>
@@ -151,6 +198,7 @@
       </a>
     </div>
     <div style="display:flex; gap:1rem; align-items:center;">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar tema">🌙</button>
       <button class="logout-btn" id="logoutBtn">Sair</button>
       <select id="languageSwitcher" style="background:#1a1a1a; color:#FF6B35; border:1px solid #333; padding:0.25rem 0.5rem; border-radius:4px; cursor:pointer;">
         <option value="en">English</option>
@@ -203,6 +251,21 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // Theme Toggle Functionality
+    function toggleTheme() {
+      const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+      document.body.dataset.theme = currentTheme;
+      localStorage.setItem('theme', currentTheme);
+      document.getElementById('themeToggleBtn').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.body.dataset.theme = savedTheme;
+      document.getElementById('themeToggleBtn').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+      document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+    });
+
     async function initDashboard(user) {
       if (!user) return window.location.href = "login.html";
 
@@ -251,7 +314,7 @@
           datasets: [{
             label: "MB Compartilhados",
             data: values,
-            borderColor: "#FF6B35",
+            borderColor: var(--accent-color),
             backgroundColor: "rgba(255,107,53,0.2)",
             fill: true,
             tension: 0.3
@@ -261,7 +324,7 @@
           plugins: {
             legend: {
               labels: {
-                color: "#fff"
+                color: var(--text-color)
               }
             },
             tooltip: {
@@ -273,12 +336,12 @@
           scales: {
             x: {
               ticks: {
-                color: "#fff"
+                color: var(--text-color)
               }
             },
             y: {
               ticks: {
-                color: "#fff"
+                color: var(--text-color)
               }
             }
           }
