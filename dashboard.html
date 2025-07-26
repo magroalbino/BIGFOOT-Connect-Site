@@ -139,6 +139,97 @@
       border-radius: 10px;
       margin-top: 1rem;
     }
+
+    :root {
+    --bg-dark: #0e0e0e;
+    --text-dark: #fff;
+    --bg-light: #fefefe;
+    --text-light: #1a1a1a;
+    --highlight: #FF6B35;
+    --muted-dark: #ccc;
+    --muted-light: #444;
+    --card-light: #ffffff;
+    --border-light: #e0e0e0;
+    --hover-light: #f0f0f0;
+}
+
+body.light-mode {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+body.light-mode header {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+body.light-mode .logo a {
+    color: #FF6B35;
+}
+
+body.light-mode .logo a:hover span,
+body.light-mode .logo a:hover img {
+    color: #cc5125;
+    filter: brightness(0.8);
+}
+
+body.light-mode #languageSwitcher,
+body.light-mode #themeToggle {
+    color: #FF6B35;
+    border: 1px solid var(--border-light);
+}
+
+body.light-mode .card {
+    background-color: var(--card-light);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+}
+
+body.light-mode .card p {
+    color: var(--muted-light);
+}
+
+body.light-mode .logout-btn {
+    background-color: var(--highlight);
+    color: #fff;
+}
+
+body.light-mode .logout-btn:hover {
+    background-color: #cc5125;
+}
+
+body.light-mode #walletInput,
+body.light-mode #refLink {
+    background-color: var(--card-light);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+}
+
+body.light-mode footer {
+    background-color: #ffffff;
+    color: var(--muted-light);
+}
+
+body.light-mode canvas {
+    background: #f0f0f0;
+}
+
+#themeToggle {
+    margin-left: 1rem;
+    background: transparent;
+    border: 1px solid #333;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    color: var(--highlight);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+body.light-mode #themeToggle {
+    border: 1px solid var(--border-light);
+    background-color: var(--hover-light);
+}
   </style>
 </head>
 
@@ -156,6 +247,7 @@
         <option value="en">English</option>
         <option value="pt">Português</option>
       </select>
+      <button id="themeToggle" aria-label="Alternar tema">🌙</button>
     </div>
   </header>
 
@@ -382,6 +474,20 @@
         applyTranslations(lang);
       });
     });
+
+    const themeToggle = document.getElementById("themeToggle");
+const currentTheme = localStorage.getItem("theme") || "dark";
+if (currentTheme === "light") {
+    document.body.classList.add("light-mode");
+    themeToggle.textContent = "🌞";
+}
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    themeToggle.textContent = isLight ? "🌞" : "🌙";
+});
 
     function applyTranslations(lang) {
       const t = translations[lang];
