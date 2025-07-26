@@ -386,8 +386,11 @@ body.light-mode #themeToggle {
       });
 
     const themeToggle = document.getElementById("themeToggle");
-    if (themeToggle) {
+    if (!themeToggle) {
+        console.error("Botão themeToggle não encontrado!");
+    } else {
         const currentTheme = localStorage.getItem("theme") || "dark";
+        console.log("Tema inicial:", currentTheme); // Depuração
         document.body.setAttribute("data-theme", currentTheme);
         if (currentTheme === "light") {
             document.body.classList.add("light-mode");
@@ -398,6 +401,7 @@ body.light-mode #themeToggle {
         }
 
         themeToggle.addEventListener("click", () => {
+            console.log("Botão themeToggle clicado"); // Depuração
             const isLight = document.body.classList.toggle("light-mode");
             const newTheme = isLight ? "light" : "dark";
             localStorage.setItem("theme", newTheme);
@@ -405,7 +409,7 @@ body.light-mode #themeToggle {
             themeToggle.textContent = isLight ? "🌞" : "🌙";
         });
     }
-});  
+}); 
 
     window.loginUser = loginUser;
   </script>
