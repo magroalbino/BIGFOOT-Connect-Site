@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -6,20 +7,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Seu estilo permanece igual */
+    body {
+      font-family: sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #languageSwitcher {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #111;
+      color: #FF6B35;
+      border: 1px solid #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .logo span {
+      margin-top: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #FF6B35;
+    }
+
+    form {
+      background: #111;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 320px;
+      box-shadow: 0 0 12px rgba(0, 255, 180, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    form h2 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      background: #1F948C;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #14635e;
+    }
+
+    #message {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .login-link a {
+      color: #1F948C;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .back-home {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .back-home a {
+      color: #ccc;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .back-home a:hover {
+      color: #FF6B35;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="top-bar">
-    <select id="languageSwitcher">
-      <option value="en">English</option>
-      <option value="pt">Português</option>
-    </select>
-    <button id="themeToggle" aria-label="Alternar tema">🌙</button>
-  </div>
+  <select id="languageSwitcher">
+    <option value="en">English</option>
+    <option value="pt">Português</option>
+  </select>
 
   <div class="logo">
     <img src="images/logo.png" alt="BIGFOOT Logo" />
@@ -32,6 +155,7 @@
     <input type="password" id="password" placeholder="Senha" required />
     <button type="submit" id="registerBtn">Registrar</button>
     <p id="message"></p>
+
     <div class="login-link">
       <p><a href="login.html" id="loginLink">Já tem conta? Entrar</a></p>
     </div>
@@ -40,7 +164,6 @@
   <div class="back-home">
     <a href="index.html" id="backHome">← Voltar para a Home</a>
   </div>
-</body>
 
   <script>
     // Firebase config
@@ -92,51 +215,52 @@
     }
 
     document.getElementById("registerForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
+  event.preventDefault();
 
-      const lang = localStorage.getItem("lang") || "pt";
-      const t = translations[lang];
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const message = document.getElementById("message");
+  const lang = localStorage.getItem("lang") || "pt";
+  const t = translations[lang];
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
 
-      message.textContent = "";
-      message.style.color = "white";
+  message.textContent = "";
+  message.style.color = "white";
 
-      if (!email || !password) {
-        message.style.color = "red";
-        message.textContent = t.fillRequired;
-        return;
-      }
+  if (!email || !password) {
+    message.style.color = "red";
+    message.textContent = t.fillRequired;
+    return;
+  }
 
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const ref = urlParams.get("ref");
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
 
-        await db.collection("users").doc(user.uid).set({
-          email: user.email,
-          referredBy: ref || null,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        message.style.color = "green";
-        message.textContent = t.success;
-
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
-      } catch (error) {
-        message.style.color = "red";
-        message.textContent = `${t.error} ${error.message}`;
-      }
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      referredBy: ref || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    message.style.color = "green";
+    message.textContent = t.success;
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 2000);
+  } catch (error) {
+    message.style.color = "red";
+    message.textContent = `${t.error} ${error.message}`;
+  }
+});
 
     document.addEventListener("DOMContentLoaded", () => {
       const languageSwitcher = document.getElementById("languageSwitcher");
       const savedLang = localStorage.getItem("lang") || "pt";
+
       languageSwitcher.value = savedLang;
       applyTranslations(savedLang);
 
@@ -144,21 +268,6 @@
         const lang = e.target.value;
         localStorage.setItem("lang", lang);
         applyTranslations(lang);
-      });
-
-      // Suporte ao modo claro/escuro
-      const themeToggle = document.getElementById("themeToggle");
-      const currentTheme = localStorage.getItem("theme") || "dark";
-      if (currentTheme === "light") {
-        document.body.classList.add("light-mode");
-        themeToggle.textContent = "🌞";
-      }
-
-      themeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("light-mode");
-        const isLight = document.body.classList.contains("light-mode");
-        localStorage.setItem("theme", isLight ? "light" : "dark");
-        themeToggle.textContent = isLight ? "🌞" : "🌙";
       });
     });
   </script>
