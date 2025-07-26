@@ -477,7 +477,12 @@
             color: #1a1a1a !important; /* Preto suave no hover */
         }
 
-        /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
+        /* Estilo base para small no modo escuro */
+body[data-theme="dark"] .roadmap li small {
+    color: #bbb !important; /* Cor base para descrição, consistente com o estilo original */
+}
+
+/* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
 body[data-theme="dark"] .roadmap li:hover {
     background: #d14500; /* Laranja mais escuro e saturado para maior contraste */
     color: #ffffff !important; /* Branco puro para texto principal */
@@ -492,7 +497,7 @@ body[data-theme="dark"] .roadmap li:hover strong {
 }
 
 body[data-theme="dark"] .roadmap li:hover small {
-    color: #ffe4b5 !important; /* Amarelo claro vibrante para descrição */
+    color: #ffeb3b !important; /* Amarelo vibrante para descrição no hover */
 }
 
         /* Melhorar visibilidade do cabeçalho no modo claro */
