@@ -479,18 +479,20 @@
 
         /* Melhorar visibilidade do Project Roadmap no modo escuro (hover) */
 body[data-theme="dark"] .roadmap li:hover {
-    background: rgba(255, 107, 53, 0.8); /* Fundo laranja mais escuro e translúcido */
-    color: #fff !important; /* Branco puro para texto principal */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Sombra sutil para destaque */
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s; /* Transição suave */
+    background: #d14500; /* Laranja mais escuro e saturado para maior contraste */
+    color: #ffffff !important; /* Branco puro para texto principal */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6); /* Sombra mais pronunciada */
+    border: 1px solid #ff8c5a; /* Borda laranja clara para destaque adicional */
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s; /* Transição suave */
 }
 
 body[data-theme="dark"] .roadmap li:hover strong {
-    color: #fff !important; /* Branco para título */
+    color: #ffffff !important; /* Branco puro para título */
+    font-weight: 700; /* Negrito mais forte para destaque */
 }
 
 body[data-theme="dark"] .roadmap li:hover small {
-    color: #e6e6e6 !important; /* Cinza claro para descrição */
+    color: #f0f0f0 !important; /* Cinza ainda mais claro para descrição */
 }
 
         /* Melhorar visibilidade do cabeçalho no modo claro */
