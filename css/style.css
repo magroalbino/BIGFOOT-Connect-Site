@@ -15,6 +15,7 @@
     --form-dark: #111; /* Fundo do formulário no modo escuro */
     --button-register: #1F948C; /* Cor do botão de registro */
     --button-register-hover: #14635e; /* Cor do hover do botão de registro */
+    --header-light: #f9f9f9; /* Fundo do cabeçalho no modo claro */
 }
 
 /* Estilos gerais */
@@ -101,7 +102,6 @@ nav a:hover {
 }
 
 #languageSwitcher {
-    margin-left: 1rem;
     background: var(--card-dark);
     color: var(--highlight);
     border: 1px solid #333;
@@ -424,7 +424,7 @@ canvas {
     top: 1rem;
     right: 1rem;
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     align-items: center;
 }
 
@@ -528,16 +528,16 @@ body.light-mode {
 }
 
 body.light-mode header {
-    background-color: var(--card-light);
+    background-color: var(--header-light);
     color: var(--text-light);
     border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 body.light-mode nav a,
 body.light-mode .logo-link,
 body.light-mode .logo a,
-body.light-mode #languageSwitcher,
-body.light-mode #themeToggle {
+body.light-mode #languageSwitcher {
     color: var(--highlight);
 }
 
@@ -595,8 +595,6 @@ body.light-mode .installer-warning {
 }
 
 body.light-mode #themeToggle {
-    background: var(--hover-light);
-    border: 1px solid #999;
     color: var(--text-light);
 }
 
@@ -697,14 +695,13 @@ body.light-mode .top-bar #languageSwitcher {
 
 /* Botão de alternância de tema */
 #themeToggle {
-    margin-left: 1rem;
-    background: #333;
-    border: 1px solid #555;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    background: none;
+    border: none;
+    padding: 0.2rem;
+    font-size: 1rem;
     color: #fff;
     cursor: pointer;
-    transition: background 0.2s, border 0.2s;
+    transition: color 0.2s;
 }
 
 /* Estilos de foco para acessibilidade */
