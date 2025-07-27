@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
   <title>Login - BIGFOOT Connect</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -15,223 +15,764 @@
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #000;
+      --bg-card-dark: #111;
+      --text-dark: #fff;
+      --bg-light: #f8fafc;
+      --bg-card-light: #ffffff;
+      --text-light: #1a202c;
+      --primary: #1F948C;
+      --primary-hover: #14635e;
+      --accent: #FF6B35;
+      --accent-hover: #e55a2b;
+      --border-dark: #333;
+      --border-light: #e2e8f0;
+      --success: #10B981;
+      --error: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --shadow-dark: rgba(0, 255, 180, 0.1);
+      --shadow-light: rgba(0, 0, 0, 0.1);
+      --gradient-primary: linear-gradient(135deg, #1F948C 0%, #10B981 100%);
+      --gradient-accent: linear-gradient(135deg, #FF6B35 0%, #F59E0B 100%);
+      --gradient-bg: linear-gradient(45deg, #000 0%, #111 50%, #000 100%);
     }
 
     body {
-      font-family: sans-serif;
-      background: #000;
-      color: #fff;
-      margin: 0;
-      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(31, 148, 140, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+      z-index: -1;
+      animation: float 25s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(0px) rotate(0deg) scale(1); 
+        opacity: 0.8;
+      }
+      33% { 
+        transform: translateY(-20px) rotate(1deg) scale(1.02); 
+        opacity: 1;
+      }
+      66% { 
+        transform: translateY(10px) rotate(-0.5deg) scale(0.98); 
+        opacity: 0.9;
+      }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: particleFloat 15s linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+      }
     }
 
     .top-bar {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      z-index: 100;
     }
 
-    select#languageSwitcher {
-      background: #111;
-      color: #FF6B35;
-      border: 1px solid #333;
-      border-radius: 4px;
-      padding: 0.25rem 0.5rem;
+    #languageSwitcher, #themeToggle {
+      background: var(--bg-card-dark);
+      color: var(--accent);
+      border: 1px solid var(--border-dark);
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    #themeToggle {
+      width: 2.75rem;
+      height: 2.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #languageSwitcher:hover, #themeToggle:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-color: var(--primary);
+    }
+
+    #themeToggle::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+      animation: rotate 3s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    #themeToggle:hover::before {
+      opacity: 0.1;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+      animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .logo {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 2.5rem;
+      animation: fadeInScale 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .logo img {
-      height: 60px;
+      height: 85px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .logo img:hover {
+      transform: scale(1.08) rotate(5deg);
+      filter: drop-shadow(0 8px 16px rgba(31, 148, 140, 0.3));
     }
 
     .logo span {
-      margin-top: 0.5rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #FF6B35;
+      margin-top: 1rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      position: relative;
     }
 
-    form {
-      background: #111;
-      padding: 2rem;
-      border-radius: 8px;
-      width: 320px;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
+    .logo span::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--gradient-accent);
+      transition: width 0.4s ease;
     }
 
-    input,
-    button {
+    .logo:hover span::after {
       width: 100%;
-      padding: 0.6rem;
+    }
+
+    .form-container {
+      background: var(--bg-card-dark);
+      padding: 3rem 2.5rem;
+      border-radius: 20px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px var(--border-dark),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dark);
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+    }
+
+    .form-container::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(31, 148, 140, 0.03) 45deg, transparent 90deg);
+      animation: shimmer 8s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes shimmer {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      position: relative;
+    }
+
+    .form-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 1.2rem 1rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 14px;
       font-size: 1rem;
-      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dark);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 0 0 4px rgba(31, 148, 140, 0.1),
+        0 4px 12px rgba(31, 148, 140, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .input-group input:valid {
+      border-color: var(--success);
+    }
+
+    .input-group input::placeholder {
+      color: transparent;
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      font-size: 1rem;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: var(--bg-card-dark);
+      padding: 0 0.5rem;
+      z-index: 2;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: 0;
+      font-size: 0.875rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .password-group {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
       border: none;
-    }
-
-    input {
-      background: white;
-      color: black;
-    }
-
-    button {
-      background: #FF6B35;
-      color: white;
+      color: var(--accent);
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-size: 1.3rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      z-index: 3;
     }
 
-    button:hover {
-      background: #cc5125;
+    .password-toggle:hover {
+      background: rgba(255, 107, 53, 0.1);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 2rem;
+    }
+
+    .forgot-password a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .forgot-password a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -2px;
+      left: 50%;
+      background: var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .forgot-password a:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--gradient-primary);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .login-btn:hover::before {
+      left: 100%;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(31, 148, 140, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .social-login {
+      margin: 2rem 0;
+    }
+
+    .divider {
+      text-align: center;
+      position: relative;
+      color: #666;
+      font-size: 0.875rem;
+      margin: 1.5rem 0;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-dark), transparent);
+    }
+
+    .divider span {
+      background: var(--bg-card-dark);
+      padding: 0 1.5rem;
+      font-weight: 500;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .google-btn {
+      background: #4285f4;
+      border-color: #4285f4;
+      color: white;
+    }
+
+    .google-btn:hover {
+      background: #357ae8;
+      border-color: #357ae8;
     }
 
     #message {
-      margin-top: 0.5rem;
+      padding: 1rem;
+      border-radius: 10px;
       font-size: 0.9rem;
       text-align: center;
+      display: none;
+      animation: messageSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 1rem;
+    }
+
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #message.success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    #message.error {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    #message.info {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+      color: var(--info);
+      border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
     .register-link {
-      margin-top: 1rem;
       text-align: center;
+      font-size: 0.95rem;
     }
 
     .register-link a {
-      color: #FF6B35;
+      color: var(--primary);
       text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
-    .register-link a:hover {
-      text-decoration: underline;
+    .register-link a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background: var(--gradient-primary);
+      transition: all 0.3s ease;
+      border-radius: 1px;
+    }
+
+    .register-link a:hover::after {
+      width: 100%;
+      left: 0;
     }
 
     .back-home {
-      margin-top: 1.5rem;
+      margin-top: 2.5rem;
       text-align: center;
     }
 
     .back-home a {
-      color: #ccc;
+      color: #888;
       font-size: 0.9rem;
       text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
     }
 
     .back-home a:hover {
-      color: #FF6B35;
+      color: var(--accent);
+      background: rgba(255, 107, 53, 0.1);
+      transform: translateX(-3px);
     }
 
-    :root {
-      --bg-dark: #0e0e0e;
-      --text-dark: #fff;
-      --bg-light: #fefefe;
-      --text-light: #1a1a1a;
-      --highlight: #FF6B35;
-      --muted-dark: #ccc;
-      --muted-light: #444;
-      --card-light: #ffffff;
-      --border-light: #e0e0e0;
-      --hover-light: #f0f0f0;
-    }
-
+    /* Light mode styles */
     body.light-mode {
-      background-color: var(--bg-light);
+      background: var(--bg-light);
       color: var(--text-light);
     }
 
-    body.light-mode .top-bar {
-      background-color: transparent;
+    body.light-mode::before {
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(31, 148, 140, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
     }
 
     body.light-mode #languageSwitcher,
     body.light-mode #themeToggle {
-      color: var(--highlight);
-      border: 1px solid var(--border-light);
-      background-color: var(--hover-light);
+      background: var(--bg-card-light);
+      border-color: var(--border-light);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    body.light-mode .logo span {
-      color: #d14500;
+    body.light-mode .form-container {
+      background: var(--bg-card-light);
+      border-color: var(--border-light);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.15),
+        0 0 0 1px var(--border-light);
     }
 
-    body.light-mode form {
-      background-color: var(--card-light);
-      color: var(--text-light);
-      border: 1px solid var(--border-light);
-    }
-
-    body.light-mode input {
-      background-color: #f5f5f5;
-      color: var(--text-light);
-      border: 1px solid var(--border-light);
-    }
-
-    body.light-mode button {
-      background-color: #e25a1d;
-      color: #fff;
-    }
-
-    body.light-mode button:hover {
-      background-color: #cc5125;
-    }
-
-    body.light-mode .register-link a {
-      color: #d14500;
-    }
-
-    body.light-mode .register-link a:hover {
-      color: var(--highlight);
-    }
-
-    body.light-mode .back-home a {
-      color: var(--muted-light);
-    }
-
-    body.light-mode .back-home a:hover {
-      color: var(--highlight);
-    }
-
-    body.light-mode #message {
+    body.light-mode .form-container h2 {
       color: var(--text-light);
     }
 
-    #themeToggle {
-      background: transparent;
-      border: 1px solid #333;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      color: var(--highlight);
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-left: 0.5rem;
-      font-size: 1rem;
-      line-height: 1.2;
-      width: auto;
-      min-width: 2.5rem;
-      text-align: center;
+    body.light-mode .input-group input {
+      background: #f8fafc;
+      color: var(--text-light);
+      border-color: var(--border-light);
     }
 
-    body.light-mode #themeToggle {
-      border: 1px solid var(--border-light);
-      background-color: var(--hover-light);
-      color: var(--highlight);
+    body.light-mode .input-group input:focus {
+      background: white;
+    }
+
+    body.light-mode .input-group label {
+      background: var(--bg-card-light);
+      color: #666;
+    }
+
+    body.light-mode .divider span {
+      background: var(--bg-card-light);
+    }
+
+    body.light-mode .divider::before {
+      background: linear-gradient(to right, transparent, var(--border-light), transparent);
+    }
+
+    body.light-mode .social-btn {
+      background: #f8fafc;
+      border-color: var(--border-light);
+      color: var(--text-light);
+    }
+
+    body.light-mode .social-btn:hover {
+      background: white;
+    }
+
+    body.light-mode .particle {
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .form-container {
+        padding: 2rem 1.5rem;
+      }
+
+      .top-bar {
+        top: 1rem;
+        right: 1rem;
+      }
+
+      .logo span {
+        font-size: 1.3rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus visible for keyboard navigation */
+    .login-btn:focus-visible,
+    .register-link a:focus-visible,
+    .back-home a:focus-visible,
+    .forgot-password a:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
   </style>
 </head>
 
 <body>
+  <div class="particles" id="particles"></div>
+
   <div class="top-bar">
     <select id="languageSwitcher">
       <option value="en">English</option>
@@ -240,43 +781,80 @@
     <button id="themeToggle" aria-label="Alternar tema">🌙</button>
   </div>
 
-  <div class="logo">
-    <img src="images/logo.png" alt="BIGFOOT Logo" />
-    <span>BIGFOOT Connect</span>
-  </div>
-
-  <form onsubmit="loginUser(event)">
-    <h2 id="form-title">Login</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button type="submit" id="login-button">Login</button>
-    <p id="message"></p>
-
-    <div class="register-link">
-      <a href="register.html" id="register-link">Don't have an account? Register</a>
+  <div class="container">
+    <div class="logo">
+      <img src="images/logo.png" alt="BIGFOOT Logo" />
+      <span>BIGFOOT Connect</span>
     </div>
-  </form>
 
-  <div class="back-home">
-    <a href="index.html" id="back-home">← Back to Home</a>
+    <div class="form-container">
+      <h2 id="form-title">Entrar</h2>
+      
+      <form id="loginForm">
+        <div class="input-group">
+          <input type="email" id="email" placeholder=" " required autocomplete="email" />
+          <label for="email" id="emailLabel">E-mail</label>
+        </div>
+
+        <div class="input-group password-group">
+          <input type="password" id="password" placeholder=" " required autocomplete="current-password" />
+          <label for="password" id="passwordLabel">Senha</label>
+          <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar senha">👁️</button>
+        </div>
+
+        <div class="forgot-password">
+          <a href="#" id="forgotPassword">Esqueceu a senha?</a>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span class="loading-spinner" id="loadingSpinner"></span>
+          <span id="btnText">Entrar</span>
+        </button>
+
+        <div id="message"></div>
+
+        <div class="divider">
+          <span id="dividerText">ou</span>
+        </div>
+
+        <div class="social-login">
+          <button type="button" class="social-btn google-btn" id="googleLogin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span id="googleBtnText">Entrar com Google</span>
+          </button>
+        </div>
+
+        <div class="register-link">
+          <p><a href="register.html" id="registerLink">Não tem conta? Registre-se</a></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="back-home">
+      <a href="index.html" id="backHome">← Voltar para a Home</a>
+    </div>
   </div>
 
   <script>
-    // Inicializa Firebase
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
       authDomain: "bigfoot-connect.firebaseapp.com",
       projectId: "bigfoot-connect",
       storageBucket: "bigfoot-connect.appspot.com",
       messagingSenderId: "177999879162",
-      appId: "1:177999879162:web:a1ea739930cac97475e243",
-      measurementId: "G-WEY300P1S7"
+      appId: "1:177999879162:web:a1ea739930cac97475e243"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Define persistência local explícita (opcional, mas recomendado)
+    // Set persistence
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => {
         console.log("Persistência LOCAL ativada");
@@ -285,7 +863,7 @@
         console.error("Erro ao definir persistência:", error);
       });
 
-    // Redireciona automaticamente se o usuário já estiver logado
+    // Auto redirect if already logged in
     auth.onAuthStateChanged((user) => {
       if (user) {
         window.location.href = 'dashboard.html';
@@ -293,60 +871,160 @@
     });
 
     const translations = {
-      en: {
-        formTitle: "Login",
-        username: "Email",
-        password: "Password",
-        loginBtn: "Login",
-        registerLink: "Don't have an account? Register",
-        backHome: "← Back to Home",
-        fillAll: "Please fill in all fields.",
-        notFound: "Invalid email or password.",
-        success: "Login successful!",
-        loginError: "Error during login:"
-      },
       pt: {
         formTitle: "Entrar",
-        username: "E-mail",
+        email: "E-mail",
         password: "Senha",
         loginBtn: "Entrar",
         registerLink: "Não tem conta? Registre-se",
         backHome: "← Voltar para a Home",
+        dividerText: "ou",
+        googleBtn: "Entrar com Google",
+        forgotPassword: "Esqueceu a senha?",
         fillAll: "Preencha todos os campos.",
-        notFound: "E-mail ou senha inválidos.",
         success: "Login realizado com sucesso!",
-        loginError: "Erro ao processar login:"
+        error: "Erro ao processar login:",
+        invalidCredentials: "E-mail ou senha inválidos.",
+        userNotFound: "Usuário não encontrado.",
+        wrongPassword: "Senha incorreta.",
+        tooManyRequests: "Muitas tentativas. Tente novamente mais tarde.",
+        showPassword: "Mostrar senha",
+        hidePassword: "Ocultar senha",
+        loggingIn: "Entrando..."
+      },
+      en: {
+        formTitle: "Login",
+        email: "Email",
+        password: "Password",
+        loginBtn: "Login",
+        registerLink: "Don't have an account? Register",
+        backHome: "← Back to Home",
+        dividerText: "or",
+        googleBtn: "Continue with Google",
+        forgotPassword: "Forgot password?",
+        fillAll: "Please fill in all fields.",
+        success: "Login successful!",
+        error: "Login error:",
+        invalidCredentials: "Invalid email or password.",
+        userNotFound: "User not found.",
+        wrongPassword: "Incorrect password.",
+        tooManyRequests: "Too many attempts. Try again later.",
+        showPassword: "Show password",
+        hidePassword: "Hide password",
+        loggingIn: "Logging in..."
       }
     };
+
+    let currentLang = localStorage.getItem("lang") || "pt";
+
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
 
     function applyTranslations(lang) {
       const t = translations[lang];
       document.getElementById("form-title").textContent = t.formTitle;
-      document.getElementById("email").placeholder = t.username; // Corrigido de "username" para "email"
-      document.getElementById("password").placeholder = t.password;
-      document.getElementById("login-button").textContent = t.loginBtn;
-      document.getElementById("register-link").textContent = t.registerLink;
-      document.getElementById("back-home").textContent = t.backHome;
+      document.getElementById("emailLabel").textContent = t.email;
+      document.getElementById("passwordLabel").textContent = t.password;
+      document.getElementById("btnText").textContent = t.loginBtn;
+      document.getElementById("registerLink").textContent = t.registerLink;
+      document.getElementById("backHome").textContent = t.backHome;
+      document.getElementById("dividerText").textContent = t.dividerText;
+      document.getElementById("googleBtnText").textContent = t.googleBtn;
+      document.getElementById("forgotPassword").textContent = t.forgotPassword;
+      
+      // Update password toggle aria-label
+      const passwordInput = document.getElementById("password");
+      const toggle = document.getElementById("passwordToggle");
+      if (passwordInput.type === "password") {
+        toggle.setAttribute("aria-label", t.showPassword);
+      } else {
+        toggle.setAttribute("aria-label", t.hidePassword);
+      }
     }
 
-    async function loginUser(event) {
+    function showMessage(text, type = 'error') {
+      const message = document.getElementById("message");
+      message.textContent = text;
+      message.className = type;
+      message.style.display = 'block';
+      
+      setTimeout(() => {
+        message.style.display = 'none';
+      }, 5000);
+    }
+
+    function setLoading(loading) {
+      const btn = document.getElementById("loginBtn");
+      const spinner = document.getElementById("loadingSpinner");
+      const btnText = document.getElementById("btnText");
+      
+      if (loading) {
+        btn.disabled = true;
+        spinner.style.display = 'inline-block';
+        btnText.textContent = translations[currentLang].loggingIn;
+      } else {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = translations[currentLang].loginBtn;
+      }
+    }
+
+    // Password toggle functionality
+    document.getElementById("passwordToggle").addEventListener("click", () => {
+      const passwordInput = document.getElementById("password");
+      const toggle = document.getElementById("passwordToggle");
+      const t = translations[currentLang];
+      
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggle.textContent = "🙈";
+        toggle.setAttribute("aria-label", t.hidePassword);
+      } else {
+        passwordInput.type = "password";
+        toggle.textContent = "👁️";
+        toggle.setAttribute("aria-label", t.showPassword);
+      }
+    });
+
+    // Google Sign-In (placeholder - requires proper setup)
+    document.getElementById("googleLogin").addEventListener("click", () => {
+      const t = translations[currentLang];
+      showMessage("Funcionalidade do Google em desenvolvimento", 'info');
+    });
+
+    // Forgot password (placeholder)
+    document.getElementById("forgotPassword").addEventListener("click", (e) => {
+      e.preventDefault();
+      const t = translations[currentLang];
+      showMessage("Funcionalidade de recuperação de senha em desenvolvimento", 'info');
+    });
+
+    // Form submission
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const lang = localStorage.getItem("lang") || "en";
-      const t = translations[lang];
-
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const message = document.getElementById('message');
-
-      message.textContent = '';
-      message.style.color = 'white';
+      const t = translations[currentLang];
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
       if (!email || !password) {
-        message.style.color = 'red';
-        message.textContent = t.fillAll;
+        showMessage(t.fillAll, 'error');
         return;
       }
+
+      setLoading(true);
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
@@ -355,54 +1033,111 @@
         localStorage.setItem('userId', user.uid);
         localStorage.setItem('userEmail', user.email);
 
-        message.style.color = 'green';
-        message.textContent = t.success;
+        showMessage(t.success, 'success');
 
         setTimeout(() => {
           window.location.href = 'dashboard.html';
-        }, 1000);
-      } catch (err) {
-        message.style.color = 'red';
-        message.textContent = t.notFound;
-        console.error(t.loginError, err.message);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const languageSwitcher = document.getElementById("languageSwitcher");
-      const savedLang = localStorage.getItem("lang") || "en";
-      languageSwitcher.value = savedLang;
-      applyTranslations(savedLang);
-
-      languageSwitcher.addEventListener("change", (e) => {
-        const lang = e.target.value;
-        localStorage.setItem("lang", lang);
-        applyTranslations(lang);
-      });
-
-      // Código do themeToggle movido para fora do DOMContentLoaded
-      const themeToggle = document.getElementById("themeToggle");
-      if (!themeToggle) {
-        console.error("Botão themeToggle não encontrado!");
-      } else {
-        const currentTheme = localStorage.getItem("theme") || "dark";
-        console.log("Tema inicial:", currentTheme);
-        document.body.setAttribute("data-theme", currentTheme);
-        document.body.classList.toggle("light-mode", currentTheme === "light");
-        themeToggle.textContent = currentTheme === "light" ? "🌞" : "🌙";
-
-        themeToggle.addEventListener("click", () => {
-          console.log("Botão themeToggle clicado");
-          const isLight = document.body.classList.toggle("light-mode");
-          const newTheme = isLight ? "light" : "dark";
-          localStorage.setItem("theme", newTheme);
-          document.body.setAttribute("data-theme", newTheme);
-          themeToggle.textContent = isLight ? "🌞" : "🌙";
-        });
+        }, 1500);
+      } catch (error) {
+        let errorMessage = t.error + " " + error.message;
+        
+        // Customize error messages
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = t.userNotFound;
+            break;
+          case 'auth/wrong-password':
+            errorMessage = t.wrongPassword;
+            break;
+          case 'auth/invalid-email':
+            errorMessage = t.invalidCredentials;
+            break;
+          case 'auth/user-disabled':
+            errorMessage = "Conta desabilitada. Entre em contato com o suporte.";
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = t.tooManyRequests;
+            break;
+          case 'auth/invalid-credential':
+            errorMessage = t.invalidCredentials;
+            break;
+          default:
+            errorMessage = t.invalidCredentials;
+        }
+        
+        showMessage(errorMessage, 'error');
+        console.error(t.error, error.message);
+      } finally {
+        setLoading(false);
       }
     });
 
-    window.loginUser = loginUser;
+    // Theme and language initialization
+    document.addEventListener("DOMContentLoaded", () => {
+      // Create particles
+      createParticles();
+      
+      const languageSwitcher = document.getElementById("languageSwitcher");
+      
+      languageSwitcher.value = currentLang;
+      applyTranslations(currentLang);
+
+      languageSwitcher.addEventListener("change", (e) => {
+        currentLang = e.target.value;
+        localStorage.setItem("lang", currentLang);
+        applyTranslations(currentLang);
+      });
+
+      // Theme toggle
+      const themeToggle = document.getElementById("themeToggle");
+      const currentTheme = localStorage.getItem("theme") || "dark";
+      
+      document.body.classList.toggle("light-mode", currentTheme === "light");
+      themeToggle.textContent = currentTheme === "light" ? "🌞" : "🌙";
+
+      themeToggle.addEventListener("click", () => {
+        const isLight = document.body.classList.toggle("light-mode");
+        const newTheme = isLight ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        themeToggle.textContent = isLight ? "🌞" : "🌙";
+      });
+
+      // Auto-hide messages on input
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const message = document.getElementById("message");
+          if (message.style.display === 'block') {
+            message.style.display = 'none';
+          }
+        });
+      });
+
+      // Add smooth focus transitions
+      inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+          input.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', () => {
+          input.parentElement.style.transform = 'scale(1)';
+        });
+      });
+    });
+
+    // Add some interactive effects
+    document.addEventListener('mousemove', (e) => {
+      const particles = document.querySelectorAll('.particle');
+      const mouseX = e.clientX / window.innerWidth;
+      const mouseY = e.clientY / window.innerHeight;
+      
+      particles.forEach((particle, index) => {
+        const speed = 0.5 + (index % 3) * 0.2;
+        const x = (mouseX - 0.5) * speed * 20;
+        const y = (mouseY - 0.5) * speed * 20;
+        particle.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
   </script>
 </body>
 </html>
