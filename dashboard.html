@@ -163,25 +163,23 @@
 
     /* Progress-specific styles */
     .progress-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: start;
+      display: block;
     }
 
-    .progress-stats {
+    .progress-stats-top {
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-around;
-      padding: 1rem;
+      justify-content: center;
+      gap: 4rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
       background: rgba(255, 107, 53, 0.1);
       border-radius: 10px;
       border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+
+    .seed-button-container {
+      text-align: center;
+      margin-top: 2rem;
     }
 
     .stat-item {
@@ -456,7 +454,7 @@
       color: #333;
     }
 
-    body.light-mode .stat-row,
+    body.light-mode .progress-stats-top,
     body.light-mode .referral-stat {
       background: rgba(255, 107, 53, 0.1);
       border: 1px solid rgba(255, 107, 53, 0.2);
@@ -533,9 +531,10 @@
     }
 
     @media (max-width: 1024px) {
-      .progress-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+      .progress-stats-top {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
       }
       
       .chart-wrapper {
@@ -572,7 +571,7 @@
         font-size: 0.9rem;
       }
 
-      .stat-row {
+      .progress-stats-top {
         flex-direction: column;
         gap: 1rem;
       }
@@ -663,31 +662,27 @@
     <div class="progress-card">
       <h2>📊 Seu Progresso</h2>
       <div class="progress-content">
-        <div class="progress-stats">
-          <div class="stat-row">
+        <div class="chart-container">
+          <div class="progress-stats-top">
             <div class="stat-item">
               <span class="stat-value" id="sharedAmount">0 GB</span>
               <span class="stat-label">Total Compartilhado</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value" id="tokensEarned">0 BIG</span>
-              <span class="stat-label">Tokens Ganhos</span>
             </div>
             <div class="stat-item">
               <span class="stat-value" id="daysActive">0</span>
               <span class="stat-label">Dias Ativos</span>
             </div>
           </div>
-          <button id="seedButton" class="primary-btn">
-            🌱 Popular dados de uso diário
-          </button>
-        </div>
-        
-        <div class="chart-container">
           <div class="chart-title">Histórico de Compartilhamento (7 dias)</div>
           <div class="chart-wrapper">
             <canvas id="progressChart"></canvas>
           </div>
+        </div>
+        
+        <div class="seed-button-container">
+          <button id="seedButton" class="primary-btn">
+            🌱 Popular dados de uso diário
+          </button>
         </div>
       </div>
     </div>
@@ -761,10 +756,8 @@
       // Calcular estatísticas
       const totalMB = userData.sharedMB || 0;
       const totalGB = (totalMB / 1024).toFixed(2);
-      const tokensEarned = Math.floor(totalMB * 0.1); // 0.1 BIG por MB
       
       document.getElementById("sharedAmount").textContent = totalGB + " GB";
-      document.getElementById("tokensEarned").textContent = tokensEarned + " BIG";
 
       // Link de referência
       const encodedEmail = encodeURIComponent(user.email);
@@ -1009,7 +1002,6 @@
         heading: "Bem-vindo ao seu Painel",
         progress: "📊 Seu Progresso",
         shared: "Total Compartilhado",
-        tokensEarned: "Tokens Ganhos",
         daysActive: "Dias Ativos",
         chartTitle: "Histórico de Compartilhamento (7 dias)",
         walletTitle: "💰 Carteira Solana",
@@ -1028,7 +1020,6 @@
         heading: "Welcome to your Dashboard",
         progress: "📊 Your Progress",
         shared: "Total Shared",
-        tokensEarned: "Tokens Earned",
         daysActive: "Active Days",
         chartTitle: "Sharing History (7 days)",
         walletTitle: "💰 Solana Wallet",
@@ -1055,8 +1046,7 @@
       
       // Estatísticas
       document.querySelectorAll(".stat-label")[0].textContent = t.shared;
-      document.querySelectorAll(".stat-label")[1].textContent = t.tokensEarned;
-      document.querySelectorAll(".stat-label")[2].textContent = t.daysActive;
+      document.querySelectorAll(".stat-label")[1].textContent = t.daysActive;
       
       // Título do gráfico
       document.querySelector(".chart-title").textContent = t.chartTitle;
