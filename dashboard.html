@@ -76,7 +76,7 @@
     main {
       flex: 1;
       padding: 2rem;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
       box-sizing: border-box;
@@ -91,11 +91,25 @@
       font-weight: 700;
     }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
+    /* Progress card - Full width */
+    .progress-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      position: relative;
+      overflow: hidden;
       margin-bottom: 2rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Bottom grid for wallet and referral */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
     }
 
     .card {
@@ -107,8 +121,10 @@
       border: 1px solid rgba(255, 107, 53, 0.2);
       position: relative;
       overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
     }
 
+    .progress-card::before,
     .card::before {
       content: '';
       position: absolute;
@@ -120,12 +136,14 @@
       opacity: 0.8;
     }
 
+    .progress-card:hover,
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 15px 35px rgba(255, 107, 53, 0.25);
       border-color: rgba(255, 107, 53, 0.4);
     }
 
+    .progress-card h2,
     .card h2 {
       margin-top: 0;
       margin-bottom: 1.5rem;
@@ -143,10 +161,23 @@
       font-size: 1.1rem;
     }
 
+    /* Progress-specific styles */
+    .progress-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
     .progress-stats {
       display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stat-row {
+      display: flex;
       justify-content: space-around;
-      margin: 1.5rem 0;
       padding: 1rem;
       background: rgba(255, 107, 53, 0.1);
       border-radius: 10px;
@@ -260,10 +291,9 @@
       cursor: pointer;
     }
 
-    /* Melhorias no container do gráfico */
+    /* Chart container - Maior destaque */
     .chart-container {
       position: relative;
-      margin-top: 2rem;
       padding: 1.5rem;
       background: rgba(255, 107, 53, 0.05);
       border-radius: 15px;
@@ -284,7 +314,7 @@
 
     .chart-wrapper {
       position: relative;
-      height: 280px;
+      height: 350px;
       margin: 1rem 0;
       padding: 1rem;
       background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(34, 34, 34, 0.8) 100%);
@@ -408,6 +438,7 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    body.light-mode .progress-card,
     body.light-mode .card {
       background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
       color: var(--text-light);
@@ -415,6 +446,7 @@
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
+    body.light-mode .progress-card h2,
     body.light-mode .card h2 {
       color: #1a1a1a;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -424,7 +456,7 @@
       color: #333;
     }
 
-    body.light-mode .progress-stats,
+    body.light-mode .stat-row,
     body.light-mode .referral-stat {
       background: rgba(255, 107, 53, 0.1);
       border: 1px solid rgba(255, 107, 53, 0.2);
@@ -469,7 +501,6 @@
       border-top: 2px solid #e0e0e0;
     }
 
-    /* Estilos do modo claro para o gráfico */
     body.light-mode .chart-container {
       background: rgba(255, 107, 53, 0.08);
       border: 1px solid rgba(255, 107, 53, 0.25);
@@ -501,16 +532,28 @@
       background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
     }
 
+    @media (max-width: 1024px) {
+      .progress-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .chart-wrapper {
+        height: 300px;
+      }
+    }
+
     @media (max-width: 768px) {
       main {
         padding: 1rem;
       }
 
-      .dashboard-grid {
+      .bottom-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
 
+      .progress-card,
       .card {
         padding: 1.5rem;
       }
@@ -529,7 +572,7 @@
         font-size: 0.9rem;
       }
 
-      .progress-stats {
+      .stat-row {
         flex-direction: column;
         gap: 1rem;
       }
@@ -537,18 +580,22 @@
       .referral-stats {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .chart-wrapper {
+        height: 250px;
+      }
     }
 
     /* Animações de entrada */
-    .card {
+    .progress-card {
       animation: fadeInUp 0.6s ease-out;
     }
 
-    .card:nth-child(2) {
+    .card:nth-child(1) {
       animation-delay: 0.1s;
     }
 
-    .card:nth-child(3) {
+    .card:nth-child(2) {
       animation-delay: 0.2s;
     }
 
@@ -612,34 +659,41 @@
   <main>
     <h1>Bem-vindo ao seu Painel</h1>
 
-    <div class="dashboard-grid">
-      <div class="card">
-        <h2>📊 Seu Progresso</h2>
+    <!-- Progress Section - Full Width -->
+    <div class="progress-card">
+      <h2>📊 Seu Progresso</h2>
+      <div class="progress-content">
         <div class="progress-stats">
-          <div class="stat-item">
-            <span class="stat-value" id="sharedAmount">0 GB</span>
-            <span class="stat-label">Total Compartilhado</span>
+          <div class="stat-row">
+            <div class="stat-item">
+              <span class="stat-value" id="sharedAmount">0 GB</span>
+              <span class="stat-label">Total Compartilhado</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="tokensEarned">0 BIG</span>
+              <span class="stat-label">Tokens Ganhos</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="daysActive">0</span>
+              <span class="stat-label">Dias Ativos</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="stat-value" id="tokensEarned">0 BIG</span>
-            <span class="stat-label">Tokens Ganhos</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value" id="daysActive">0</span>
-            <span class="stat-label">Dias Ativos</span>
-          </div>
+          <button id="seedButton" class="primary-btn">
+            🌱 Popular dados de uso diário
+          </button>
         </div>
+        
         <div class="chart-container">
           <div class="chart-title">Histórico de Compartilhamento (7 dias)</div>
           <div class="chart-wrapper">
             <canvas id="progressChart"></canvas>
           </div>
         </div>
-        <button id="seedButton" class="primary-btn">
-          🌱 Popular dados de uso diário
-        </button>
       </div>
+    </div>
 
+    <!-- Bottom Grid - Wallet and Referral side by side -->
+    <div class="bottom-grid">
       <div class="card">
         <h2>💰 Carteira Solana</h2>
         <p>Configure seu endereço Solana para receber as recompensas em tokens BIG.</p>
@@ -772,8 +826,8 @@
             pointBackgroundColor: "#FF6B35",
             pointBorderColor: "#ffffff",
             pointBorderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 7
+            pointRadius: 6,
+            pointHoverRadius: 8
           }]
         },
         options: {
@@ -792,7 +846,7 @@
               labels: {
                 color: textColor,
                 font: {
-                  size: 12,
+                  size: 14,
                   weight: '600'
                 }
               }
@@ -818,7 +872,7 @@
               ticks: {
                 color: textColor,
                 font: {
-                  size: 11
+                  size: 12
                 },
                 padding: 8
               },
@@ -835,7 +889,7 @@
               ticks: {
                 color: textColor,
                 font: {
-                  size: 11
+                  size: 12
                 },
                 padding: 8
               },
@@ -995,9 +1049,9 @@
       const t = translations[lang];
       
       document.querySelector("h1").textContent = t.heading;
-      document.querySelectorAll(".card h2")[0].textContent = t.progress;
-      document.querySelectorAll(".card h2")[1].textContent = t.walletTitle;
-      document.querySelectorAll(".card h2")[2].textContent = t.referralTitle;
+      document.querySelector(".progress-card h2").textContent = t.progress;
+      document.querySelectorAll(".card h2")[0].textContent = t.walletTitle;
+      document.querySelectorAll(".card h2")[1].textContent = t.referralTitle;
       
       // Estatísticas
       document.querySelectorAll(".stat-label")[0].textContent = t.shared;
