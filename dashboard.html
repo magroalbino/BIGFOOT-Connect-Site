@@ -289,7 +289,7 @@
       cursor: pointer;
     }
 
-    /* Chart container - Maior destaque */
+    /* Chart container */
     .chart-container {
       position: relative;
       padding: 1.5rem;
@@ -356,6 +356,12 @@
       animation: slideIn 0.3s ease-out;
     }
 
+    #statusMessage.error {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
     @keyframes slideIn {
       from {
         opacity: 0;
@@ -396,23 +402,47 @@
       letter-spacing: 0.5px;
     }
 
-    /* Modo claro */
-    :root {
-      --bg-dark: #0a0a0a;
-      --text-dark: #f0f0f0;
-      --bg-light: #fefefe;
-      --text-light: #1a1a1a;
-      --highlight: #FF6B35;
-      --muted-dark: #e0e0e0;
-      --muted-light: #444;
-      --card-light: #ffffff;
-      --border-light: #e0e0e0;
-      --hover-light: #f0f0f0;
+    /* Loading animation */
+    .loading {
+      text-align: center;
+      color: #FF6B35;
+      margin: 2rem 0;
     }
 
+    .loading::after {
+      content: '';
+      display: inline-block;
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+
+    /* Debug info */
+    .debug-info {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #3498db;
+      display: none;
+    }
+
+    .debug-info.show {
+      display: block;
+    }
+
+    /* Light mode styles */
     body.light-mode {
-      background-color: var(--bg-light);
-      color: var(--text-light);
+      background-color: #fefefe;
+      color: #1a1a1a;
     }
 
     body.light-mode header {
@@ -422,194 +452,45 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    body.light-mode .logo a {
-      color: #1a1a1a;
-    }
-
-    body.light-mode .logo a:hover span,
-    body.light-mode .logo a:hover img {
-      color: #FF6B35;
-    }
-
-    body.light-mode h1 {
-      color: #1a1a1a;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
     body.light-mode .progress-card,
     body.light-mode .card {
       background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-      color: var(--text-light);
-      border: 1px solid var(--border-light);
+      color: #1a1a1a;
+      border: 1px solid #e0e0e0;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    body.light-mode .progress-card h2,
-    body.light-mode .card h2 {
-      color: #1a1a1a;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    body.light-mode .card p {
-      color: #333;
-    }
-
-    body.light-mode .progress-stats-top,
-    body.light-mode .referral-stat {
-      background: rgba(255, 107, 53, 0.1);
-      border: 1px solid rgba(255, 107, 53, 0.2);
-    }
-
-    body.light-mode .stat-label,
-    body.light-mode .referral-stat .label {
-      color: #666;
-    }
-
-    body.light-mode #languageSwitcher {
-      background: #f0f0f0;
-      color: #1a1a1a;
-      border: 1px solid #ccc;
-    }
-
-    body.light-mode #languageSwitcher:hover {
-      background: #e0e0e0;
-      border-color: #FF6B35;
-    }
-
-    body.light-mode #themeToggle {
-      border: 1px solid var(--border-light);
-      background-color: var(--hover-light);
-      color: #1a1a1a;
-    }
-
-    body.light-mode #walletInput,
-    body.light-mode #refLink {
-      background-color: #f5f5f5;
-      color: #333;
-      border-color: #ccc;
-    }
-
-    body.light-mode #refLink {
-      background-color: #eee;
-    }
-
-    body.light-mode footer {
-      background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
-      color: #666;
-      border-top: 2px solid #e0e0e0;
-    }
-
-    body.light-mode .chart-container {
-      background: rgba(255, 107, 53, 0.08);
-      border: 1px solid rgba(255, 107, 53, 0.25);
     }
 
     body.light-mode .chart-wrapper {
       background: linear-gradient(135deg, rgba(248, 248, 248, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%);
       border: 1px solid rgba(255, 107, 53, 0.15);
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
-    body.light-mode canvas {
-      background: transparent !important;
-    }
-
-    body.light-mode #statusMessage {
-      background: rgba(46, 213, 115, 0.1);
-      color: #27ae60;
-      border: 1px solid rgba(39, 174, 96, 0.3);
-    }
-
-    #seedButton {
+    #seedButton,
+    #debugToggle {
       background: linear-gradient(135deg, #2ed573 0%, #27ae60 100%);
       margin-top: 1rem;
       display: none;
     }
 
-    #seedButton:hover {
+    #seedButton:hover,
+    #debugToggle:hover {
       background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
     }
 
-    @media (max-width: 1024px) {
-      .progress-stats-top {
-        flex-direction: column;
-        gap: 1.5rem;
-        text-align: center;
-      }
-      
-      .chart-wrapper {
-        height: 300px;
-      }
-    }
-
     @media (max-width: 768px) {
-      main {
-        padding: 1rem;
-      }
-
-      .bottom-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .progress-card,
-      .card {
-        padding: 1.5rem;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .header-controls {
-        gap: 0.5rem;
-      }
-
-      #languageSwitcher,
-      #themeToggle {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-      }
-
-      .progress-stats-top {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .referral-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .chart-wrapper {
-        height: 250px;
-      }
-    }
-
-    /* Animações de entrada */
-    .progress-card {
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    .card:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .card:nth-child(2) {
-      animation-delay: 0.2s;
+      main { padding: 1rem; }
+      .bottom-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .progress-card, .card { padding: 1.5rem; }
+      h1 { font-size: 2rem; }
+      .progress-stats-top { flex-direction: column; gap: 1rem; }
+      .chart-wrapper { height: 250px; }
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Estilos para notificações */
     .notification {
       position: fixed;
       top: 20px;
@@ -677,12 +558,21 @@
           <div class="chart-wrapper">
             <canvas id="progressChart"></canvas>
           </div>
+          <div id="loadingChart" class="loading">Carregando dados do gráfico</div>
         </div>
         
         <div class="seed-button-container">
           <button id="seedButton" class="primary-btn">
             🌱 Popular dados de uso diário
           </button>
+          <button id="debugToggle" class="primary-btn">
+            🔍 Debug Firebase
+          </button>
+        </div>
+        
+        <div id="debugInfo" class="debug-info">
+          <h4>Debug Firebase:</h4>
+          <div id="debugContent"></div>
         </div>
       </div>
     </div>
@@ -734,69 +624,194 @@
     const db = firebase.firestore();
 
     let chartInstance = null;
+    let currentUser = null;
+
+    // Debug functions
+    function debugLog(message, data = null) {
+      const debugContent = document.getElementById('debugContent');
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = `[${timestamp}] ${message}${data ? ': ' + JSON.stringify(data, null, 2) : ''}`;
+      debugContent.innerHTML += logEntry + '\n';
+      console.log(logEntry, data);
+    }
+
+    function showDebug() {
+      document.getElementById('debugInfo').classList.toggle('show');
+    }
 
     async function initDashboard(user) {
-      if (!user) return window.location.href = "login.html";
-
-      const userDoc = await db.collection("users").doc(user.uid).get();
-      const userData = userDoc.data();
-      if (!userData) return;
-
-      // Mostrar botão seed para admin
-      if (user.email === "SEU_EMAIL_AQUI") {
-        document.getElementById("seedButton").style.display = "block";
-        document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
+      if (!user) {
+        debugLog("Usuário não autenticado, redirecionando para login");
+        return window.location.href = "login.html";
       }
 
-      localStorage.setItem("loggedIn", "true");
+      currentUser = user;
+      debugLog("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
 
-      // Configurar carteira
-      document.getElementById("walletInput").value = userData.walletAddress || "";
+      try {
+        // Buscar dados do usuário
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          debugLog("Documento do usuário não encontrado");
+          await createUserDocument(user);
+          return;
+        }
 
-      // Calcular estatísticas
-      const totalMB = userData.sharedMB || 0;
-      const totalGB = (totalMB / 1024).toFixed(2);
+        const userData = userDoc.data();
+        debugLog("Dados do usuário carregados", userData);
+
+        // Verificar se é admin (você pode alterar este email)
+        if (user.email === "fabricioricard23@gmail.com" || user.email === "fabricioricard23@gmail.com") {
+          document.getElementById("seedButton").style.display = "block";
+          document.getElementById("debugToggle").style.display = "block";
+        }
+
+        // Configurar carteira
+        document.getElementById("walletInput").value = userData.walletAddress || "";
+
+        // Carregar dados de uso diário
+        await loadDailyUsageData(user.uid);
+
+        // Link de referência
+        const encodedEmail = encodeURIComponent(user.email);
+        const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
+        document.getElementById("refLink").value = refLink;
+
+        // Estatísticas de referência
+        await loadReferralStats(user.email);
+
+      } catch (error) {
+        debugLog("Erro ao inicializar dashboard", error);
+        showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
+      }
+    }
+
+    async function createUserDocument(user) {
+      debugLog("Criando documento do usuário");
+      try {
+        await db.collection("users").doc(user.uid).set({
+          email: user.email,
+          createdAt: new Date(),
+          sharedMB: 0,
+          walletAddress: "",
+          referredBy: ""
+        });
+        debugLog("Documento do usuário criado com sucesso");
+        // Reinicializar dashboard
+        initDashboard(user);
+      } catch (error) {
+        debugLog("Erro ao criar documento do usuário", error);
+      }
+    }
+
+    async function loadDailyUsageData(uid) {
+      debugLog("Carregando dados de uso diário");
       
-      document.getElementById("sharedAmount").textContent = totalGB + " GB";
+      try {
+        const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
+        const usageSnap = await usageRef.orderBy("date", "desc").limit(7).get();
+        
+        debugLog(`Encontrados ${usageSnap.size} registros de uso diário`);
+        
+        const dailyStats = {};
+        let totalMB = 0;
+        let daysActive = 0;
+        
+        // Se não há dados, criar dados exemplo
+        if (usageSnap.empty) {
+          debugLog("Nenhum dado de uso encontrado, criando dados exemplo");
+          await createSampleData(uid);
+          return loadDailyUsageData(uid); // Recarregar
+        }
+        
+        usageSnap.forEach(doc => {
+          const data = doc.data();
+          const dateKey = doc.id;
+          const sharedMB = data.shared || 0;
+          
+          dailyStats[dateKey] = sharedMB;
+          totalMB += sharedMB;
+          if (sharedMB > 0) daysActive++;
+          
+          debugLog(`Data: ${dateKey}, Compartilhado: ${sharedMB}MB`);
+        });
 
-      // Link de referência
-      const encodedEmail = encodeURIComponent(user.email);
-      const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
-      document.getElementById("refLink").value = refLink;
+        // Atualizar UI
+        const totalGB = (totalMB / 1024).toFixed(2);
+        document.getElementById("sharedAmount").textContent = totalGB + " GB";
+        document.getElementById("daysActive").textContent = daysActive;
+        
+        debugLog(`Total: ${totalGB}GB, Dias ativos: ${daysActive}`);
+        
+        // Renderizar gráfico
+        renderChart(dailyStats);
+        
+        // Ocultar loading
+        document.getElementById("loadingChart").style.display = "none";
+        
+      } catch (error) {
+        debugLog("Erro ao carregar dados de uso diário", error);
+        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+      }
+    }
 
-      // Estatísticas de referência
-      const referrals = await db.collection("users").where("referredBy", "==", user.email).get();
-      const referralCount = referrals.size;
-      const referralEarnings = referralCount * 50; // 50 BIG por referência
+    async function createSampleData(uid) {
+      debugLog("Criando dados de exemplo");
       
-      document.getElementById("referralCount").textContent = referralCount;
-      document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
-
-      // Dados do gráfico
-      const usageSnap = await db.collection("users").doc(user.uid).collection("dailyUsage").orderBy("updatedAt", "asc").get();
-      const dailyStats = {};
-      let daysActive = 0;
+      const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
+      const today = new Date();
       
-      usageSnap.forEach(doc => {
-        const data = doc.data();
-        dailyStats[doc.id] = data.shared ? parseFloat(data.shared.toFixed(2)) : 0;
-        if (data.shared > 0) daysActive++;
-      });
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const dateKey = date.toISOString().split("T")[0];
+        const sharedMB = Math.floor(Math.random() * 100) + 50; // 50-150MB
+        
+        await usageRef.doc(dateKey).set({
+          shared: sharedMB,
+          date: date,
+          updatedAt: new Date()
+        });
+        
+        debugLog(`Criado registro para ${dateKey}: ${sharedMB}MB`);
+      }
+    }
 
-      document.getElementById("daysActive").textContent = daysActive;
-      renderChart(dailyStats);
+    async function loadReferralStats(userEmail) {
+      debugLog("Carregando estatísticas de referência");
+      
+      try {
+        const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
+        const referralCount = referrals.size;
+        const referralEarnings = referralCount * 50; // 50 BIG por referência
+        
+        document.getElementById("referralCount").textContent = referralCount;
+        document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
+        
+        debugLog(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
+        
+      } catch (error) {
+        debugLog("Erro ao carregar estatísticas de referência", error);
+      }
     }
 
     function renderChart(data) {
+      debugLog("Renderizando gráfico", data);
+      
       const ctx = document.getElementById("progressChart").getContext('2d');
       
-      // Destruir gráfico existente se houver
       if (chartInstance) {
         chartInstance.destroy();
       }
 
-      const labels = Object.keys(data);
-      const values = Object.values(data);
+      // Ordenar dados por data
+      const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+      const labels = sortedEntries.map(([date]) => {
+        const d = new Date(date);
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      });
+      const values = sortedEntries.map(([, value]) => value);
 
       const isDarkMode = !document.body.classList.contains('light-mode');
       const textColor = isDarkMode ? '#f0f0f0' : '#333';
@@ -805,10 +820,7 @@
       chartInstance = new Chart(ctx, {
         type: "line",
         data: {
-          labels: labels.map(date => {
-            const d = new Date(date);
-            return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-          }),
+          labels: labels,
           datasets: [{
             label: "MB Compartilhados",
             data: values,
@@ -894,38 +906,87 @@
           }
         }
       });
+      
+      debugLog("Gráfico renderizado com sucesso");
     }
 
     async function seedDailyUsageData() {
-      const user = auth.currentUser;
-      if (!user) return;
+      if (!currentUser) return;
 
-      const uid = user.uid;
-      const ref = db.collection("users").doc(uid).collection("dailyUsage");
+      debugLog("Iniciando seed de dados");
+      showStatusMessage("Populando dados...", "info");
+
+      const uid = currentUser.uid;
+      const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
 
       const today = new Date();
       let totalMB = 0;
       
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const yyyyMMdd = date.toISOString().split("T")[0];
-        const sharedMB = Math.floor(Math.random() * 150) + 50;
-        totalMB += sharedMB;
+      try {
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(today);
+          date.setDate(today.getDate() - i);
+          const dateKey = date.toISOString().split("T")[0];
+          const sharedMB = Math.floor(Math.random() * 150) + 50;
+          totalMB += sharedMB;
 
-        await ref.doc(yyyyMMdd).set({
-          shared: sharedMB,
-          updatedAt: new Date()
+          await usageRef.doc(dateKey).set({
+            shared: sharedMB,
+            date: date,
+            updatedAt: new Date()
+          });
+          
+          debugLog(`Seed: ${dateKey} = ${sharedMB}MB`);
+        }
+
+        // Atualizar total do usuário
+        await db.collection("users").doc(uid).update({
+          sharedMB: totalMB,
+          lastUpdated: new Date()
         });
+
+        debugLog(`Seed concluído. Total: ${totalMB}MB`);
+        showNotification("Dados inseridos com sucesso! 🎉", "success");
+        
+        // Recarregar dados
+        setTimeout(() => {
+          loadDailyUsageData(uid);
+        }, 1000);
+        
+      } catch (error) {
+        debugLog("Erro no seed", error);
+        showStatusMessage("Erro ao popular dados", "error");
       }
+    }
 
-      // Atualizar total do usuário
-      await db.collection("users").doc(uid).update({
-        sharedMB: totalMB
-      });
-
-      showNotification("Dados inseridos com sucesso! 🎉", "success");
-      setTimeout(() => window.location.reload(), 1500);
+    // Função para simular dados vindos do app
+    async function simulateAppDataSync() {
+      if (!currentUser) return;
+      
+      debugLog("Simulando sincronização de dados do app");
+      
+      const uid = currentUser.uid;
+      const today = new Date().toISOString().split("T")[0];
+      const todayUsage = Math.floor(Math.random() * 50) + 20; // 20-70MB
+      
+      try {
+        // Simular dados chegando do app
+        await db.collection("users").doc(uid).collection("dailyUsage").doc(today).set({
+          shared: todayUsage,
+          date: new Date(),
+          updatedAt: new Date(),
+          source: "app_sync"
+        }, { merge: true });
+        
+        debugLog(`Dados simulados para hoje: ${todayUsage}MB`);
+        showNotification(`Sincronizado: +${todayUsage}MB hoje! 📱`, "success");
+        
+        // Recarregar dados
+        loadDailyUsageData(uid);
+        
+      } catch (error) {
+        debugLog("Erro na simulação", error);
+      }
     }
 
     function showNotification(message, type = 'success') {
@@ -944,7 +1005,7 @@
     function showStatusMessage(message, type = 'success') {
       const statusEl = document.getElementById("statusMessage");
       statusEl.textContent = message;
-      statusEl.classList.add('show');
+      statusEl.className = `show ${type}`;
       
       setTimeout(() => {
         statusEl.classList.remove('show');
@@ -959,18 +1020,28 @@
         return;
       }
       
+      // Validação básica do endereço Solana
+      if (wallet.length < 32 || wallet.length > 44) {
+        showStatusMessage("Endereço Solana inválido.", "error");
+        return;
+      }
+      
       try {
-        await db.collection("users").doc(auth.currentUser.uid).update({
-          walletAddress: wallet
+        await db.collection("users").doc(currentUser.uid).update({
+          walletAddress: wallet,
+          walletUpdatedAt: new Date()
         });
         showStatusMessage("Endereço salvo com sucesso! 💾");
+        debugLog("Carteira salva", { wallet });
       } catch (error) {
+        debugLog("Erro ao salvar carteira", error);
         showStatusMessage("Erro ao salvar endereço. Tente novamente.", "error");
       }
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       auth.signOut().then(() => {
+        debugLog("Usuário deslogado");
         localStorage.clear();
         location.href = "index.html";
       });
@@ -990,11 +1061,55 @@
       }
     });
 
+    document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
+    document.getElementById("debugToggle").addEventListener("click", showDebug);
+
+    // Adicionar botão para simular sincronização
+    const simulateBtn = document.createElement('button');
+    simulateBtn.id = 'simulateBtn';
+    simulateBtn.className = 'primary-btn';
+    simulateBtn.innerHTML = '📱 Simular dados do App';
+    simulateBtn.style.display = 'none';
+    simulateBtn.onclick = simulateAppDataSync;
+    document.querySelector('.seed-button-container').appendChild(simulateBtn);
+
     // Autenticação
     firebase.auth().onAuthStateChanged(user => {
-      if (user) initDashboard(user);
-      else location.href = "login.html";
+      if (user) {
+        debugLog("Usuário autenticado", { uid: user.uid, email: user.email });
+        initDashboard(user);
+        
+        // Mostrar botão de simulação para qualquer usuário logado
+        if (document.getElementById('simulateBtn')) {
+          document.getElementById('simulateBtn').style.display = 'block';
+        }
+      } else {
+        debugLog("Usuário não autenticado");
+        location.href = "login.html";
+      }
     });
+
+    // Listener em tempo real para dados de uso
+    function setupRealtimeListener(uid) {
+      debugLog("Configurando listener em tempo real");
+      
+      const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
+      
+      usageRef.onSnapshot((snapshot) => {
+        debugLog("Dados atualizados em tempo real");
+        
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added" || change.type === "modified") {
+            debugLog(`Documento ${change.type}:`, change.doc.data());
+          }
+        });
+        
+        // Recarregar dados quando houver mudanças
+        loadDailyUsageData(uid);
+      }, (error) => {
+        debugLog("Erro no listener em tempo real", error);
+      });
+    }
 
     // Sistema de tradução
     const translations = {
@@ -1014,7 +1129,9 @@
         copyBtn: "📋 Copiar Link de Referência",
         referrals: "Indicações",
         referralEarnings: "Ganhos por Ref.",
-        seedBtn: "🌱 Popular dados de uso diário"
+        seedBtn: "🌱 Popular dados de uso diário",
+        simulateBtn: "📱 Simular dados do App",
+        loading: "Carregando dados do gráfico"
       },
       en: {
         heading: "Welcome to your Dashboard",
@@ -1032,7 +1149,9 @@
         copyBtn: "📋 Copy Referral Link",
         referrals: "Referrals",
         referralEarnings: "Ref. Earnings",
-        seedBtn: "🌱 Populate daily usage data"
+        seedBtn: "🌱 Populate daily usage data",
+        simulateBtn: "📱 Simulate App data",
+        loading: "Loading chart data"
       }
     };
 
@@ -1059,7 +1178,15 @@
       // Botões
       document.getElementById("logoutBtn").textContent = t.logout;
       document.getElementById("copyRefLinkBtn").innerHTML = t.copyBtn;
-      document.getElementById("seedButton").innerHTML = t.seedBtn;
+      if (document.getElementById("seedButton")) {
+        document.getElementById("seedButton").innerHTML = t.seedBtn;
+      }
+      if (document.getElementById("simulateBtn")) {
+        document.getElementById("simulateBtn").innerHTML = t.simulateBtn;
+      }
+      
+      // Loading
+      document.getElementById("loadingChart").textContent = t.loading;
       
       // Referência
       document.querySelectorAll(".card p")[1].innerHTML = t.referralDesc;
@@ -1069,6 +1196,8 @@
 
     // Inicialização do tema e idioma
     document.addEventListener("DOMContentLoaded", () => {
+      debugLog("DOM carregado, inicializando tema e idioma");
+      
       // Configurar idioma
       const lang = localStorage.getItem("lang") || "pt";
       document.getElementById("languageSwitcher").value = lang;
@@ -1080,10 +1209,8 @@
         applyTranslations(lang);
         
         // Recriar gráfico com novo idioma
-        if (chartInstance) {
-          const currentData = chartInstance.data.datasets[0].data;
-          const currentLabels = chartInstance.data.labels;
-          renderChart(Object.fromEntries(currentLabels.map((label, i) => [label, currentData[i]])));
+        if (chartInstance && currentUser) {
+          loadDailyUsageData(currentUser.uid);
         }
       });
 
@@ -1115,13 +1242,28 @@
         }
         
         // Recriar gráfico com novo tema
-        if (chartInstance) {
-          const currentData = chartInstance.data.datasets[0].data;
-          const currentLabels = chartInstance.data.labels;
-          renderChart(Object.fromEntries(currentLabels.map((label, i) => [label, currentData[i]])));
+        if (chartInstance && currentUser) {
+          loadDailyUsageData(currentUser.uid);
         }
       });
     });
+
+    // Função para testar conectividade do Firebase
+    async function testFirebaseConnection() {
+      debugLog("Testando conexão com Firebase");
+      
+      try {
+        const testDoc = await db.collection('test').doc('connection').get();
+        debugLog("Conexão com Firebase OK");
+        return true;
+      } catch (error) {
+        debugLog("Erro na conexão com Firebase", error);
+        return false;
+      }
+    }
+
+    // Executar teste de conexão ao carregar
+    testFirebaseConnection();
   </script>
 </body>
 </html>
