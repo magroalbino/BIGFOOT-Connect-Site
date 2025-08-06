@@ -662,7 +662,7 @@
         debugLog("Dados do usuário carregados", userData);
 
         // Verificar se é admin (você pode alterar este email)
-        if (user.email === "fabricioricard23@gmail.com" || user.email === "fabricioricard23@gmail.com") {
+        if (user.email === "admin@bigfoot.com" || user.email === "seu-email@gmail.com") {
           document.getElementById("seedButton").style.display = "block";
           document.getElementById("debugToggle").style.display = "block";
         }
@@ -817,12 +817,16 @@
       const textColor = isDarkMode ? '#f0f0f0' : '#333';
       const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
+      const currentLang = document.getElementById("languageSwitcher").value || "pt";
+      const chartLabel = currentLang === "pt" ? "MB Compartilhados" : "MB Shared";
+      const tooltipLabel = currentLang === "pt" ? "MB compartilhados" : "MB shared";
+
       chartInstance = new Chart(ctx, {
         type: "line",
         data: {
           labels: labels,
           datasets: [{
-            label: "MB Compartilhados",
+            label: chartLabel,
             data: values,
             borderColor: "#FF6B35",
             backgroundColor: "rgba(255,107,53,0.2)",
@@ -863,7 +867,7 @@
               borderColor: '#FF6B35',
               borderWidth: 1,
               callbacks: {
-                label: ctx => `${ctx.parsed.y} MB compartilhados`
+                label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
               }
             }
           },
