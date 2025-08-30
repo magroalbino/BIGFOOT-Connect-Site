@@ -439,6 +439,27 @@
       display: block;
     }
 
+.month-selector {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+#monthSelect {
+  transition: all 0.3s ease;
+}
+
+#monthSelect:focus {
+  outline: none;
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+}
+
+body.light-mode #monthSelect {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 2px solid #e0e0e0;
+}
+    
     /* Light mode styles */
     body.light-mode {
       background-color: #fefefe;
@@ -712,56 +733,74 @@
       }
     }
 
-    async function loadDailyUsageData(uid) {
-      debugLog("Carregando dados de uso diário");
+    async function loadDailyUsageData(uid, selectedMonth = "all") {
+  debugLog("Carregando dados de uso diário", { selectedMonth });
+  
+  try {
+    const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
+    let usageSnap;
+    
+    if (selectedMonth === "all") {
+      usageSnap = await usageRef.orderBy("date", "desc").limit(30).get();
+    } else {
+      // Filtrar por mês específico
+      const [year, month] = selectedMonth.split('-');
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0, 23, 59, 59);
       
-      try {
-        const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
-        const usageSnap = await usageRef.orderBy("date", "desc").limit(7).get();
-        
-        debugLog(`Encontrados ${usageSnap.size} registros de uso diário`);
-        
-        const dailyStats = {};
-        let totalMB = 0;
-        let daysActive = 0;
-        
-        // Se não há dados, criar dados exemplo
-        if (usageSnap.empty) {
-          debugLog("Nenhum dado de uso encontrado, criando dados exemplo");
-          await createSampleData(uid);
-          return loadDailyUsageData(uid); // Recarregar
-        }
-        
-        usageSnap.forEach(doc => {
-          const data = doc.data();
-          const dateKey = doc.id;
-          const sharedMB = data.shared || 0;
-          
-          dailyStats[dateKey] = sharedMB;
-          totalMB += sharedMB;
-          if (sharedMB > 0) daysActive++;
-          
-          debugLog(`Data: ${dateKey}, Compartilhado: ${sharedMB}MB`);
-        });
-
-        // Atualizar UI
-        const totalGB = (totalMB / 1024).toFixed(2);
-        document.getElementById("sharedAmount").textContent = totalGB + " GB";
-        document.getElementById("daysActive").textContent = daysActive;
-        
-        debugLog(`Total: ${totalGB}GB, Dias ativos: ${daysActive}`);
-        
-        // Renderizar gráfico
-        renderChart(dailyStats);
-        
-        // Ocultar loading
-        document.getElementById("loadingChart").style.display = "none";
-        
-      } catch (error) {
-        debugLog("Erro ao carregar dados de uso diário", error);
-        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-      }
+      usageSnap = await usageRef
+        .where("date", ">=", startDate)
+        .where("date", "<=", endDate)
+        .orderBy("date", "desc")
+        .get();
     }
+    
+    debugLog(`Encontrados ${usageSnap.size} registros de uso diário`);
+    
+    const dailyStats = {};
+    const monthlyStats = {};
+    let totalMB = 0;
+    let daysActive = 0;
+    
+    if (usageSnap.empty) {
+      debugLog("Nenhum dado de uso encontrado, criando dados exemplo");
+      await createSampleData(uid);
+      return loadDailyUsageData(uid, selectedMonth);
+    }
+    
+    usageSnap.forEach(doc => {
+      const data = doc.data();
+      const dateKey = doc.id;
+      const date = data.date ? data.date.toDate() : new Date(dateKey);
+      const sharedMB = data.shared || 0;
+      
+      dailyStats[dateKey] = sharedMB;
+      totalMB += sharedMB;
+      if (sharedMB > 0) daysActive++;
+      
+      // Agrupar por mês
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      if (!monthlyStats[monthKey]) {
+        monthlyStats[monthKey] = 0;
+      }
+      monthlyStats[monthKey] += sharedMB;
+    });
+
+    // Atualizar selector de meses
+    updateMonthSelector(monthlyStats, selectedMonth);
+
+    const totalGB = (totalMB / 1024).toFixed(2);
+    document.getElementById("sharedAmount").textContent = totalGB + " GB";
+    document.getElementById("daysActive").textContent = daysActive;
+    
+    renderChart(dailyStats);
+    document.getElementById("loadingChart").style.display = "none";
+    
+  } catch (error) {
+    debugLog("Erro ao carregar dados de uso diário", error);
+    document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+  }
+}
 
     async function createSampleData(uid) {
       debugLog("Criando dados de exemplo");
@@ -1023,6 +1062,35 @@
       }, 3000);
     }
 
+function updateMonthSelector(monthlyStats, selectedMonth) {
+  const monthSelect = document.getElementById("monthSelect");
+  
+  // Limpar opções existentes (exceto "Todos os dados")
+  while (monthSelect.children.length > 1) {
+    monthSelect.removeChild(monthSelect.lastChild);
+  }
+  
+  // Adicionar meses disponíveis
+  const sortedMonths = Object.keys(monthlyStats).sort().reverse();
+  
+  sortedMonths.forEach(monthKey => {
+    const [year, month] = monthKey.split('-');
+    const monthName = new Date(year, month - 1).toLocaleDateString('pt-BR', { 
+      year: 'numeric', 
+      month: 'long' 
+    });
+    const totalGB = (monthlyStats[monthKey] / 1024).toFixed(2);
+    
+    const option = document.createElement('option');
+    option.value = monthKey;
+    option.textContent = `${monthName} (${totalGB} GB)`;
+    monthSelect.appendChild(option);
+  });
+  
+  monthSelect.value = selectedMonth;
+  debugLog("Selector de meses atualizado", { monthlyStats, selectedMonth });
+}
+    
     // Event Listeners
     document.getElementById("saveWalletBtn").addEventListener("click", async () => {
       const wallet = document.getElementById("walletInput").value.trim();
@@ -1030,6 +1098,16 @@
         showStatusMessage("Digite um endereço válido.", "error");
         return;
       }
+
+      // Event listener para mudança de mês
+document.getElementById("monthSelect").addEventListener("change", (e) => {
+  const selectedMonth = e.target.value;
+  debugLog("Mês selecionado:", selectedMonth);
+  
+  if (currentUser) {
+    loadDailyUsageData(currentUser.uid, selectedMonth);
+  }
+});
       
       // Validação básica do endereço Solana
       if (wallet.length < 32 || wallet.length > 44) {
