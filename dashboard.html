@@ -1064,6 +1064,7 @@ body.light-mode #monthSelect {
 
 function updateMonthSelector(monthlyStats, selectedMonth) {
   const monthSelect = document.getElementById("monthSelect");
+  const currentLang = document.getElementById("languageSwitcher").value || "pt";
   
   // Limpar opções existentes (exceto "Todos os dados")
   while (monthSelect.children.length > 1) {
@@ -1075,7 +1076,8 @@ function updateMonthSelector(monthlyStats, selectedMonth) {
   
   sortedMonths.forEach(monthKey => {
     const [year, month] = monthKey.split('-');
-    const monthName = new Date(year, month - 1).toLocaleDateString('pt-BR', { 
+    const locale = currentLang === 'pt' ? 'pt-BR' : 'en-US';
+    const monthName = new Date(year, month - 1).toLocaleDateString(locale, { 
       year: 'numeric', 
       month: 'long' 
     });
@@ -1088,7 +1090,7 @@ function updateMonthSelector(monthlyStats, selectedMonth) {
   });
   
   monthSelect.value = selectedMonth;
-  debugLog("Selector de meses atualizado", { monthlyStats, selectedMonth });
+  debugLog("Selector de meses atualizado", { monthlyStats, selectedMonth, currentLang });
 }
     
     // Event Listeners
@@ -1265,6 +1267,12 @@ if (monthLabel) {
 const allDataOption = document.querySelector("#monthSelect option[value='all']");
 if (allDataOption) {
   allDataOption.textContent = t.allData;
+}
+
+      // Atualizar dropdown de meses se já estiver populado
+  if (currentUser && chartInstance) {
+    loadDailyUsageData(currentUser.uid, document.getElementById("monthSelect").value);
+  }
 }
       
       // Estatísticas
