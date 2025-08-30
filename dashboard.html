@@ -592,7 +592,7 @@ body.light-mode #monthSelect {
         </div>
 
         <div class="month-selector">
-  <label for="monthSelect" style="color: #FF6B35; font-weight: 600; display: block; margin-bottom: 0.5rem;">Selecionar Mês:</label>
+  <label for="monthSelect" class="month-label" style="color: #FF6B35; font-weight: 600; display: block; margin-bottom: 0.5rem;">Selecionar Mês:</label>
   <select id="monthSelect" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 2px solid #444; background: #1a1a1a; color: #f0f0f0; font-size: 1rem; margin-bottom: 1rem;">
     <option value="all">Todos os dados</option>
   </select>
@@ -1220,6 +1220,8 @@ document.getElementById("monthSelect").addEventListener("change", (e) => {
         referralEarnings: "Ganhos por Ref.",
         seedBtn: "🌱 Popular dados de uso diário",
         simulateBtn: "📱 Sincronizar",
+        selectMonth: "Selecionar Mês:",
+        allData: "Todos os dados",
         loading: "Carregando dados do gráfico"
       },
       en: {
@@ -1240,6 +1242,8 @@ document.getElementById("monthSelect").addEventListener("change", (e) => {
         referralEarnings: "Ref. Earnings",
         seedBtn: "🌱 Populate daily usage data",
         simulateBtn: "📱 Synchronize",
+        selectMonth: "Select Month:",
+        allData: "All data",
         loading: "Loading chart data"
       }
     };
@@ -1251,6 +1255,17 @@ document.getElementById("monthSelect").addEventListener("change", (e) => {
       document.querySelector(".progress-card h2").textContent = t.progress;
       document.querySelectorAll(".card h2")[0].textContent = t.walletTitle;
       document.querySelectorAll(".card h2")[1].textContent = t.referralTitle;
+
+      // Seletor de mês
+const monthLabel = document.querySelector(".month-label");
+if (monthLabel) {
+  monthLabel.textContent = t.selectMonth;
+}
+
+const allDataOption = document.querySelector("#monthSelect option[value='all']");
+if (allDataOption) {
+  allDataOption.textContent = t.allData;
+}
       
       // Estatísticas
       document.querySelectorAll(".stat-label")[0].textContent = t.shared;
