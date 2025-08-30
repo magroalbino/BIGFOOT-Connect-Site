@@ -644,21 +644,21 @@
 
           <!-- Month Selector -->
           <div class="month-selector">
-            <label for="monthSelect">Select Month:</label>
+            <label for="monthSelect" id="monthSelectLabel">Select Month:</label>
             <select id="monthSelect">
-              <option value="all">All data</option>
-              <option value="2025-01">January 2025</option>
-              <option value="2025-02">February 2025</option>
-              <option value="2025-03">March 2025</option>
-              <option value="2025-04">April 2025</option>
-              <option value="2025-05">May 2025</option>
-              <option value="2025-06">June 2025</option>
-              <option value="2025-07">July 2025</option>
-              <option value="2025-08">August 2025</option>
-              <option value="2025-09">September 2025</option>
-              <option value="2025-10">October 2025</option>
-              <option value="2025-11">November 2025</option>
-              <option value="2025-12">December 2025</option>
+              <option value="all" id="allDataOption">All data</option>
+              <option value="2025-01" id="jan2025">January 2025</option>
+              <option value="2025-02" id="feb2025">February 2025</option>
+              <option value="2025-03" id="mar2025">March 2025</option>
+              <option value="2025-04" id="apr2025">April 2025</option>
+              <option value="2025-05" id="may2025">May 2025</option>
+              <option value="2025-06" id="jun2025">June 2025</option>
+              <option value="2025-07" id="jul2025">July 2025</option>
+              <option value="2025-08" id="aug2025">August 2025</option>
+              <option value="2025-09" id="sep2025">September 2025</option>
+              <option value="2025-10" id="oct2025">October 2025</option>
+              <option value="2025-11" id="nov2025">November 2025</option>
+              <option value="2025-12" id="dec2025">December 2025</option>
             </select>
           </div>
 
@@ -1385,6 +1385,18 @@
         loading: "Carregando dados do gráfico",
         selectMonth: "Selecionar Mês:",
         allData: "Todos os dados",
+        jan2025: "Janeiro 2025",
+        feb2025: "Fevereiro 2025", 
+        mar2025: "Março 2025",
+        apr2025: "Abril 2025",
+        may2025: "Maio 2025",
+        jun2025: "Junho 2025",
+        jul2025: "Julho 2025",
+        aug2025: "Agosto 2025",
+        sep2025: "Setembro 2025",
+        oct2025: "Outubro 2025",
+        nov2025: "Novembro 2025",
+        dec2025: "Dezembro 2025",
         sharedThisMonth: "Compartilhado no Mês",
         activeDaysMonth: "Dias Ativos",
         dailyAverage: "Média Diária"
@@ -1410,6 +1422,18 @@
         loading: "Loading chart data",
         selectMonth: "Select Month:",
         allData: "All data",
+        jan2025: "January 2025",
+        feb2025: "February 2025",
+        mar2025: "March 2025",
+        apr2025: "April 2025",
+        may2025: "May 2025",
+        jun2025: "June 2025",
+        jul2025: "July 2025",
+        aug2025: "August 2025",
+        sep2025: "September 2025",
+        oct2025: "October 2025",
+        nov2025: "November 2025",
+        dec2025: "December 2025",
         sharedThisMonth: "Shared this Month",
         activeDaysMonth: "Active Days",
         dailyAverage: "Daily Average"
@@ -1432,10 +1456,20 @@
       document.querySelector(".chart-title").textContent = t.chartTitle;
       
       // Seletor de mês
-      document.querySelector(".month-selector label").textContent = t.selectMonth;
-      const monthSelect = document.getElementById("monthSelect");
-      const allDataOption = monthSelect.querySelector('option[value="all"]');
-      if (allDataOption) allDataOption.textContent = t.allData;
+      document.getElementById("monthSelectLabel").textContent = t.selectMonth;
+      document.getElementById("allDataOption").textContent = t.allData;
+      document.getElementById("jan2025").textContent = t.jan2025;
+      document.getElementById("feb2025").textContent = t.feb2025;
+      document.getElementById("mar2025").textContent = t.mar2025;
+      document.getElementById("apr2025").textContent = t.apr2025;
+      document.getElementById("may2025").textContent = t.may2025;
+      document.getElementById("jun2025").textContent = t.jun2025;
+      document.getElementById("jul2025").textContent = t.jul2025;
+      document.getElementById("aug2025").textContent = t.aug2025;
+      document.getElementById("sep2025").textContent = t.sep2025;
+      document.getElementById("oct2025").textContent = t.oct2025;
+      document.getElementById("nov2025").textContent = t.nov2025;
+      document.getElementById("dec2025").textContent = t.dec2025;
       
       // Dados mensais
       if (document.getElementById("monthlySharedLabel")) {
