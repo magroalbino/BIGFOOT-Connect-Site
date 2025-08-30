@@ -1312,14 +1312,7 @@
     document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
     document.getElementById("debugToggle").addEventListener("click", showDebug);
 
-    // Adicionar botão para simular sincronização
-    const simulateBtn = document.createElement('button');
-    simulateBtn.id = 'simulateBtn';
-    simulateBtn.className = 'primary-btn';
-    simulateBtn.innerHTML = '📱 Simular dados do App';
-    simulateBtn.style.display = 'none';
-    simulateBtn.onclick = simulateAppDataSync;
-    document.querySelector('.seed-button-container').appendChild(simulateBtn);
+    // Botão de simulação removido
 
     // Autenticação
     firebase.auth().onAuthStateChanged(user => {
@@ -1327,10 +1320,7 @@
         debugLog("Usuário autenticado", { uid: user.uid, email: user.email });
         initDashboard(user);
         
-        // Mostrar botão de simulação para qualquer usuário logado
-        if (document.getElementById('simulateBtn')) {
-          document.getElementById('simulateBtn').style.display = 'block';
-        }
+        // Simulação removida por solicitação do usuário
       } else {
         debugLog("Usuário não autenticado");
         location.href = "login.html";
@@ -1381,7 +1371,6 @@
         referrals: "Indicações",
         referralEarnings: "Ganhos por Ref.",
         seedBtn: "🌱 Popular dados de uso diário",
-        simulateBtn: "📱 Sincronizar",
         loading: "Carregando dados do gráfico",
         selectMonth: "Selecionar Mês:",
         allData: "Todos os dados",
@@ -1418,7 +1407,6 @@
         referrals: "Referrals",
         referralEarnings: "Ref. Earnings",
         seedBtn: "🌱 Populate daily usage data",
-        simulateBtn: "📱 Synchronize",
         loading: "Loading chart data",
         selectMonth: "Select Month:",
         allData: "All data",
@@ -1488,9 +1476,6 @@
       document.getElementById("copyRefLinkBtn").innerHTML = t.copyBtn;
       if (document.getElementById("seedButton")) {
         document.getElementById("seedButton").innerHTML = t.seedBtn;
-      }
-      if (document.getElementById("simulateBtn")) {
-        document.getElementById("simulateBtn").innerHTML = t.simulateBtn;
       }
       
       // Loading
