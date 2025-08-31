@@ -715,17 +715,23 @@
         <h2>📅 Análise Mensal Detalhada</h2>
         
         <div class="month-selector">
+          <button class="month-btn" data-month="2025-12">
+            <span>Dezembro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-11">
+            <span>Novembro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-10">
+            <span>Outubro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-09">
+            <span>Setembro 2025</span>
+          </button>
           <button class="month-btn" data-month="2025-08">
             <span>Agosto 2025</span>
           </button>
           <button class="month-btn" data-month="2025-07">
             <span>Julho 2025</span>
-          </button>
-          <button class="month-btn" data-month="2025-06">
-            <span>Junho 2025</span>
-          </button>
-          <button class="month-btn" data-month="2025-05">
-            <span>Maio 2025</span>
           </button>
         </div>
 
@@ -918,6 +924,59 @@
         debugLog("Erro na inicialização", error);
         showMessage(`Erro de inicialização: ${error.message}`, true);
       }
+    }
+
+    // CORREÇÃO: Função para buscar email de usuários sem dados completos
+    async function getUserEmailSafely(userDoc) {
+      const userData = userDoc.data() || {};
+      
+      // Se já tem email no documento, usar
+      if (userData.email) {
+        return {
+          email: userData.email,
+          displayName: userData.displayName || userData.email.split('@')[0]
+        };
+      }
+      
+      // CORREÇÃO: Tentar buscar em outros campos possíveis
+      let email = null;
+      let displayName = null;
+      
+      // Verificar se existe email em outros formatos
+      if (userData.userEmail) {
+        email = userData.userEmail;
+      } else if (userData.emailAddress) {
+        email = userData.emailAddress;
+      } else {
+        // Buscar na subcoleção userProfile se existir
+        try {
+          const profileDoc = await userDoc.ref.collection('profile').doc('info').get();
+          if (profileDoc.exists) {
+            const profileData = profileDoc.data();
+            email = profileData.email || profileData.userEmail;
+            displayName = profileData.displayName || profileData.name;
+          }
+        } catch (profileError) {
+          debugLog(`Não foi possível buscar profile para ${userDoc.id}`, profileError);
+        }
+      }
+      
+      // Se ainda não encontrou email, criar um identificador único
+      if (!email) {
+        email = `user_${userDoc.id.substring(0, 12)}@bigfoot.connect`;
+        debugLog(`Criando email identificador para usuário sem email: ${email}`);
+      }
+      
+      // Se não tem displayName, criar baseado no email ou UID
+      if (!displayName) {
+        if (email.includes('@')) {
+          displayName = email.split('@')[0];
+        } else {
+          displayName = `Usuario_${userDoc.id.substring(0, 8)}`;
+        }
+      }
+      
+      return { email, displayName };
     }
 
     async function loadAdminData() {
@@ -1115,28 +1174,22 @@
         
         for (const userDoc of usersSnapshot.docs) {
           try {
-            const userData = userDoc.data();
+            const userData = userDoc.data() || {};
             
-            // CORREÇÃO: Verificar se userData existe
-            if (!userData) {
-              debugLog(`⚠️ Usuário ${userDoc.id} sem dados`);
-              continue;
-            }
-
-            const email = userData.email || 'Email não disponível';
-            const displayName = userData.displayName || email.split('@')[0] || `User_${userDoc.id.substring(0, 8)}`;
+            // CORREÇÃO: Usar função segura para buscar email
+            const userInfo = await getUserEmailSafely(userDoc);
             
-            debugLog(`📊 Processando usuário: ${email}`);
+            debugLog(`📊 Processando usuário: ${userInfo.email}`);
             
             const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
             
-            debugLog(`Stats para ${email}:`, userStats);
+            debugLog(`Stats para ${userInfo.email}:`, userStats);
             
             // CORREÇÃO: Mostrar TODOS os usuários, mesmo sem dados no mês
             monthlyUserData.push({
               id: userDoc.id,
-              name: displayName,
-              email: email,
+              name: userInfo.displayName,
+              email: userInfo.email,
               totalMB: userStats.totalMB || 0,
               daysActive: userStats.daysActive || 0,
               avgDaily: userStats.avgDaily || 0,
@@ -1147,17 +1200,33 @@
             
           } catch (userError) {
             debugLog(`Erro ao processar usuário ${userDoc.id}`, userError);
-            // CORREÇÃO: Continuar processamento mesmo com erro
-            const userData = userDoc.data() || {};
-            monthlyUserData.push({
-              id: userDoc.id,
-              name: `User_${userDoc.id.substring(0, 8)}`,
-              email: userData.email || 'Email não disponível',
-              totalMB: 0,
-              daysActive: 0,
-              avgDaily: 0,
-              walletAddress: "Erro ao carregar"
-            });
+            // CORREÇÃO: Ainda assim incluir o usuário com dados básicos
+            try {
+              const userData = userDoc.data() || {};
+              const userInfo = await getUserEmailSafely(userDoc);
+              
+              monthlyUserData.push({
+                id: userDoc.id,
+                name: userInfo.displayName,
+                email: userInfo.email,
+                totalMB: 0,
+                daysActive: 0,
+                avgDaily: 0,
+                walletAddress: userData.walletAddress || "Erro ao carregar"
+              });
+            } catch (fallbackError) {
+              debugLog(`Erro crítico no usuário ${userDoc.id}`, fallbackError);
+              // Último recurso: usuário com ID apenas
+              monthlyUserData.push({
+                id: userDoc.id,
+                name: `Usuario_${userDoc.id.substring(0, 8)}`,
+                email: `error_${userDoc.id.substring(0, 8)}@bigfoot.internal`,
+                totalMB: 0,
+                daysActive: 0,
+                avgDaily: 0,
+                walletAddress: "Erro crítico"
+              });
+            }
           }
         }
         
@@ -1461,10 +1530,12 @@
           selectedMonth = btn.dataset.month;
           
           const monthNames = {
+            '2025-12': 'Dezembro 2025',
+            '2025-11': 'Novembro 2025',
+            '2025-10': 'Outubro 2025',
+            '2025-09': 'Setembro 2025',
             '2025-08': 'Agosto 2025',
-            '2025-07': 'Julho 2025',
-            '2025-06': 'Junho 2025',
-            '2025-05': 'Maio 2025'
+            '2025-07': 'Julho 2025'
           };
           document.getElementById('chartMonthTitle').textContent = monthNames[selectedMonth] || selectedMonth;
           
@@ -1583,21 +1654,39 @@
         
         for (const userDoc of usersSnapshot.docs) {
           const userData = userDoc.data();
-          debugLog(`👤 Usuário ${userDoc.id}:`, {
-            email: userData.email,
-            displayName: userData.displayName,
-            walletAddress: userData.walletAddress,
-            sharedMB: userData.sharedMB
+          
+          // CORREÇÃO: Debug completo da estrutura do documento
+          debugLog(`\n👤 Usuário ${userDoc.id} - Estrutura completa:`, {
+            documentoCompleto: userData,
+            camposDisponiveis: Object.keys(userData || {}),
+            email: userData?.email,
+            userEmail: userData?.userEmail,
+            emailAddress: userData?.emailAddress,
+            displayName: userData?.displayName,
+            name: userData?.name,
+            walletAddress: userData?.walletAddress,
+            sharedMB: userData?.sharedMB
           });
           
-          // Verificar dailyUsage apenas dos primeiros 2 usuários para evitar spam
-          if (usersSnapshot.docs.indexOf(userDoc) < 2) {
-            const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(5).get();
-            debugLog(`📅 DailyUsage docs para ${userData.email}: ${dailySnapshot.size}`);
+          // Verificar subcoleções
+          try {
+            // Verificar se existe subcoleção profile
+            const profileDoc = await userDoc.ref.collection('profile').doc('info').get();
+            if (profileDoc.exists) {
+              debugLog(`📋 Profile encontrado para ${userDoc.id}:`, profileDoc.data());
+            }
             
-            dailySnapshot.forEach(doc => {
-              debugLog(`  ${doc.id}:`, doc.data());
-            });
+            // Verificar dailyUsage apenas dos primeiros 2 usuários para evitar spam
+            if (usersSnapshot.docs.indexOf(userDoc) < 2) {
+              const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(5).get();
+              debugLog(`📅 DailyUsage docs para ${userDoc.id}: ${dailySnapshot.size}`);
+              
+              dailySnapshot.forEach(doc => {
+                debugLog(`  ${doc.id}:`, doc.data());
+              });
+            }
+          } catch (subError) {
+            debugLog(`Erro ao verificar subcoleções de ${userDoc.id}`, subError);
           }
         }
       } catch (error) {
