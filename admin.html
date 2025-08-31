@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - BIGFOOT Connect</title>
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #0a0a0a;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+      border-bottom: 2px solid #333;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 40px;
+    }
+
+    .logo a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #FF6B35;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .admin-badge {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ffffff;
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-weight: 700;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .summary-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #FF6B35, #e55a2b);
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(255, 107, 53, 0.25);
+    }
+
+    .summary-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #FF6B35;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-label {
+      font-size: 1rem;
+      color: #ccc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .monthly-data {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .monthly-data h2 {
+      color: #ffffff;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    .month-selector {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .month-btn {
+      padding: 0.8rem 1.5rem;
+      background: rgba(255, 107, 53, 0.1);
+      border: 2px solid rgba(255, 107, 53, 0.3);
+      border-radius: 8px;
+      color: #FF6B35;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .month-btn:hover {
+      background: rgba(255, 107, 53, 0.2);
+      border-color: #FF6B35;
+      transform: translateY(-2px);
+    }
+
+    .month-btn.active {
+      background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+      color: white;
+      border-color: #FF6B35;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: rgba(26, 26, 26, 0.8);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .users-table th,
+    .users-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    .users-table th {
+      background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .users-table tr:hover {
+      background: rgba(255, 107, 53, 0.05);
+    }
+
+    .user-email {
+      color: #3498db;
+      font-weight: 500;
+    }
+
+    .shared-amount {
+      color: #2ed573;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .days-active {
+      color: #f39c12;
+      font-weight: 600;
+    }
+
+    .total-row {
+      background: rgba(255, 107, 53, 0.1) !important;
+      border-top: 2px solid #FF6B35;
+      font-weight: 700;
+    }
+
+    .total-row td {
+      color: #FF6B35;
+      font-size: 1.1rem;
+    }
+
+    .loading {
+      text-align: center;
+      color: #FF6B35;
+      margin: 2rem 0;
+      font-size: 1.2rem;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+
+    .refresh-btn {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin: 0 auto 2rem;
+      display: block;
+    }
+
+    .refresh-btn:hover {
+      background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+      transform: translateY(-2px);
+    }
+
+    .chart-container {
+      background: rgba(255, 107, 53, 0.05);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-top: 2rem;
+      border: 1px solid rgba(255, 107, 53, 0.15);
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 400px;
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(34, 34, 34, 0.8) 100%);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .month-selector { flex-direction: column; align-items: center; }
+      .users-table { font-size: 0.9rem; }
+      .users-table th, .users-table td { padding: 0.8rem; }
+    }
+
+    .access-denied {
+      text-align: center;
+      color: #e74c3c;
+      margin: 3rem 0;
+    }
+
+    .access-denied h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="dashboard.html">
+        <img src="/images/logo.png" alt="BIGFOOT Logo" />
+        <span>BIGFOOT Connect</span>
+      </a>
+    </div>
+    <div class="header-controls">
+      <div class="admin-badge">👑 ADMIN</div>
+      <button class="logout-btn" id="logoutBtn">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Página completamente vazia para não-admins -->
+    <div id="adminContent" style="display: none;">
+      <h1>🎯 Painel Administrativo</h1>
+
+      <!-- Resumo Geral -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="summary-value" id="totalUsers">0</span>
+          <span class="summary-label">Usuários Ativos</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value" id="totalSharedGB">0 GB</span>
+          <span class="summary-label">Total Compartilhado</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value" id="monthlySharedGB">0 GB</span>
+          <span class="summary-label">Este Mês</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value" id="avgPerUser">0 MB</span>
+          <span class="summary-label">Média por Usuário</span>
+        </div>
+      </div>
+
+      <button class="refresh-btn" id="refreshBtn">🔄 Atualizar Dados</button>
+
+      <!-- Dados Mensais -->
+      <div class="monthly-data">
+        <h2>📅 Dados por Mês</h2>
+        
+        <div class="month-selector">
+          <button class="month-btn" data-month="2025-08">Agosto 2025</button>
+          <button class="month-btn" data-month="2025-07">Julho 2025</button>
+          <button class="month-btn" data-month="2025-06">Junho 2025</button>
+          <button class="month-btn" data-month="2025-05">Maio 2025</button>
+        </div>
+
+        <div id="monthlyLoading" class="loading">Carregando dados mensais</div>
+        
+        <table class="users-table" id="usersTable" style="display: none;">
+          <thead>
+            <tr>
+              <th>👤 Usuário</th>
+              <th>📊 Total no Mês</th>
+              <th>📅 Dias Ativos</th>
+              <th>📈 Média Diária</th>
+              <th>💰 Carteira</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Dados serão inseridos aqui -->
+          </tbody>
+        </table>
+
+        <!-- Gráfico Mensal -->
+        <div class="chart-container">
+          <h3 style="text-align: center; color: #FF6B35; margin-bottom: 1rem;">
+            📊 Evolução Mensal - <span id="chartMonthTitle">Agosto 2025</span>
+          </h3>
+          <div class="chart-wrapper">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 BIGFOOT Connect - Painel Administrativo</p>
+  </footer>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
+      authDomain: "bigfoot-connect.firebaseapp.com",
+      projectId: "bigfoot-connect",
+      storageBucket: "bigfoot-connect.appspot.com",
+      messagingSenderId: "177999879162",
+      appId: "1:177999879162:web:a1ea739930cac97475e243"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let chartInstance = null;
+    let currentUser = null;
+    let selectedMonth = '2025-08'; // Agosto como padrão
+
+    // Lista de emails de admin (adicione quantos quiser)
+    const ADMIN_EMAILS = [
+      'fabricioricard23@gmail.com'
+      // Adicione outros emails admin aqui se necessário
+    ];
+
+    function isAdmin(email) {
+      return ADMIN_EMAILS.includes(email);
+    }
+
+    // Proteção adicional: verificar se URL foi acessada diretamente
+    function checkDirectAccess() {
+      // Se não veio do dashboard ou login, redirecionar
+      const referrer = document.referrer;
+      const isDirectAccess = !referrer || (!referrer.includes('dashboard.html') && !referrer.includes('login.html'));
+      
+      if (isDirectAccess && !sessionStorage.getItem('adminAccess')) {
+        debugLog("Acesso direto negado, redirecionando");
+        window.location.href = "index.html";
+        return false;
+      }
+      return true;
+    }
+
+    function debugLog(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] ${message}`, data);
+    }
+
+    async function initAdminDashboard(user) {
+      if (!user) {
+        return window.location.href = "login.html";
+      }
+
+      currentUser = user;
+      
+      // Verificar se é admin - se não for, redirecionar silenciosamente
+      if (!isAdmin(user.email)) {
+        debugLog("Usuário não autorizado redirecionado silenciosamente", { email: user.email });
+        // Redirecionar sem mostrar erro - como se a página não existisse
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      document.getElementById('adminContent').style.display = 'block';
+      debugLog("Admin autenticado", { email: user.email });
+
+      // Log de acesso autorizado
+      try {
+        await db.collection("adminLogs").add({
+          type: "admin_access",
+          email: user.email,
+          timestamp: new Date(),
+          userAgent: navigator.userAgent
+        });
+      } catch (error) {
+        debugLog("Erro ao registrar acesso admin", error);
+      }
+
+      // Carregar dados iniciais
+      await loadAdminData();
+      
+      // Configurar seletor de mês
+      setupMonthSelector();
+    }
+
+    async function loadAdminData() {
+      debugLog("Carregando dados administrativos");
+      
+      try {
+        // Carregar resumo geral
+        await loadSummaryStats();
+        
+        // Carregar dados do mês selecionado
+        await loadMonthlyData(selectedMonth);
+        
+      } catch (error) {
+        debugLog("Erro ao carregar dados admin", error);
+      }
+    }
+
+    async function loadSummaryStats() {
+      debugLog("Carregando estatísticas gerais");
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        const totalUsers = usersSnapshot.size;
+        let totalSharedMB = 0;
+        
+        // Somar todo o compartilhamento histórico
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          totalSharedMB += userData.sharedMB || 0;
+        }
+        
+        const totalSharedGB = (totalSharedMB / 1024).toFixed(2);
+        const avgPerUser = totalUsers > 0 ? (totalSharedMB / totalUsers).toFixed(0) : 0;
+        
+        // Calcular dados do mês atual
+        const monthlyMB = await getMonthlyTotal(selectedMonth);
+        const monthlyGB = (monthlyMB / 1024).toFixed(2);
+        
+        // Atualizar UI
+        document.getElementById("totalUsers").textContent = totalUsers;
+        document.getElementById("totalSharedGB").textContent = totalSharedGB + " GB";
+        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
+        document.getElementById("avgPerUser").textContent = avgPerUser + " MB";
+        
+        debugLog("Estatísticas carregadas", {
+          totalUsers,
+          totalSharedGB,
+          monthlyGB,
+          avgPerUser
+        });
+        
+      } catch (error) {
+        debugLog("Erro ao carregar estatísticas", error);
+      }
+    }
+
+    async function getMonthlyTotal(monthKey) {
+      let totalMB = 0;
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const dailyUsageSnapshot = await userDoc.ref
+            .collection("dailyUsage")
+            .where("date", ">=", new Date(monthKey + "-01"))
+            .where("date", "<", new Date(monthKey === "2025-12" ? "2026-01-01" : getNextMonth(monthKey)))
+            .get();
+          
+          dailyUsageSnapshot.forEach(doc => {
+            const data = doc.data();
+            totalMB += data.shared || 0;
+          });
+        }
+        
+      } catch (error) {
+        debugLog("Erro ao calcular total mensal", error);
+      }
+      
+      return totalMB;
+    }
+
+    function getNextMonth(monthKey) {
+      const [year, month] = monthKey.split('-');
+      const nextMonth = parseInt(month) + 1;
+      if (nextMonth > 12) {
+        return `${parseInt(year) + 1}-01-01`;
+      }
+      return `${year}-${nextMonth.toString().padStart(2, '0')}-01`;
+    }
+
+    async function loadMonthlyData(monthKey) {
+      debugLog(`Carregando dados para ${monthKey}`);
+      
+      document.getElementById("monthlyLoading").style.display = "block";
+      document.getElementById("usersTable").style.display = "none";
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        const monthlyUserData = [];
+        let monthlyTotal = 0;
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
+          
+          if (userStats.totalMB > 0) { // Só mostrar usuários com atividade
+            monthlyUserData.push({
+              email: userData.email,
+              totalMB: userStats.totalMB,
+              daysActive: userStats.daysActive,
+              avgDaily: userStats.avgDaily,
+              walletAddress: userData.walletAddress || "Não configurado"
+            });
+            
+            monthlyTotal += userStats.totalMB;
+          }
+        }
+        
+        // Ordenar por maior compartilhamento
+        monthlyUserData.sort((a, b) => b.totalMB - a.totalMB);
+        
+        // Renderizar tabela
+        renderUsersTable(monthlyUserData, monthlyTotal);
+        
+        // Atualizar resumo mensal
+        const monthlyGB = (monthlyTotal / 1024).toFixed(2);
+        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
+        
+        // Renderizar gráfico
+        await renderMonthlyChart(monthKey);
+        
+        document.getElementById("monthlyLoading").style.display = "none";
+        document.getElementById("usersTable").style.display = "table";
+        
+        debugLog(`Dados do mês carregados: ${monthlyGB}GB de ${monthlyUserData.length} usuários`);
+        
+      } catch (error) {
+        debugLog("Erro ao carregar dados mensais", error);
+        document.getElementById("monthlyLoading").innerHTML = "Erro ao carregar dados";
+      }
+    }
+
+    async function getUserMonthlyStats(uid, monthKey) {
+      let totalMB = 0;
+      let daysActive = 0;
+      
+      try {
+        const startDate = new Date(monthKey + "-01");
+        const endDate = new Date(getNextMonth(monthKey));
+        
+        const dailyUsageSnapshot = await db
+          .collection("users")
+          .doc(uid)
+          .collection("dailyUsage")
+          .where("date", ">=", startDate)
+          .where("date", "<", endDate)
+          .get();
+        
+        dailyUsageSnapshot.forEach(doc => {
+          const data = doc.data();
+          const shared = data.shared || 0;
+          totalMB += shared;
+          if (shared > 0) daysActive++;
+        });
+        
+        const avgDaily = daysActive > 0 ? (totalMB / daysActive).toFixed(1) : 0;
+        
+        return { totalMB, daysActive, avgDaily };
+        
+      } catch (error) {
+        debugLog("Erro ao obter stats do usuário", error);
+        return { totalMB: 0, daysActive: 0, avgDaily: 0 };
+      }
+    }
+
+    function renderUsersTable(userData, monthlyTotal) {
+      const tbody = document.getElementById("usersTableBody");
+      tbody.innerHTML = "";
+      
+      userData.forEach(user => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td class="user-email">${user.email}</td>
+          <td class="shared-amount">${(user.totalMB / 1024).toFixed(2)} GB</td>
+          <td class="days-active">${user.daysActive} dias</td>
+          <td>${user.avgDaily} MB/dia</td>
+          <td style="font-family: monospace; font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+            ${user.walletAddress.length > 20 ? user.walletAddress.substring(0, 20) + '...' : user.walletAddress}
+          </td>
+        `;
+      });
+      
+      // Linha de total
+      const totalRow = tbody.insertRow();
+      totalRow.className = "total-row";
+      totalRow.innerHTML = `
+        <td><strong>📊 TOTAL DO MÊS</strong></td>
+        <td><strong>${(monthlyTotal / 1024).toFixed(2)} GB</strong></td>
+        <td><strong>${userData.length} usuários</strong></td>
+        <td><strong>${userData.length > 0 ? (monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0)).toFixed(1) : 0} MB/dia</strong></td>
+        <td><strong>-</strong></td>
+      `;
+    }
+
+    async function renderMonthlyChart(monthKey) {
+      debugLog("Renderizando gráfico mensal");
+      
+      const ctx = document.getElementById("monthlyChart").getContext('2d');
+      
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      try {
+        // Obter dados diários do mês
+        const dailyTotals = await getDailyTotalsForMonth(monthKey);
+        
+        const labels = Object.keys(dailyTotals).sort().map(date => {
+          const d = new Date(date);
+          return d.getDate().toString();
+        });
+        
+        const values = Object.keys(dailyTotals).sort().map(date => 
+          (dailyTotals[date] / 1024).toFixed(2) // Converter para GB
+        );
+
+        chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "GB Compartilhados",
+              data: values,
+              backgroundColor: "rgba(255,107,53,0.6)",
+              borderColor: "#FF6B35",
+              borderWidth: 2,
+              borderRadius: 4,
+              borderSkipped: false,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#f0f0f0',
+                  font: { size: 14, weight: '600' }
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                borderColor: '#FF6B35',
+                borderWidth: 1,
+                callbacks: {
+                  label: ctx => `${ctx.parsed.y} GB compartilhados`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                ticks: { color: '#f0f0f0' }
+              },
+              y: {
+                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                ticks: { color: '#f0f0f0' },
+                beginAtZero: true
+              }
+            }
+          }
+        });
+        
+      } catch (error) {
+        debugLog("Erro ao renderizar gráfico", error);
+      }
+    }
+
+    async function getDailyTotalsForMonth(monthKey) {
+      const dailyTotals = {};
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const startDate = new Date(monthKey + "-01");
+          const endDate = new Date(getNextMonth(monthKey));
+          
+          const dailyUsageSnapshot = await userDoc.ref
+            .collection("dailyUsage")
+            .where("date", ">=", startDate)
+            .where("date", "<", endDate)
+            .get();
+          
+          dailyUsageSnapshot.forEach(doc => {
+            const data = doc.data();
+            const dateKey = doc.id;
+            const shared = data.shared || 0;
+            
+            if (!dailyTotals[dateKey]) {
+              dailyTotals[dateKey] = 0;
+            }
+            dailyTotals[dateKey] += shared;
+          });
+        }
+        
+      } catch (error) {
+        debugLog("Erro ao obter totais diários", error);
+      }
+      
+      return dailyTotals;
+    }
+
+    function setupMonthSelector() {
+      const monthButtons = document.querySelectorAll('.month-btn');
+      
+      // Marcar mês atual como ativo
+      monthButtons.forEach(btn => {
+        if (btn.dataset.month === selectedMonth) {
+          btn.classList.add('active');
+        }
+        
+        btn.addEventListener('click', async () => {
+          // Remover ativo de todos
+          monthButtons.forEach(b => b.classList.remove('active'));
+          
+          // Ativar o clicado
+          btn.classList.add('active');
+          selectedMonth = btn.dataset.month;
+          
+          // Atualizar título do gráfico
+          const monthNames = {
+            '2025-08': 'Agosto 2025',
+            '2025-07': 'Julho 2025',
+            '2025-06': 'Junho 2025',
+            '2025-05': 'Maio 2025'
+          };
+          document.getElementById('chartMonthTitle').textContent = monthNames[selectedMonth];
+          
+          // Recarregar dados
+          await loadMonthlyData(selectedMonth);
+        });
+      });
+    }
+
+    // Event Listeners
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        debugLog("Admin deslogado");
+        location.href = "index.html";
+      });
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+      loadAdminData();
+    });
+
+    // Autenticação
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        debugLog("Usuário detectado", { email: user.email });
+        initAdminDashboard(user);
+      } else {
+        debugLog("Usuário não autenticado");
+        // Para não-admins, redirecionar silenciosamente
+        location.href = "dashboard.html";
+      }
+    });
+
+    // Verificação adicional quando a página perde foco
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.removeItem('adminAccess');
+    });
+
+    // Verificação se alguém tenta acessar via console
+    window.addEventListener('keydown', (e) => {
+      // Detectar F12, Ctrl+Shift+I, Ctrl+U
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+          (e.ctrlKey && e.key === 'u')) {
+        
+        if (currentUser && isAdmin(currentUser.email)) {
+          debugLog("Admin acessou dev tools - permitido");
+        } else {
+          debugLog("Usuário não-admin tentou acessar dev tools");
+          e.preventDefault();
+          alert("Acesso restrito.");
+          return false;
+        }
+      }
+    });
+
+    // Verificação se página está sendo incorporada em iframe
+    if (window.top !== window.self) {
+      debugLog("Página sendo incorporada em iframe - bloqueando");
+      window.top.location = window.self.location;
+    }
+
+    // Auto-refresh a cada 30 segundos
+    setInterval(() => {
+      if (currentUser && isAdmin(currentUser.email)) {
+        loadSummaryStats();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
