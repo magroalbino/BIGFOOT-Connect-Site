@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -419,20 +420,18 @@
       z-index: 1;
     }
 
-    /* Tabela melhorada */
+    /* Tabela melhorada com e-mail mais visível */
     .table-container {
       background: rgba(15, 15, 15, 0.8);
       border-radius: 20px;
       overflow: hidden;
       border: 1px solid rgba(255, 107, 53, 0.2);
       backdrop-filter: blur(20px);
-      overflow-x: auto;
     }
 
     .users-table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: fixed;
     }
 
     .users-table th {
@@ -446,13 +445,6 @@
       border: none;
       position: relative;
     }
-
-    /* Larguras específicas para as colunas */
-    .users-table th:nth-child(1) { width: 20%; } /* Usuário & E-mail */
-    .users-table th:nth-child(2) { width: 15%; } /* Total no Mês */
-    .users-table th:nth-child(3) { width: 12%; } /* Dias Ativos */
-    .users-table th:nth-child(4) { width: 15%; } /* Média Diária */
-    .users-table th:nth-child(5) { width: 38%; } /* Carteira - maior espaço */
 
     .users-table th::after {
       content: '';
@@ -468,35 +460,34 @@
       padding: 1.2rem 1rem;
       border-bottom: 1px solid rgba(255, 107, 53, 0.1);
       transition: background-color 0.3s ease;
-      word-wrap: break-word;
+      vertical-align: top;
     }
 
     .users-table tr:hover td {
       background: rgba(255, 107, 53, 0.08);
     }
 
+    /* Estilização específica para info do usuário */
     .user-info {
-      color: #3498db;
-      font-weight: 500;
+      min-width: 250px;
     }
 
     .user-name {
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: 0.3rem;
       font-weight: 600;
-      /* Truncar nome para economizar espaço */
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      color: #ffffff;
+      display: block;
     }
 
     .user-email {
       font-size: 0.85rem;
-      opacity: 0.8;
-      color: #2ecc71;
+      color: #3498db !important;
       font-weight: 500;
-      /* Mostrar e-mail completo, mas com fonte menor */
+      opacity: 1 !important;
+      display: block;
+      word-break: break-word;
+      line-height: 1.3;
     }
 
     .shared-amount {
@@ -508,24 +499,6 @@
     .days-active {
       color: #f39c12;
       font-weight: 600;
-    }
-
-    .wallet-address {
-      font-family: 'Courier New', monospace;
-      font-size: 0.75rem;
-      background: rgba(52, 152, 219, 0.1);
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      border: 1px solid rgba(52, 152, 219, 0.2);
-      word-break: break-all;
-      max-width: 100%;
-      color: #3498db;
-    }
-
-    .wallet-not-configured {
-      color: #e74c3c;
-      font-style: italic;
-      opacity: 0.7;
     }
 
     .total-row {
@@ -616,6 +589,20 @@
       border: 1px solid rgba(255, 107, 53, 0.1);
     }
 
+    /* Debug info para teste */
+    .debug-info {
+      background: rgba(26, 26, 26, 0.9);
+      border: 1px solid rgba(255, 107, 53, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
     /* Responsividade */
     @media (max-width: 768px) {
       .header-content {
@@ -643,22 +630,11 @@
       }
 
       .users-table {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
       }
 
       .users-table th, .users-table td {
-        padding: 0.8rem 0.5rem;
-      }
-
-      /* Ajustar larguras para mobile */
-      .users-table th:nth-child(1) { width: 25%; }
-      .users-table th:nth-child(2) { width: 15%; }
-      .users-table th:nth-child(3) { width: 12%; }
-      .users-table th:nth-child(4) { width: 15%; }
-      .users-table th:nth-child(5) { width: 33%; }
-
-      .wallet-address {
-        font-size: 0.7rem;
+        padding: 0.8rem;
       }
 
       main {
@@ -735,6 +711,15 @@
 
       <button class="refresh-btn" id="refreshBtn">🔄 Atualizar Dados</button>
 
+      <!-- Debug Info (temporário) -->
+      <div id="debugInfo" class="debug-info" style="display: none;">
+        <strong>🔍 DEBUG INFO:</strong><br>
+        <div id="debugContent"></div>
+      </div>
+      <button onclick="toggleDebug()" style="margin-bottom: 1rem; padding: 0.5rem 1rem; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+        Toggle Debug Info
+      </button>
+
       <!-- Dados Mensais -->
       <div class="monthly-data">
         <h2>📅 Análise Mensal Detalhada</h2>
@@ -769,7 +754,7 @@
                 <th>📊 Total no Mês (GB)</th>
                 <th>📅 Dias Ativos</th>
                 <th>📈 Média Diária (MB)</th>
-                <th>💰 Endereço da Carteira</th>
+                <th>💰 Carteira</th>
               </tr>
             </thead>
             <tbody id="usersTableBody">
@@ -809,6 +794,7 @@
     let currentUser = null;
     let selectedMonth = '2025-08';
     let isAuthChecked = false;
+    let debugData = [];
 
     // Lista de emails de admin
     const ADMIN_EMAILS = [
@@ -822,6 +808,34 @@
     function debugLog(message, data = null) {
       const timestamp = new Date().toLocaleTimeString();
       console.log(`[ADMIN] ${timestamp} - ${message}`, data);
+      
+      // Adicionar ao debug info
+      debugData.push({
+        time: timestamp,
+        message: message,
+        data: data
+      });
+      
+      // Manter apenas os últimos 50 logs
+      if (debugData.length > 50) {
+        debugData = debugData.slice(-50);
+      }
+      
+      updateDebugDisplay();
+    }
+
+    function updateDebugDisplay() {
+      const debugContent = document.getElementById('debugContent');
+      if (debugContent) {
+        debugContent.innerHTML = debugData.slice(-10).map(log => 
+          `[${log.time}] ${log.message}${log.data ? ': ' + JSON.stringify(log.data, null, 2) : ''}`
+        ).join('<br><br>');
+      }
+    }
+
+    function toggleDebug() {
+      const debugInfo = document.getElementById('debugInfo');
+      debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
     }
 
     function showAuthStatus(message) {
@@ -1020,7 +1034,6 @@
     }
 
     async function getMonthlyTotal(monthKey) {
-      // CORREÇÃO: Validar monthKey
       if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
         debugLog("monthKey inválido, usando padrão", monthKey);
         monthKey = '2025-08';
@@ -1053,7 +1066,6 @@
     }
 
     async function getUserMonthlyTotal(uid, monthKey) {
-      // CORREÇÃO: Validar parâmetros
       if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
         debugLog("Parâmetros inválidos para getUserMonthlyTotal", { uid, monthKey });
         return 0;
@@ -1085,8 +1097,119 @@
       return totalMB;
     }
 
+    async function loadMonthlyData(monthKey) {
+      if (!monthKey || typeof monthKey !== 'string') {
+        console.error("❌ monthKey inválido:", monthKey);
+        monthKey = '2025-08';
+      }
+
+      debugLog(`Carregando dados mensais: ${monthKey}`);
+      
+      document.getElementById("monthlyLoading").style.display = "block";
+      document.getElementById("tableContainer").style.display = "none";
+      document.getElementById("chartContainer").style.display = "none";
+      
+      try {
+        const user = await waitForAuth();
+        if (!user || !isAdmin(user.email)) {
+          throw new Error("Usuário não autorizado");
+        }
+
+        const usersSnapshot = await db.collection("users").get();
+        const monthlyUserData = [];
+        let monthlyTotal = 0;
+        
+        debugLog("🔍 Processando usuários...", usersSnapshot.size);
+        
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            const userData = userDoc.data();
+            
+            // MELHORAMENTO: Log detalhado de cada usuário
+            debugLog(`Processando usuário ${userDoc.id}`, {
+              email: userData.email,
+              displayName: userData.displayName,
+              hasEmail: !!userData.email,
+              dataKeys: Object.keys(userData)
+            });
+            
+            // Verificar se userData existe
+            if (!userData) {
+              debugLog(`⚠️ userData é null para ${userDoc.id}`);
+              continue;
+            }
+
+            // Tentar obter email de diferentes fontes
+            let userEmail = userData.email || userData.emailAddress || userDoc.id;
+            
+            // Se ainda não tem email, tentar buscar do Auth
+            if (!userEmail || userEmail === userDoc.id) {
+              try {
+                // Nota: Em produção, só admins podem listar usuários do Auth
+                debugLog(`Tentando obter email do Auth para ${userDoc.id}`);
+                userEmail = userDoc.id; // Usar UID como fallback
+              } catch (authError) {
+                debugLog(`Erro ao buscar no Auth: ${userDoc.id}`, authError);
+                userEmail = `user-${userDoc.id.substring(0, 8)}`;
+              }
+            }
+
+            const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
+            
+            debugLog(`📊 Stats finais para ${userEmail}:`, userStats);
+            
+            const displayName = userData.displayName || userData.name || userEmail.split('@')[0] || 'Usuário';
+            
+            const userInfo = {
+              id: userDoc.id,
+              name: displayName,
+              email: userEmail,
+              totalMB: userStats.totalMB,
+              daysActive: userStats.daysActive,
+              avgDaily: userStats.avgDaily,
+              walletAddress: userData.walletAddress || "Não configurado"
+            };
+            
+            monthlyUserData.push(userInfo);
+            monthlyTotal += userStats.totalMB;
+            
+            debugLog(`✅ Usuário adicionado:`, userInfo);
+            
+          } catch (userError) {
+            debugLog(`❌ Erro ao processar usuário ${userDoc.id}`, userError);
+          }
+        }
+        
+        // Ordenar por total compartilhado
+        monthlyUserData.sort((a, b) => b.totalMB - a.totalMB);
+        
+        debugLog("📋 Dados finais processados:", {
+          totalUsers: monthlyUserData.length,
+          totalMB: monthlyTotal,
+          users: monthlyUserData.map(u => ({ name: u.name, email: u.email, totalMB: u.totalMB }))
+        });
+        
+        renderUsersTable(monthlyUserData, monthlyTotal);
+        
+        const monthlyGB = (monthlyTotal / 1024).toFixed(2);
+        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
+        
+        await renderMonthlyChart(monthKey);
+        
+        document.getElementById("monthlyLoading").style.display = "none";
+        document.getElementById("tableContainer").style.display = "block";
+        document.getElementById("chartContainer").style.display = "block";
+        
+        showMessage(`✅ Dados carregados: ${monthlyGB}GB de ${monthlyUserData.length} usuários`);
+        
+      } catch (error) {
+        document.getElementById("monthlyLoading").style.display = "none";
+        debugLog("Erro ao carregar dados mensais", error);
+        showMessage(`❌ Erro nos dados mensais: ${error.message}`, true);
+      }
+    }
+
     async function getUserMonthlyStats(uid, monthKey) {
-      // CORREÇÃO: Validar parâmetros
       if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
         debugLog("Parâmetros inválidos para getUserMonthlyStats", { uid, monthKey });
         return { totalMB: 0, daysActive: 0, avgDaily: 0 };
@@ -1124,95 +1247,15 @@
       }
     }
 
-    async function loadMonthlyData(monthKey) {
-      // CORREÇÃO: Validar monthKey
-      if (!monthKey || typeof monthKey !== 'string') {
-        console.error("❌ monthKey inválido:", monthKey);
-        monthKey = '2025-08'; // valor padrão
-      }
-
-      debugLog(`Carregando dados mensais: ${monthKey}`);
-      
-      document.getElementById("monthlyLoading").style.display = "block";
-      document.getElementById("tableContainer").style.display = "none";
-      document.getElementById("chartContainer").style.display = "none";
-      
-      try {
-        const user = await waitForAuth();
-        if (!user || !isAdmin(user.email)) {
-          throw new Error("Usuário não autorizado");
-        }
-
-        const usersSnapshot = await db.collection("users").get();
-        const monthlyUserData = [];
-        let monthlyTotal = 0;
-        
-        debugLog("🔍 Processando usuários...", usersSnapshot.size);
-        
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const userData = userDoc.data();
-            
-            // CORREÇÃO: Verificar se userData existe e tem email
-            if (!userData || !userData.email) {
-              debugLog(`⚠️ Usuário sem dados válidos: ${userDoc.id}`);
-              continue;
-            }
-
-            const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
-            
-            debugLog(`📊 Usuário ${userData.email}:`, userStats);
-            
-            // CORREÇÃO: Usar displayName se disponível, senão parte do e-mail, e truncar
-            const displayName = userData.displayName || userData.email.split('@')[0];
-            const truncatedName = displayName.length > 15 ? displayName.substring(0, 12) + '...' : displayName;
-            
-            monthlyUserData.push({
-              name: truncatedName,
-              email: userData.email, // ✅ CORREÇÃO: Manter e-mail completo
-              totalMB: userStats.totalMB,
-              daysActive: userStats.daysActive,
-              avgDaily: userStats.avgDaily,
-              walletAddress: userData.walletAddress || "Não configurado"
-            });
-            
-            monthlyTotal += userStats.totalMB;
-            
-          } catch (userError) {
-            debugLog(`Erro ao processar usuário ${userDoc.id}`, userError);
-          }
-        }
-        
-        // Ordenar por total compartilhado
-        monthlyUserData.sort((a, b) => b.totalMB - a.totalMB);
-        
-        debugLog("📋 Dados finais:", monthlyUserData);
-        
-        renderUsersTable(monthlyUserData, monthlyTotal);
-        
-        const monthlyGB = (monthlyTotal / 1024).toFixed(2);
-        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
-        
-        await renderMonthlyChart(monthKey);
-        
-        document.getElementById("monthlyLoading").style.display = "none";
-        document.getElementById("tableContainer").style.display = "block";
-        document.getElementById("chartContainer").style.display = "block";
-        
-        showMessage(`Dados carregados: ${monthlyGB}GB de ${monthlyUserData.length} usuários`);
-        
-      } catch (error) {
-        document.getElementById("monthlyLoading").style.display = "none";
-        debugLog("Erro ao carregar dados mensais", error);
-        showMessage(`Erro nos dados mensais: ${error.message}`, true);
-      }
-    }
-
     function renderUsersTable(userData, monthlyTotal) {
       const tbody = document.getElementById("usersTableBody");
       tbody.innerHTML = "";
       
-      // CORREÇÃO: Verificar se há dados
+      debugLog("🎨 Renderizando tabela", { 
+        usuariosRecebidos: userData.length,
+        primeiroUsuario: userData[0] || null
+      });
+      
       if (!userData || userData.length === 0) {
         const row = tbody.insertRow();
         row.innerHTML = `
@@ -1223,36 +1266,28 @@
         return;
       }
       
-      // ✅ DEBUG: Verificar estrutura dos dados
-      console.log("🔍 DEBUG renderUsersTable - userData:", userData);
-      
       userData.forEach((user, index) => {
-        console.log(`👤 Usuário ${index}:`, user);
+        debugLog(`Renderizando usuário ${index}:`, user);
         
         const row = tbody.insertRow();
         
-        // ✅ CORREÇÃO CRÍTICA: usar user.name (que é o displayName truncado) e user.email
-        const displayName = user.name || user.email?.split('@')[0] || 'Nome não disponível';
-        const userEmail = user.email || 'Email não disponível';
-        
-        // ✅ CORREÇÃO: Formatação da carteira - mostrar completa sem truncamento
-        let walletDisplay;
-        if (!user.walletAddress || user.walletAddress === "Não configurado") {
-          walletDisplay = `<span class="wallet-not-configured">Não configurado</span>`;
-        } else {
-          walletDisplay = `<div class="wallet-address">${user.walletAddress}</div>`;
-        }
-        
+        // CORREÇÃO PRINCIPAL: Estrutura HTML mais clara para o e-mail
         row.innerHTML = `
           <td class="user-info">
-            <div class="user-name" title="${userEmail}">${displayName}</div>
-            <div class="user-email">${userEmail}</div>
+            <div class="user-name">${user.name || 'Nome não disponível'}</div>
+            <div class="user-email">📧 ${user.email || 'Email não disponível'}</div>
           </td>
           <td class="shared-amount">${(user.totalMB / 1024).toFixed(3)}</td>
           <td class="days-active">${user.daysActive} dias</td>
           <td>${user.avgDaily} MB</td>
-          <td>${walletDisplay}</td>
+          <td style="font-family: monospace; font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; color: #f39c12;">
+            ${user.walletAddress && user.walletAddress !== 'Não configurado' && user.walletAddress.length > 20 ? 
+              user.walletAddress.substring(0, 20) + '...' : 
+              user.walletAddress}
+          </td>
         `;
+        
+        debugLog(`✅ Linha ${index} renderizada com email: ${user.email}`);
       });
       
       // Linha de total
@@ -1265,10 +1300,11 @@
         <td><strong>${userData.length > 0 ? (monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0) || 1).toFixed(1) : 0} MB</strong></td>
         <td><strong>-</strong></td>
       `;
+      
+      debugLog("✅ Tabela renderizada completamente");
     }
 
     async function renderMonthlyChart(monthKey) {
-      // CORREÇÃO: Validar monthKey
       if (!monthKey || typeof monthKey !== 'string') {
         debugLog("monthKey inválido para gráfico", monthKey);
         return;
@@ -1363,7 +1399,6 @@
     }
 
     async function getDailyTotalsForMonth(monthKey) {
-      // CORREÇÃO: Validar monthKey
       if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
         debugLog("monthKey inválido para totais diários", monthKey);
         return {};
@@ -1445,7 +1480,7 @@
     });
 
     document.getElementById("refreshBtn").addEventListener("click", async () => {
-      showMessage("Atualizando dados...");
+      showMessage("🔄 Atualizando dados...");
       await loadAdminData();
     });
 
@@ -1464,7 +1499,7 @@
       }
     });
 
-    // Função de debug para testar permissões
+    // Função de debug melhorada
     window.testFirestorePermissions = async function() {
       if (!currentUser) {
         console.log("❌ Nenhum usuário logado");
@@ -1478,38 +1513,20 @@
       try {
         // Teste 1: Listar usuários
         console.log("\n📝 Teste 1: Listar coleção users");
-        const usersTest = await db.collection("users").limit(3).get();
+        const usersTest = await db.collection("users").limit(5).get();
         console.log("✅ Sucesso - Usuários encontrados:", usersTest.size);
         
-        if (usersTest.size > 0) {
-          const firstUser = usersTest.docs[0];
-          const userData = firstUser.data();
-          console.log("👤 Primeiro usuário:", {
-            id: firstUser.id,
+        usersTest.forEach((doc, index) => {
+          const userData = doc.data();
+          console.log(`👤 Usuário ${index + 1}:`, {
+            id: doc.id,
             email: userData.email,
             displayName: userData.displayName,
             walletAddress: userData.walletAddress,
-            sharedMB: userData.sharedMB
+            sharedMB: userData.sharedMB,
+            allFields: Object.keys(userData)
           });
-          
-          // Teste 2: Acessar subcoleção
-          console.log("\n📝 Teste 2: Acessar dailyUsage");
-          const dailyTest = await firstUser.ref.collection("dailyUsage").limit(5).get();
-          console.log("✅ Sucesso - Registros diários:", dailyTest.size);
-          
-          dailyTest.forEach(doc => {
-            console.log(`  📅 ${doc.id}:`, doc.data());
-          });
-        }
-        
-        // Teste 3: Criar log admin
-        console.log("\n📝 Teste 3: Criar adminLog");
-        await db.collection("adminLogs").add({
-          type: "permission_test",
-          email: currentUser.email,
-          timestamp: new Date()
         });
-        console.log("✅ Sucesso - Log admin criado");
         
       } catch (error) {
         console.error("❌ Erro no teste:", error.message);
@@ -1517,85 +1534,27 @@
       }
     };
 
-    // Debug adicional para estrutura de dados
-    window.debugUserData = async function() {
-      console.log("🔍 DEBUG: Verificando estrutura de dados...");
+    // Debug específico para emails
+    window.debugEmails = async function() {
+      console.log("📧 DEBUG: Verificando emails especificamente...");
       
       try {
         const usersSnapshot = await db.collection("users").get();
-        console.log(`📊 Total usuários encontrados: ${usersSnapshot.size}`);
+        console.log(`📊 Total usuários: ${usersSnapshot.size}`);
         
-        for (const userDoc of usersSnapshot.docs) {
-          const userData = userDoc.data();
-          console.log(`\n👤 Usuário ${userDoc.id}:`, {
+        usersSnapshot.forEach((doc, index) => {
+          const userData = doc.data();
+          console.log(`📧 Usuário ${index + 1}:`, {
+            id: doc.id,
             email: userData.email,
+            emailExists: !!userData.email,
+            emailType: typeof userData.email,
             displayName: userData.displayName,
-            walletAddress: userData.walletAddress,
-            sharedMB: userData.sharedMB
+            allKeys: Object.keys(userData)
           });
-          
-          // Verificar dailyUsage
-          const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(3).get();
-          console.log(`📅 DailyUsage docs: ${dailySnapshot.size}`);
-          
-          dailySnapshot.forEach(doc => {
-            console.log(`  ${doc.id}:`, doc.data());
-          });
-        }
+        });
       } catch (error) {
-        console.error("❌ Erro no debug:", error);
-      }
-    };
-
-    // ✅ NOVA FUNÇÃO: Debug específico para o problema da tabela
-    window.debugTableData = async function() {
-      console.log("🔍 DEBUG TABELA: Verificando dados da tabela...");
-      
-      try {
-        const user = await waitForAuth();
-        if (!user || !isAdmin(user.email)) {
-          console.log("❌ Usuário não autorizado");
-          return;
-        }
-
-        const usersSnapshot = await db.collection("users").get();
-        console.log(`📊 Usuários encontrados: ${usersSnapshot.size}`);
-        
-        const testUserData = [];
-        
-        for (const userDoc of usersSnapshot.docs) {
-          const userData = userDoc.data();
-          console.log(`\n👤 Processando: ${userDoc.id}`);
-          console.log("📧 Email:", userData.email);
-          console.log("👤 DisplayName:", userData.displayName);
-          console.log("💰 WalletAddress:", userData.walletAddress);
-          
-          const userStats = await getUserMonthlyStats(userDoc.id, selectedMonth);
-          console.log("📊 Stats:", userStats);
-          
-          const displayName = userData.displayName || userData.email?.split('@')[0] || 'Sem nome';
-          const truncatedName = displayName.length > 15 ? displayName.substring(0, 12) + '...' : displayName;
-          
-          const testUser = {
-            name: truncatedName,
-            email: userData.email,
-            totalMB: userStats.totalMB,
-            daysActive: userStats.daysActive,
-            avgDaily: userStats.avgDaily,
-            walletAddress: userData.walletAddress || "Não configurado"
-          };
-          
-          console.log("✅ Objeto final:", testUser);
-          testUserData.push(testUser);
-        }
-        
-        console.log("📋 Array final para tabela:", testUserData);
-        
-        // Teste renderização
-        renderUsersTable(testUserData, 1000);
-        
-      } catch (error) {
-        console.error("❌ Erro no debug da tabela:", error);
+        console.error("❌ Erro no debug de emails:", error);
       }
     };
 
@@ -1610,9 +1569,8 @@
     }
 
     console.log("🔧 Admin Dashboard carregado");
-    console.log("Para testar permissões, execute: testFirestorePermissions()");
-    console.log("Para debug de dados, execute: debugUserData()");
-    console.log("🔍 Para debug específico da tabela, execute: debugTableData()");
+    console.log("📧 Para debug de emails, execute: debugEmails()");
+    console.log("🔍 Para testar permissões, execute: testFirestorePermissions()");
   </script>
 </body>
 </html>
