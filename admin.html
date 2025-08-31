@@ -319,6 +319,36 @@
       margin: 1rem 0;
     }
 
+    // Debug function - adicione isso temporariamente
+async function debugUserData() {
+  console.log("🔍 DEBUG: Verificando estrutura de dados...");
+  
+  try {
+    const usersSnapshot = await db.collection("users").limit(3).get();
+    console.log(`📊 Total usuários encontrados: ${usersSnapshot.size}`);
+    
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
+      console.log(`\n👤 Usuário ${userDoc.id}:`, {
+        email: userData.email,
+        displayName: userData.displayName,
+        walletAddress: userData.walletAddress,
+        sharedMB: userData.sharedMB
+      });
+      
+      // Verificar dailyUsage
+      const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(3).get();
+      console.log(`📅 DailyUsage docs: ${dailySnapshot.size}`);
+      
+      dailySnapshot.forEach(doc => {
+        console.log(`  ${doc.id}:`, doc.data());
+      });
+    }
+  } catch (error) {
+    console.error("❌ Erro no debug:", error);
+  }
+}
+
     .success-message {
       background: rgba(46, 213, 115, 0.1);
       border: 1px solid rgba(46, 213, 115, 0.3);
