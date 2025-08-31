@@ -1223,8 +1223,17 @@
         return;
       }
       
-      userData.forEach(user => {
+      // ✅ DEBUG: Verificar estrutura dos dados
+      console.log("🔍 DEBUG renderUsersTable - userData:", userData);
+      
+      userData.forEach((user, index) => {
+        console.log(`👤 Usuário ${index}:`, user);
+        
         const row = tbody.insertRow();
+        
+        // ✅ CORREÇÃO CRÍTICA: usar user.name (que é o displayName truncado) e user.email
+        const displayName = user.name || user.email?.split('@')[0] || 'Nome não disponível';
+        const userEmail = user.email || 'Email não disponível';
         
         // ✅ CORREÇÃO: Formatação da carteira - mostrar completa sem truncamento
         let walletDisplay;
@@ -1236,8 +1245,8 @@
         
         row.innerHTML = `
           <td class="user-info">
-            <div class="user-name" title="${user.email.split('@')[0]}">${user.name}</div>
-            <div class="user-email">${user.email}</div>
+            <div class="user-name" title="${userEmail}">${displayName}</div>
+            <div class="user-email">${userEmail}</div>
           </td>
           <td class="shared-amount">${(user.totalMB / 1024).toFixed(3)}</td>
           <td class="days-active">${user.daysActive} dias</td>
@@ -1538,6 +1547,58 @@
       }
     };
 
+    // ✅ NOVA FUNÇÃO: Debug específico para o problema da tabela
+    window.debugTableData = async function() {
+      console.log("🔍 DEBUG TABELA: Verificando dados da tabela...");
+      
+      try {
+        const user = await waitForAuth();
+        if (!user || !isAdmin(user.email)) {
+          console.log("❌ Usuário não autorizado");
+          return;
+        }
+
+        const usersSnapshot = await db.collection("users").get();
+        console.log(`📊 Usuários encontrados: ${usersSnapshot.size}`);
+        
+        const testUserData = [];
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          console.log(`\n👤 Processando: ${userDoc.id}`);
+          console.log("📧 Email:", userData.email);
+          console.log("👤 DisplayName:", userData.displayName);
+          console.log("💰 WalletAddress:", userData.walletAddress);
+          
+          const userStats = await getUserMonthlyStats(userDoc.id, selectedMonth);
+          console.log("📊 Stats:", userStats);
+          
+          const displayName = userData.displayName || userData.email?.split('@')[0] || 'Sem nome';
+          const truncatedName = displayName.length > 15 ? displayName.substring(0, 12) + '...' : displayName;
+          
+          const testUser = {
+            name: truncatedName,
+            email: userData.email,
+            totalMB: userStats.totalMB,
+            daysActive: userStats.daysActive,
+            avgDaily: userStats.avgDaily,
+            walletAddress: userData.walletAddress || "Não configurado"
+          };
+          
+          console.log("✅ Objeto final:", testUser);
+          testUserData.push(testUser);
+        }
+        
+        console.log("📋 Array final para tabela:", testUserData);
+        
+        // Teste renderização
+        renderUsersTable(testUserData, 1000);
+        
+      } catch (error) {
+        console.error("❌ Erro no debug da tabela:", error);
+      }
+    };
+
     // Verificação adicional de segurança
     window.addEventListener('beforeunload', () => {
       sessionStorage.removeItem('adminAccess');
@@ -1551,6 +1612,7 @@
     console.log("🔧 Admin Dashboard carregado");
     console.log("Para testar permissões, execute: testFirestorePermissions()");
     console.log("Para debug de dados, execute: debugUserData()");
+    console.log("🔍 Para debug específico da tabela, execute: debugTableData()");
   </script>
 </body>
 </html>
