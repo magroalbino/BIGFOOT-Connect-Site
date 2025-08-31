@@ -768,15 +768,75 @@
     }
 
     async function initDashboard(user) {
-      if (!user) {
-        debugLog("Usuário não autenticado, redirecionando para login");
-        return window.location.href = "login.html";
-      }
+  if (!user) {
+    debugLog("Usuário não autenticado, redirecionando para login");
+    return window.location.href = "login.html";
+  }
 
-      currentUser = user;
-      debugLog("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
+  currentUser = user;
+  debugLog("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
 
-      try {
+  try {
+
+    // NOVO: Verificar se é admin e mostrar botão secreto
+    if (user.email === "fabricioricard23@gmail.com") {
+      createAdminButton();
+    }
+
+    } catch (error) {
+    debugLog("Erro ao inicializar dashboard", error);
+    showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
+  }
+}
+
+    // NOVA FUNÇÃO: Criar botão admin secreto
+function createAdminButton() {
+  // Criar botão discreto que só você vê
+  const adminBtn = document.createElement('button');
+  adminBtn.id = 'secretAdminBtn';
+  adminBtn.innerHTML = '👑 Painel Admin';
+  adminBtn.className = 'primary-btn';
+  adminBtn.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    opacity: 0.7;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+  `;
+  
+  adminBtn.onclick = () => {
+    window.location.href = 'admin.html';
+  };
+  
+  // Aparecer com animação
+  adminBtn.style.opacity = '0';
+  adminBtn.style.transform = 'translateY(50px)';
+  document.body.appendChild(adminBtn);
+  
+  setTimeout(() => {
+    adminBtn.style.transition = 'all 0.5s ease';
+    adminBtn.style.opacity = '0.7';
+    adminBtn.style.transform = 'translateY(0)';
+  }, 1000);
+  
+  // Hover effect
+  adminBtn.addEventListener('mouseenter', () => {
+    adminBtn.style.opacity = '1';
+    adminBtn.style.transform = 'scale(1.05) translateY(-2px)';
+  });
+  
+  adminBtn.addEventListener('mouseleave', () => {
+    adminBtn.style.opacity = '0.7';
+    adminBtn.style.transform = 'scale(1) translateY(0)';
+  });
+  
+  debugLog("Botão admin secreto criado");
+}
+    
         // Buscar dados do usuário
         const userDoc = await db.collection("users").doc(user.uid).get();
         
