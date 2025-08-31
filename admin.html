@@ -710,6 +710,13 @@
 
       <button class="refresh-btn" id="refreshBtn">🔄 Atualizar Dados</button>
 
+      <!-- Botão de Sincronização -->
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <button class="refresh-btn" id="syncBtn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); margin: 0;">
+          🔗 Sincronizar Emails do Authentication
+        </button>
+      </div>
+
       <!-- Dados Mensais -->
       <div class="monthly-data">
         <h2>📅 Análise Mensal Detalhada</h2>
@@ -1564,6 +1571,18 @@
       }
     });
 
+    // Event listener para sincronização
+    document.getElementById("syncBtn").addEventListener("click", async () => {
+      debugLog("Botão de sincronização clicado");
+      showMessage("🔄 Sincronizando emails...");
+      
+      try {
+        await window.syncAuthWithFirestore();
+      } catch (error) {
+        showMessage(`❌ Erro na sincronização: ${error.message}`, true);
+      }
+    });
+
     // CORREÇÃO: Melhor handling do auth state
     let authInitialized = false;
 
@@ -1638,6 +1657,74 @@
       } catch (error) {
         debugLog("❌ Erro no teste:", error.message);
         debugLog("Código:", error.code);
+      }
+    };
+
+    // CORREÇÃO: Função para sincronizar dados do Authentication com Firestore
+    window.syncAuthWithFirestore = async function() {
+      debugLog("🔄 Iniciando sincronização Auth → Firestore");
+      
+      if (!currentUser || !isAdmin(currentUser.email)) {
+        debugLog("❌ Usuário não autorizado para sincronização");
+        return;
+      }
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        debugLog(`📊 Encontrados ${usersSnapshot.size} documentos na coleção users`);
+        
+        // Mapear UIDs conhecidos com emails do Authentication
+        const authUsers = {
+          'fprAFIoKWZZJaJPEAnAgW5qQsTN2': {
+            email: 'yanrenat@gmail.com',
+            displayName: 'yanrenat'
+          },
+          '2wgWalB7tNZ6rYtuC6h68cRSWq33': {
+            email: 'fabricioricard23@gmail.com', 
+            displayName: 'fabricioricard23'
+          }
+        };
+        
+        let updatedCount = 0;
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data() || {};
+          const uid = userDoc.id;
+          
+          // Se o usuário não tem email no Firestore mas tem no Authentication
+          if (!userData.email && authUsers[uid]) {
+            debugLog(`🔧 Atualizando dados para UID ${uid}`);
+            
+            const updateData = {
+              email: authUsers[uid].email,
+              lastSync: new Date()
+            };
+            
+            // Adicionar displayName se não existir
+            if (!userData.displayName) {
+              updateData.displayName = authUsers[uid].displayName;
+            }
+            
+            await userDoc.ref.update(updateData);
+            updatedCount++;
+            
+            debugLog(`✅ Usuário ${uid} atualizado com email: ${authUsers[uid].email}`);
+          }
+        }
+        
+        debugLog(`🎉 Sincronização concluída: ${updatedCount} usuários atualizados`);
+        showMessage(`✅ Sincronização concluída: ${updatedCount} usuários atualizados`);
+        
+        // Recarregar dados após sincronização
+        if (updatedCount > 0) {
+          setTimeout(async () => {
+            await loadAdminData();
+          }, 1000);
+        }
+        
+      } catch (error) {
+        debugLog("❌ Erro na sincronização", error);
+        showMessage(`❌ Erro na sincronização: ${error.message}`, true);
       }
     };
 
@@ -1729,9 +1816,14 @@
     }
 
     console.log("🔧 Admin Dashboard carregado e corrigido");
-    console.log("Para testar permissões, execute: testFirestorePermissions()");
-    console.log("Para debug de dados, execute: debugUserData()");
-    console.log("Para alternar debug visual, execute: toggleDebugMode()");
+    console.log("📧 Para sincronizar emails do Authentication: clique no botão ou execute syncAuthWithFirestore()");
+    console.log("🧪 Para testar permissões, execute: testFirestorePermissions()");
+    console.log("🔍 Para debug de dados, execute: debugUserData()");
+    console.log("🛠️ Para alternar debug visual, execute: toggleDebugMode()");
+    console.log("📊 UIDs conhecidos:", {
+      'fprAFIoKWZZJaJPEAnAgW5qQsTN2': 'yanrenat@gmail.com',
+      '2wgWalB7tNZ6rYtuC6h68cRSWq33': 'fabricioricard23@gmail.com'
+    });
   </script>
 </body>
 </html>
