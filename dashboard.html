@@ -767,7 +767,9 @@
       document.getElementById('debugInfo').classList.toggle('show');
     }
 
-    async function initDashboard(user) {
+    // Substitua a função initDashboard() completa no dashboard.html
+
+async function initDashboard(user) {
   if (!user) {
     debugLog("Usuário não autenticado, redirecionando para login");
     return window.location.href = "login.html";
@@ -777,114 +779,114 @@
   debugLog("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
 
   try {
-
-    // NOVO: Verificar se é admin e mostrar botão secreto
-    if (user.email === "fabricioricard23@gmail.com") {
-      createAdminButton();
+    
+        // Buscar dados do usuário
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    
+    if (!userDoc.exists) {
+      debugLog("Documento do usuário não encontrado");
+      await createUserDocument(user);
+      return;
     }
 
-    } catch (error) {
+    const userData = userDoc.data();
+    debugLog("Dados do usuário carregados", userData);
+
+        // Verificar se é admin e mostrar funcionalidades especiais
+    if (user.email === "fabricioricard23@gmail.com") {
+      document.getElementById("seedButton").style.display = "block";
+      document.getElementById("debugToggle").style.display = "block";
+      createAdminButton(); // Criar botão secreto
+    }
+
+        // Configurar carteira
+    document.getElementById("walletInput").value = userData.walletAddress || "";
+
+        // Carregar TODOS os dados de uso (não apenas 7 dias)
+    await loadAllUsageData(user.uid);
+
+        // Link de referência
+    const encodedEmail = encodeURIComponent(user.email);
+    const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
+    document.getElementById("refLink").value = refLink;
+
+        // Estatísticas de referência
+    await loadReferralStats(user.email);
+
+    // Configurar listener do seletor de mês
+    document.getElementById("monthSelect").addEventListener("change", (e) => {
+      const selectedMonth = e.target.value;
+      filterDataByMonth(selectedMonth);
+    });
+
+    // Definir mês atual como padrão
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    document.getElementById("monthSelect").value = currentMonth;
+    filterDataByMonth(currentMonth);
+
+    // Configurar listener em tempo real
+    setupRealtimeListener(user.uid);
+
+  } catch (error) {
     debugLog("Erro ao inicializar dashboard", error);
     showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
   }
 }
 
-    // NOVA FUNÇÃO: Criar botão admin secreto
+// FUNÇÃO: Criar botão admin secreto
 function createAdminButton() {
   // Criar botão discreto que só você vê
   const adminBtn = document.createElement('button');
   adminBtn.id = 'secretAdminBtn';
-  adminBtn.innerHTML = '👑 Painel Admin';
-  adminBtn.className = 'primary-btn';
+  adminBtn.innerHTML = '👑 Admin';
   adminBtn.style.cssText = `
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 9999;
-    opacity: 0.7;
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    opacity: 0.6;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
     box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   `;
   
   adminBtn.onclick = () => {
     window.location.href = 'admin.html';
   };
   
-  // Aparecer com animação
+  // Aparecer com animação após 2 segundos
   adminBtn.style.opacity = '0';
   adminBtn.style.transform = 'translateY(50px)';
   document.body.appendChild(adminBtn);
   
   setTimeout(() => {
     adminBtn.style.transition = 'all 0.5s ease';
-    adminBtn.style.opacity = '0.7';
+    adminBtn.style.opacity = '0.6';
     adminBtn.style.transform = 'translateY(0)';
-  }, 1000);
+  }, 2000);
   
   // Hover effect
   adminBtn.addEventListener('mouseenter', () => {
     adminBtn.style.opacity = '1';
-    adminBtn.style.transform = 'scale(1.05) translateY(-2px)';
+    adminBtn.style.transform = 'scale(1.1) translateY(-3px)';
   });
   
   adminBtn.addEventListener('mouseleave', () => {
-    adminBtn.style.opacity = '0.7';
+    adminBtn.style.opacity = '0.6';
     adminBtn.style.transform = 'scale(1) translateY(0)';
   });
   
   debugLog("Botão admin secreto criado");
 }
-    
-        // Buscar dados do usuário
-        const userDoc = await db.collection("users").doc(user.uid).get();
-        
-        if (!userDoc.exists) {
-          debugLog("Documento do usuário não encontrado");
-          await createUserDocument(user);
-          return;
-        }
-
-        const userData = userDoc.data();
-        debugLog("Dados do usuário carregados", userData);
-
-        // Verificar se é admin
-        if (user.email === "fabricioricard23@gmail.com") {
-          document.getElementById("seedButton").style.display = "block";
-          document.getElementById("debugToggle").style.display = "block";
-        }
-
-        // Configurar carteira
-        document.getElementById("walletInput").value = userData.walletAddress || "";
-
-        // Carregar TODOS os dados de uso (não apenas 7 dias)
-        await loadAllUsageData(user.uid);
-
-        // Link de referência
-        const encodedEmail = encodeURIComponent(user.email);
-        const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
-        document.getElementById("refLink").value = refLink;
-
-        // Estatísticas de referência
-        await loadReferralStats(user.email);
-
-        // Configurar listener do seletor de mês
-        document.getElementById("monthSelect").addEventListener("change", (e) => {
-          const selectedMonth = e.target.value;
-          filterDataByMonth(selectedMonth);
-        });
-
-        // Definir mês atual como padrão
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        document.getElementById("monthSelect").value = currentMonth;
-        filterDataByMonth(currentMonth);
-
-      } catch (error) {
-        debugLog("Erro ao inicializar dashboard", error);
-        showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
-      }
-    }
 
     async function createUserDocument(user) {
       debugLog("Criando documento do usuário");
