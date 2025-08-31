@@ -219,11 +219,6 @@
       border-color: #FF6B35;
     }
 
-    .seed-button-container {
-      text-align: center;
-      margin-top: 2rem;
-    }
-
     .stat-item {
       text-align: center;
     }
@@ -464,23 +459,6 @@
       80%, 100% { content: '...'; }
     }
 
-    /* Debug info */
-    .debug-info {
-      background: rgba(52, 152, 219, 0.1);
-      border: 1px solid rgba(52, 152, 219, 0.3);
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1rem 0;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      color: #3498db;
-      display: none;
-    }
-
-    .debug-info.show {
-      display: block;
-    }
-
     /* Light mode styles */
     body.light-mode {
       background-color: #fefefe;
@@ -505,18 +483,6 @@
     body.light-mode .chart-wrapper {
       background: linear-gradient(135deg, rgba(248, 248, 248, 0.9) 0%, rgba(255, 255, 255, 0.9) 100%);
       border: 1px solid rgba(255, 107, 53, 0.15);
-    }
-
-    #seedButton,
-    #debugToggle {
-      background: linear-gradient(135deg, #2ed573 0%, #27ae60 100%);
-      margin-top: 1rem;
-      display: none;
-    }
-
-    #seedButton:hover,
-    #debugToggle:hover {
-      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
     }
 
     @media (max-width: 768px) {
@@ -687,20 +653,6 @@
           </div>
           <div id="loadingChart" class="loading">Carregando dados do gráfico</div>
         </div>
-        
-        <div class="seed-button-container">
-          <button id="seedButton" class="primary-btn">
-            🌱 Popular dados de uso diário
-          </button>
-          <button id="debugToggle" class="primary-btn">
-            🔍 Debug Firebase
-          </button>
-        </div>
-        
-        <div id="debugInfo" class="debug-info">
-          <h4>Debug Firebase:</h4>
-          <div id="debugContent"></div>
-        </div>
       </div>
     </div>
 
@@ -754,142 +706,124 @@
     let currentUser = null;
     let allUsageData = {}; // Store all usage data for filtering
 
-    // Debug functions
-    function debugLog(message, data = null) {
-      const debugContent = document.getElementById('debugContent');
-      const timestamp = new Date().toLocaleTimeString();
-      const logEntry = `[${timestamp}] ${message}${data ? ': ' + JSON.stringify(data, null, 2) : ''}`;
-      debugContent.innerHTML += logEntry + '\n';
-      console.log(logEntry, data);
-    }
+    async function initDashboard(user) {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando para login");
+        return window.location.href = "login.html";
+      }
 
-    function showDebug() {
-      document.getElementById('debugInfo').classList.toggle('show');
-    }
+      currentUser = user;
+      console.log("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
 
-    // Substitua a função initDashboard() completa no dashboard.html
-
-async function initDashboard(user) {
-  if (!user) {
-    debugLog("Usuário não autenticado, redirecionando para login");
-    return window.location.href = "login.html";
-  }
-
-  currentUser = user;
-  debugLog("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
-
-  try {
-    
+      try {
         // Buscar dados do usuário
-    const userDoc = await db.collection("users").doc(user.uid).get();
-    
-    if (!userDoc.exists) {
-      debugLog("Documento do usuário não encontrado");
-      await createUserDocument(user);
-      return;
-    }
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          console.log("Documento do usuário não encontrado");
+          await createUserDocument(user);
+          return;
+        }
 
-    const userData = userDoc.data();
-    debugLog("Dados do usuário carregados", userData);
+        const userData = userDoc.data();
+        console.log("Dados do usuário carregados", userData);
 
         // Verificar se é admin e mostrar funcionalidades especiais
-    if (user.email === "fabricioricard23@gmail.com") {
-      document.getElementById("seedButton").style.display = "block";
-      document.getElementById("debugToggle").style.display = "block";
-      createAdminButton(); // Criar botão secreto
-    }
+        if (user.email === "fabricioricard23@gmail.com") {
+          createAdminButton(); // Criar apenas botão secreto
+        }
 
         // Configurar carteira
-    document.getElementById("walletInput").value = userData.walletAddress || "";
+        document.getElementById("walletInput").value = userData.walletAddress || "";
 
         // Carregar TODOS os dados de uso (não apenas 7 dias)
-    await loadAllUsageData(user.uid);
+        await loadAllUsageData(user.uid);
 
         // Link de referência
-    const encodedEmail = encodeURIComponent(user.email);
-    const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
-    document.getElementById("refLink").value = refLink;
+        const encodedEmail = encodeURIComponent(user.email);
+        const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
+        document.getElementById("refLink").value = refLink;
 
         // Estatísticas de referência
-    await loadReferralStats(user.email);
+        await loadReferralStats(user.email);
 
-    // Configurar listener do seletor de mês
-    document.getElementById("monthSelect").addEventListener("change", (e) => {
-      const selectedMonth = e.target.value;
-      filterDataByMonth(selectedMonth);
-    });
+        // Configurar listener do seletor de mês
+        document.getElementById("monthSelect").addEventListener("change", (e) => {
+          const selectedMonth = e.target.value;
+          filterDataByMonth(selectedMonth);
+        });
 
-    // Definir mês atual como padrão
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    document.getElementById("monthSelect").value = currentMonth;
-    filterDataByMonth(currentMonth);
+        // Definir mês atual como padrão
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        document.getElementById("monthSelect").value = currentMonth;
+        filterDataByMonth(currentMonth);
 
-    // Configurar listener em tempo real
-    setupRealtimeListener(user.uid);
+        // Configurar listener em tempo real
+        setupRealtimeListener(user.uid);
 
-  } catch (error) {
-    debugLog("Erro ao inicializar dashboard", error);
-    showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
-  }
-}
+      } catch (error) {
+        console.log("Erro ao inicializar dashboard", error);
+        showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
+      }
+    }
 
-// FUNÇÃO: Criar botão admin secreto
-function createAdminButton() {
-  // Criar botão discreto que só você vê
-  const adminBtn = document.createElement('button');
-  adminBtn.id = 'secretAdminBtn';
-  adminBtn.innerHTML = '👑 Admin';
-  adminBtn.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    opacity: 0.6;
-    font-size: 0.8rem;
-    padding: 0.5rem 0.8rem;
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    border: none;
-    border-radius: 20px;
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  `;
-  
-  adminBtn.onclick = () => {
-    window.location.href = 'admin.html';
-  };
-  
-  // Aparecer com animação após 2 segundos
-  adminBtn.style.opacity = '0';
-  adminBtn.style.transform = 'translateY(50px)';
-  document.body.appendChild(adminBtn);
-  
-  setTimeout(() => {
-    adminBtn.style.transition = 'all 0.5s ease';
-    adminBtn.style.opacity = '0.6';
-    adminBtn.style.transform = 'translateY(0)';
-  }, 2000);
-  
-  // Hover effect
-  adminBtn.addEventListener('mouseenter', () => {
-    adminBtn.style.opacity = '1';
-    adminBtn.style.transform = 'scale(1.1) translateY(-3px)';
-  });
-  
-  adminBtn.addEventListener('mouseleave', () => {
-    adminBtn.style.opacity = '0.6';
-    adminBtn.style.transform = 'scale(1) translateY(0)';
-  });
-  
-  debugLog("Botão admin secreto criado");
-}
+    // FUNÇÃO: Criar botão admin secreto
+    function createAdminButton() {
+      // Criar botão discreto que só você vê
+      const adminBtn = document.createElement('button');
+      adminBtn.id = 'secretAdminBtn';
+      adminBtn.innerHTML = '👑 Admin';
+      adminBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        opacity: 0.6;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      `;
+      
+      adminBtn.onclick = () => {
+        window.location.href = 'admin.html';
+      };
+      
+      // Aparecer com animação após 2 segundos
+      adminBtn.style.opacity = '0';
+      adminBtn.style.transform = 'translateY(50px)';
+      document.body.appendChild(adminBtn);
+      
+      setTimeout(() => {
+        adminBtn.style.transition = 'all 0.5s ease';
+        adminBtn.style.opacity = '0.6';
+        adminBtn.style.transform = 'translateY(0)';
+      }, 2000);
+      
+      // Hover effect
+      adminBtn.addEventListener('mouseenter', () => {
+        adminBtn.style.opacity = '1';
+        adminBtn.style.transform = 'scale(1.1) translateY(-3px)';
+      });
+      
+      adminBtn.addEventListener('mouseleave', () => {
+        adminBtn.style.opacity = '0.6';
+        adminBtn.style.transform = 'scale(1) translateY(0)';
+      });
+      
+      console.log("Botão admin secreto criado");
+    }
 
     async function createUserDocument(user) {
-      debugLog("Criando documento do usuário");
+      console.log("Criando documento do usuário");
       try {
         await db.collection("users").doc(user.uid).set({
           email: user.email,
@@ -898,51 +832,50 @@ function createAdminButton() {
           walletAddress: "",
           referredBy: ""
         });
-        debugLog("Documento do usuário criado com sucesso");
+        console.log("Documento do usuário criado com sucesso");
         // Reinicializar dashboard
         initDashboard(user);
       } catch (error) {
-        debugLog("Erro ao criar documento do usuário", error);
+        console.log("Erro ao criar documento do usuário", error);
       }
     }
 
     async function loadAllUsageData(uid) {
-      debugLog("Carregando todos os dados de uso");
+      console.log("Carregando todos os dados de uso");
       
       try {
         const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
         const usageSnap = await usageRef.orderBy("date", "desc").get();
         
-        debugLog(`Encontrados ${usageSnap.size} registros de uso total`);
+        console.log(`Encontrados ${usageSnap.size} registros de uso total`);
         
         allUsageData = {};
         
-        // Se não há dados, criar dados exemplo
+        // Se não há dados, mostrar gráfico vazio
         if (usageSnap.empty) {
-          debugLog("Nenhum dado de uso encontrado, criando dados exemplo");
-          await createSampleData(uid);
-          return loadAllUsageData(uid); // Recarregar
+          console.log("Nenhum dado de uso encontrado");
+          allUsageData = {};
+        } else {
+          usageSnap.forEach(doc => {
+            const data = doc.data();
+            const dateKey = doc.id;
+            const sharedMB = data.shared || 0;
+            
+            allUsageData[dateKey] = sharedMB;
+            console.log(`Data: ${dateKey}, Compartilhado: ${sharedMB}MB`);
+          });
         }
-        
-        usageSnap.forEach(doc => {
-          const data = doc.data();
-          const dateKey = doc.id;
-          const sharedMB = data.shared || 0;
-          
-          allUsageData[dateKey] = sharedMB;
-          debugLog(`Data: ${dateKey}, Compartilhado: ${sharedMB}MB`);
-        });
 
-        debugLog("Todos os dados de uso carregados", allUsageData);
+        console.log("Todos os dados de uso carregados", allUsageData);
         
       } catch (error) {
-        debugLog("Erro ao carregar dados de uso", error);
+        console.log("Erro ao carregar dados de uso", error);
         document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
       }
     }
 
     function filterDataByMonth(selectedMonth) {
-      debugLog("Filtrando dados por mês", selectedMonth);
+      console.log("Filtrando dados por mês", selectedMonth);
       
       let filteredData = {};
       let monthlyTotalMB = 0;
@@ -1029,7 +962,7 @@ function createAdminButton() {
         const average = monthlyDays > 0 ? Math.round(monthlyTotalMB / monthlyDays) : 0;
         document.getElementById("monthlyAverage").textContent = average + " MB";
         
-        debugLog(`Dados mensais: ${monthlyTotalMB}MB, ${monthlyDays} dias, média: ${average}MB`);
+        console.log(`Dados mensais: ${monthlyTotalMB}MB, ${monthlyDays} dias, média: ${average}MB`);
       } else {
         monthlyDisplay.style.display = "none";
       }
@@ -1041,37 +974,60 @@ function createAdminButton() {
       document.getElementById("loadingChart").style.display = "none";
     }
 
-    async function createSampleData(uid) {
-      debugLog("Criando dados de exemplo");
+    async function createUserDocument(user) {
+      console.log("Criando documento do usuário");
+      try {
+        await db.collection("users").doc(user.uid).set({
+          email: user.email,
+          createdAt: new Date(),
+          sharedMB: 0,
+          walletAddress: "",
+          referredBy: ""
+        });
+        console.log("Documento do usuário criado com sucesso");
+        // Reinicializar dashboard
+        initDashboard(user);
+      } catch (error) {
+        console.log("Erro ao criar documento do usuário", error);
+      }
+    }
+
+    async function loadAllUsageData(uid) {
+      console.log("Carregando todos os dados de uso");
       
-      const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
-      const today = new Date();
-      
-      // Criar dados para os últimos 3 meses
-      for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
-        const month = new Date(today.getFullYear(), today.getMonth() - monthOffset, 1);
-        const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+      try {
+        const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
+        const usageSnap = await usageRef.orderBy("date", "desc").get();
         
-        for (let day = 1; day <= daysInMonth; day++) {
-          const date = new Date(month.getFullYear(), month.getMonth(), day);
-          if (date > today) continue; // Não criar dados futuros
-          
-          const dateKey = date.toISOString().split("T")[0];
-          const sharedMB = Math.floor(Math.random() * 100) + 50; // 50-150MB
-          
-          await usageRef.doc(dateKey).set({
-            shared: sharedMB,
-            date: date,
-            updatedAt: new Date()
+        console.log(`Encontrados ${usageSnap.size} registros de uso total`);
+        
+        allUsageData = {};
+        
+        // Se não há dados, manter vazio (sem criar dados exemplo)
+        if (usageSnap.empty) {
+          console.log("Nenhum dado de uso encontrado");
+          allUsageData = {};
+        } else {
+          usageSnap.forEach(doc => {
+            const data = doc.data();
+            const dateKey = doc.id;
+            const sharedMB = data.shared || 0;
+            
+            allUsageData[dateKey] = sharedMB;
+            console.log(`Data: ${dateKey}, Compartilhado: ${sharedMB}MB`);
           });
-          
-          debugLog(`Criado registro para ${dateKey}: ${sharedMB}MB`);
         }
+
+        console.log("Todos os dados de uso carregados", allUsageData);
+        
+      } catch (error) {
+        console.log("Erro ao carregar dados de uso", error);
+        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
       }
     }
 
     async function loadReferralStats(userEmail) {
-      debugLog("Carregando estatísticas de referência");
+      console.log("Carregando estatísticas de referência");
       
       try {
         const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
@@ -1081,15 +1037,15 @@ function createAdminButton() {
         document.getElementById("referralCount").textContent = referralCount;
         document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
         
-        debugLog(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
+        console.log(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
         
       } catch (error) {
-        debugLog("Erro ao carregar estatísticas de referência", error);
+        console.log("Erro ao carregar estatísticas de referência", error);
       }
     }
 
     function renderChart(data) {
-      debugLog("Renderizando gráfico", data);
+      console.log("Renderizando gráfico", data);
       
       const ctx = document.getElementById("progressChart").getContext('2d');
       
@@ -1207,96 +1163,7 @@ function createAdminButton() {
         }
       });
       
-      debugLog("Gráfico renderizado com sucesso");
-    }
-
-    async function seedDailyUsageData() {
-      if (!currentUser) return;
-
-      debugLog("Iniciando seed de dados");
-      showStatusMessage("Populando dados...", "info");
-
-      const uid = currentUser.uid;
-      const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
-
-      const today = new Date();
-      let totalMB = 0;
-      
-      try {
-        // Criar dados para os últimos 3 meses
-        for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
-          const month = new Date(today.getFullYear(), today.getMonth() - monthOffset, 1);
-          const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-          
-          for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(month.getFullYear(), month.getMonth(), day);
-            if (date > today) continue; // Não criar dados futuros
-            
-            const dateKey = date.toISOString().split("T")[0];
-            const sharedMB = Math.floor(Math.random() * 150) + 50;
-            totalMB += sharedMB;
-
-            await usageRef.doc(dateKey).set({
-              shared: sharedMB,
-              date: date,
-              updatedAt: new Date()
-            });
-            
-            debugLog(`Seed: ${dateKey} = ${sharedMB}MB`);
-          }
-        }
-
-        // Atualizar total do usuário
-        await db.collection("users").doc(uid).update({
-          sharedMB: totalMB,
-          lastUpdated: new Date()
-        });
-
-        debugLog(`Seed concluído. Total: ${totalMB}MB`);
-        showNotification("Dados inseridos com sucesso! 🎉", "success");
-        
-        // Recarregar dados
-        setTimeout(() => {
-          loadAllUsageData(uid);
-        }, 1000);
-        
-      } catch (error) {
-        debugLog("Erro no seed", error);
-        showStatusMessage("Erro ao popular dados", "error");
-      }
-    }
-
-    // Função para simular dados vindos do app
-    async function simulateAppDataSync() {
-      if (!currentUser) return;
-      
-      debugLog("Simulando sincronização de dados do app");
-      
-      const uid = currentUser.uid;
-      const today = new Date().toISOString().split("T")[0];
-      const todayUsage = Math.floor(Math.random() * 50) + 20; // 20-70MB
-      
-      try {
-        // Simular dados chegando do app
-        await db.collection("users").doc(uid).collection("dailyUsage").doc(today).set({
-          shared: todayUsage,
-          date: new Date(),
-          updatedAt: new Date(),
-          source: "app_sync"
-        }, { merge: true });
-        
-        debugLog(`Dados simulados para hoje: ${todayUsage}MB`);
-        showNotification(`Sincronizado: +${todayUsage}MB hoje! 📱`, "success");
-        
-        // Recarregar dados
-        loadAllUsageData(uid).then(() => {
-          const currentMonth = document.getElementById("monthSelect").value;
-          filterDataByMonth(currentMonth);
-        });
-        
-      } catch (error) {
-        debugLog("Erro na simulação", error);
-      }
+      console.log("Gráfico renderizado com sucesso");
     }
 
     function showNotification(message, type = 'success') {
@@ -1341,17 +1208,17 @@ function createAdminButton() {
           walletAddress: wallet,
           walletUpdatedAt: new Date()
         });
-        showStatusMessage("Endereço salvo com sucesso! 💾");
-        debugLog("Carteira salva", { wallet });
+        showStatusMessage("Endereço salvo com sucesso!");
+        console.log("Carteira salva", { wallet });
       } catch (error) {
-        debugLog("Erro ao salvar carteira", error);
+        console.log("Erro ao salvar carteira", error);
         showStatusMessage("Erro ao salvar endereço. Tente novamente.", "error");
       }
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       auth.signOut().then(() => {
-        debugLog("Usuário deslogado");
+        console.log("Usuário deslogado");
         localStorage.clear();
         location.href = "index.html";
       });
@@ -1361,46 +1228,39 @@ function createAdminButton() {
       const refLink = document.getElementById("refLink");
       try {
         await navigator.clipboard.writeText(refLink.value);
-        showNotification("Link copiado! 📋", "copy");
+        showNotification("Link copiado!", "copy");
       } catch (error) {
         // Fallback para navegadores mais antigos
         refLink.select();
         refLink.setSelectionRange(0, 99999);
         document.execCommand('copy');
-        showNotification("Link copiado! 📋", "copy");
+        showNotification("Link copiado!", "copy");
       }
     });
-
-    document.getElementById("seedButton").addEventListener("click", seedDailyUsageData);
-    document.getElementById("debugToggle").addEventListener("click", showDebug);
-
-    // Botão de simulação removido
 
     // Autenticação
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        debugLog("Usuário autenticado", { uid: user.uid, email: user.email });
+        console.log("Usuário autenticado", { uid: user.uid, email: user.email });
         initDashboard(user);
-        
-        // Simulação removida por solicitação do usuário
       } else {
-        debugLog("Usuário não autenticado");
+        console.log("Usuário não autenticado");
         location.href = "login.html";
       }
     });
 
     // Listener em tempo real para dados de uso
     function setupRealtimeListener(uid) {
-      debugLog("Configurando listener em tempo real");
+      console.log("Configurando listener em tempo real");
       
       const usageRef = db.collection("users").doc(uid).collection("dailyUsage");
       
       usageRef.onSnapshot((snapshot) => {
-        debugLog("Dados atualizados em tempo real");
+        console.log("Dados atualizados em tempo real");
         
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added" || change.type === "modified") {
-            debugLog(`Documento ${change.type}:`, change.doc.data());
+            console.log(`Documento ${change.type}:`, change.doc.data());
           }
         });
         
@@ -1410,7 +1270,7 @@ function createAdminButton() {
           filterDataByMonth(currentMonth);
         });
       }, (error) => {
-        debugLog("Erro no listener em tempo real", error);
+        console.log("Erro no listener em tempo real", error);
       });
     }
 
@@ -1432,7 +1292,6 @@ function createAdminButton() {
         copyBtn: "📋 Copiar Link de Referência",
         referrals: "Indicações",
         referralEarnings: "Ganhos por Ref.",
-        seedBtn: "🌱 Popular dados de uso diário",
         loading: "Carregando dados do gráfico",
         selectMonth: "Selecionar Mês:",
         allData: "Todos os dados",
@@ -1468,7 +1327,6 @@ function createAdminButton() {
         copyBtn: "📋 Copy Referral Link",
         referrals: "Referrals",
         referralEarnings: "Ref. Earnings",
-        seedBtn: "🌱 Populate daily usage data",
         loading: "Loading chart data",
         selectMonth: "Select Month:",
         allData: "All data",
@@ -1536,9 +1394,6 @@ function createAdminButton() {
       // Botões
       document.getElementById("logoutBtn").textContent = t.logout;
       document.getElementById("copyRefLinkBtn").innerHTML = t.copyBtn;
-      if (document.getElementById("seedButton")) {
-        document.getElementById("seedButton").innerHTML = t.seedBtn;
-      }
       
       // Loading
       document.getElementById("loadingChart").textContent = t.loading;
@@ -1551,7 +1406,7 @@ function createAdminButton() {
 
     // Inicialização do tema e idioma
     document.addEventListener("DOMContentLoaded", () => {
-      debugLog("DOM carregado, inicializando tema e idioma");
+      console.log("DOM carregado, inicializando tema e idioma");
       
       // Configurar idioma
       const lang = localStorage.getItem("lang") || "pt";
@@ -1604,23 +1459,6 @@ function createAdminButton() {
         }
       });
     });
-
-    // Função para testar conectividade do Firebase
-    async function testFirebaseConnection() {
-      debugLog("Testando conexão com Firebase");
-      
-      try {
-        const testDoc = await db.collection('test').doc('connection').get();
-        debugLog("Conexão com Firebase OK");
-        return true;
-      } catch (error) {
-        debugLog("Erro na conexão com Firebase", error);
-        return false;
-      }
-    }
-
-    // Executar teste de conexão ao carregar
-    testFirebaseConnection();
   </script>
 </body>
 </html>
