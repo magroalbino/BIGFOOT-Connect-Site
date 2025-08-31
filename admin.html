@@ -11,106 +11,225 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background-color: #0a0a0a;
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      padding: 0;
+      box-sizing: border-box;
     }
 
+    body {
+      font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      color: #f0f0f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 20s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Header modernizado */
     header {
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+
+    .header-content {
+      max-width: 1600px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
-      border-bottom: 2px solid #333;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .logo {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      height: 40px;
     }
 
-    .logo a {
+    .logo img {
+      height: 32px;
+      width: 32px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    }
+
+    .logo-text {
+      color: #FF6B35;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-decoration: none;
+      background: linear-gradient(135deg, #FF6B35 0%, #ff8c42 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-right {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: #FF6B35;
-      font-weight: 600;
-      font-size: 1.1rem;
+      gap: 1.5rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 107, 53, 0.1);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
     }
 
     .admin-badge {
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
       color: white;
-      padding: 0.3rem 0.8rem;
+      padding: 0.4rem 1rem;
       border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
-      margin-right: 1rem;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 1.5s;
+    }
+
+    .admin-badge:hover::before {
+      left: 100%;
+    }
+
+    .user-email {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     .logout-btn {
-      background: rgba(231, 76, 60, 0.8);
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       color: white;
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1.5rem;
       cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .logout-btn:hover::before {
+      opacity: 1;
     }
 
     .logout-btn:hover {
-      background: rgba(231, 76, 60, 1);
       transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
     }
 
+    .logout-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Main content */
     main {
-      flex: 1;
-      padding: 2rem;
       max-width: 1600px;
       margin: 0 auto;
-      width: 100%;
-      box-sizing: border-box;
+      padding: 3rem 2rem;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: #ffffff;
-      margin-bottom: 2rem;
+    .page-title {
       text-align: center;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      font-weight: 700;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
       margin-bottom: 3rem;
     }
 
+    .page-title h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #FF6B35 50%, #ff8c42 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .page-subtitle {
+      color: #ccc;
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    /* Cards de resumo melhorados */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
     .summary-card {
-      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
-      border-radius: 15px;
-      padding: 2rem;
-      text-align: center;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .summary-card::before {
@@ -119,102 +238,231 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #FF6B35, #e55a2b);
+      height: 4px;
+      background: linear-gradient(90deg, #FF6B35, #ff8c42, #FF6B35);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .summary-card::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translate(-50%, -50%);
+    }
+
+    .summary-card:hover::after {
+      width: 300px;
+      height: 300px;
     }
 
     .summary-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(255, 107, 53, 0.25);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(255, 107, 53, 0.3);
+      border-color: rgba(255, 107, 53, 0.6);
     }
 
     .summary-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #FF6B35;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #FF6B35 0%, #ff8c42 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
     }
 
     .summary-label {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #ccc;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
     }
 
-    .monthly-data {
-      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+    /* Botão de atualização melhorado */
+    .refresh-btn {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      border: none;
       border-radius: 15px;
-      padding: 2rem;
+      color: white;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin: 0 auto 3rem;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .refresh-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .refresh-btn:hover::before {
+      left: 100%;
+    }
+
+    .refresh-btn:hover {
+      background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+    }
+
+    /* Seção de dados mensais */
+    .monthly-data {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 107, 53, 0.2);
+      border-radius: 25px;
+      padding: 3rem;
       margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .monthly-data::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #FF6B35, transparent);
     }
 
     .monthly-data h2 {
       color: #ffffff;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
       text-align: center;
-      font-size: 1.8rem;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #FF6B35 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .month-selector {
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
       flex-wrap: wrap;
     }
 
     .month-btn {
-      padding: 0.8rem 1.5rem;
+      padding: 1rem 2rem;
       background: rgba(255, 107, 53, 0.1);
       border: 2px solid rgba(255, 107, 53, 0.3);
-      border-radius: 8px;
+      border-radius: 15px;
       color: #FF6B35;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    .month-btn:hover {
-      background: rgba(255, 107, 53, 0.2);
-      border-color: #FF6B35;
-      transform: translateY(-2px);
+    .month-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #FF6B35 0%, #ff8c42 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
+    .month-btn:hover::before,
+    .month-btn.active::before {
+      opacity: 1;
+    }
+
+    .month-btn:hover,
     .month-btn.active {
-      background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
       color: white;
       border-color: #FF6B35;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+    }
+
+    .month-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Tabela melhorada */
+    .table-container {
+      background: rgba(15, 15, 15, 0.8);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      backdrop-filter: blur(20px);
     }
 
     .users-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
-      background: rgba(26, 26, 26, 0.8);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .users-table th,
-    .users-table td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
     }
 
     .users-table th {
       background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
       color: white;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      padding: 1.5rem 1rem;
+      text-align: left;
+      border: none;
+      position: relative;
     }
 
-    .users-table tr:hover {
-      background: rgba(255, 107, 53, 0.05);
+    .users-table th::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .users-table td {
+      padding: 1.2rem 1rem;
+      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+      transition: background-color 0.3s ease;
+    }
+
+    .users-table tr:hover td {
+      background: rgba(255, 107, 53, 0.08);
     }
 
     .user-info {
@@ -224,18 +472,19 @@
 
     .user-name {
       font-size: 1.1rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
     }
 
     .user-email {
       font-size: 0.9rem;
-      opacity: 0.8;
+      opacity: 0.7;
     }
 
     .shared-amount {
       color: #2ed573;
-      font-weight: 600;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-size: 1.3rem;
     }
 
     .days-active {
@@ -244,21 +493,24 @@
     }
 
     .total-row {
-      background: rgba(255, 107, 53, 0.1) !important;
+      background: rgba(255, 107, 53, 0.15) !important;
       border-top: 2px solid #FF6B35;
-      font-weight: 700;
     }
 
     .total-row td {
       color: #FF6B35;
       font-size: 1.1rem;
+      font-weight: 700;
+      padding: 1.5rem 1rem;
     }
 
+    /* Loading e mensagens */
     .loading {
       text-align: center;
       color: #FF6B35;
-      margin: 2rem 0;
-      font-size: 1.2rem;
+      margin: 3rem 0;
+      font-size: 1.3rem;
+      font-weight: 600;
     }
 
     .loading::after {
@@ -274,121 +526,132 @@
       80%, 100% { content: '...'; }
     }
 
-    .refresh-btn {
-      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      padding: 0.8rem 1.5rem;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      margin: 0 auto 2rem;
-      display: block;
-    }
-
-    .refresh-btn:hover {
-      background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
-      transform: translateY(-2px);
-    }
-
-    .chart-container {
-      background: rgba(255, 107, 53, 0.05);
-      border-radius: 15px;
-      padding: 2rem;
-      margin-top: 2rem;
-      border: 1px solid rgba(255, 107, 53, 0.15);
-    }
-
-    .chart-wrapper {
-      position: relative;
-      height: 400px;
-      background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(34, 34, 34, 0.8) 100%);
+    .error-message, .success-message, .auth-status {
+      padding: 1.5rem;
       border-radius: 12px;
-      padding: 1rem;
-      border: 1px solid rgba(255, 107, 53, 0.1);
+      text-align: center;
+      margin: 1.5rem 0;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
     }
 
     .error-message {
       background: rgba(231, 76, 60, 0.1);
       border: 1px solid rgba(231, 76, 60, 0.3);
       color: #e74c3c;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      margin: 1rem 0;
     }
-
-    // Debug function - adicione isso temporariamente
-async function debugUserData() {
-  console.log("🔍 DEBUG: Verificando estrutura de dados...");
-  
-  try {
-    const usersSnapshot = await db.collection("users").limit(3).get();
-    console.log(`📊 Total usuários encontrados: ${usersSnapshot.size}`);
-    
-    for (const userDoc of usersSnapshot.docs) {
-      const userData = userDoc.data();
-      console.log(`\n👤 Usuário ${userDoc.id}:`, {
-        email: userData.email,
-        displayName: userData.displayName,
-        walletAddress: userData.walletAddress,
-        sharedMB: userData.sharedMB
-      });
-      
-      // Verificar dailyUsage
-      const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(3).get();
-      console.log(`📅 DailyUsage docs: ${dailySnapshot.size}`);
-      
-      dailySnapshot.forEach(doc => {
-        console.log(`  ${doc.id}:`, doc.data());
-      });
-    }
-  } catch (error) {
-    console.error("❌ Erro no debug:", error);
-  }
-}
 
     .success-message {
       background: rgba(46, 213, 115, 0.1);
       border: 1px solid rgba(46, 213, 115, 0.3);
       color: #2ed573;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      margin: 1rem 0;
     }
 
     .auth-status {
       background: rgba(52, 152, 219, 0.1);
       border: 1px solid rgba(52, 152, 219, 0.3);
       color: #3498db;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      margin: 1rem 0;
     }
 
+    /* Gráfico melhorado */
+    .chart-container {
+      background: rgba(15, 15, 15, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-top: 3rem;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      backdrop-filter: blur(20px);
+    }
+
+    .chart-title {
+      text-align: center;
+      color: #FF6B35;
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 400px;
+      background: rgba(26, 26, 26, 0.5);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    /* Responsividade */
     @media (max-width: 768px) {
-      .summary-grid { grid-template-columns: 1fr; }
-      .month-selector { flex-direction: column; align-items: center; }
-      .users-table { font-size: 0.9rem; }
-      .users-table th, .users-table td { padding: 0.8rem; }
+      .header-content {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .page-title h1 {
+        font-size: 2rem;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .month-selector {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .users-table {
+        font-size: 0.9rem;
+      }
+
+      .users-table th, .users-table td {
+        padding: 0.8rem;
+      }
+
+      main {
+        padding: 2rem 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .summary-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .summary-value {
+        font-size: 2.5rem;
+      }
+
+      .monthly-data {
+        padding: 2rem 1.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <div class="logo">
-      <a href="dashboard.html">
-        <img src="/images/logo.png" alt="BIGFOOT Logo" />
-        <span>BIGFOOT Connect</span>
-      </a>
-    </div>
-    <div class="header-controls">
-      <div class="admin-badge">👑 ADMIN</div>
-      <button class="logout-btn" id="logoutBtn">Sair</button>
+    <div class="header-content">
+      <div class="logo">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FF6B35'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='Arial Black' font-size='40' font-weight='bold'%3EB%3C/text%3E%3C/svg%3E" alt="BIGFOOT Logo" />
+        <span class="logo-text">BIGFOOT Connect</span>
+      </div>
+      
+      <div class="header-right">
+        <div class="user-info">
+          <div class="admin-badge">👑 ADMIN</div>
+          <div class="user-email" id="userEmail">Carregando...</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+          <span>🚪 Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -398,25 +661,28 @@ async function debugUserData() {
     </div>
 
     <div id="adminContent" style="display: none;">
-      <h1>🎯 Painel Administrativo</h1>
+      <div class="page-title">
+        <h1>🎯 Painel Administrativo</h1>
+        <p class="page-subtitle">Gerenciamento completo da rede BIGFOOT Connect</p>
+      </div>
 
       <!-- Resumo Geral -->
       <div class="summary-grid">
         <div class="summary-card">
           <span class="summary-value" id="totalUsers">0</span>
-          <span class="summary-label">Usuários Registrados</span>
+          <span class="summary-label">👥 Usuários Registrados</span>
         </div>
         <div class="summary-card">
           <span class="summary-value" id="totalSharedGB">0 GB</span>
-          <span class="summary-label">Total Compartilhado</span>
+          <span class="summary-label">📊 Total Compartilhado</span>
         </div>
         <div class="summary-card">
           <span class="summary-value" id="monthlySharedGB">0 GB</span>
-          <span class="summary-label">Este Mês</span>
+          <span class="summary-label">📅 Este Mês</span>
         </div>
         <div class="summary-card">
           <span class="summary-value" id="avgPerUser">0 MB</span>
-          <span class="summary-label">Média por Usuário</span>
+          <span class="summary-label">📈 Média por Usuário</span>
         </div>
       </div>
 
@@ -424,38 +690,51 @@ async function debugUserData() {
 
       <!-- Dados Mensais -->
       <div class="monthly-data">
-        <h2>📅 Dados por Mês</h2>
+        <h2>📅 Análise Mensal Detalhada</h2>
         
         <div class="month-selector">
-          <button class="month-btn" data-month="2025-08">Agosto 2025</button>
-          <button class="month-btn" data-month="2025-07">Julho 2025</button>
-          <button class="month-btn" data-month="2025-06">Junho 2025</button>
-          <button class="month-btn" data-month="2025-05">Maio 2025</button>
+          <button class="month-btn" data-month="2025-08">
+            <span>Agosto 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-07">
+            <span>Julho 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-06">
+            <span>Junho 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-05">
+            <span>Maio 2025</span>
+          </button>
         </div>
 
-        <div id="monthlyLoading" class="loading" style="display: none;">Carregando dados mensais</div>
+        <div id="monthlyLoading" class="loading" style="display: none;">
+          Carregando análise mensal
+        </div>
+        
         <div id="errorMessage" class="error-message" style="display: none;"></div>
         <div id="successMessage" class="success-message" style="display: none;"></div>
         
-        <table class="users-table" id="usersTable" style="display: none;">
-          <thead>
-            <tr>
-              <th>👤 Usuário</th>
-              <th>📊 Total no Mês (GB)</th>
-              <th>📅 Dias Ativos</th>
-              <th>📈 Média Diária (MB)</th>
-              <th>💰 Carteira</th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody">
-            <!-- Dados serão inseridos aqui -->
-          </tbody>
-        </table>
+        <div class="table-container" id="tableContainer" style="display: none;">
+          <table class="users-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>👤 Usuário</th>
+                <th>📊 Total no Mês (GB)</th>
+                <th>📅 Dias Ativos</th>
+                <th>📈 Média Diária (MB)</th>
+                <th>💰 Carteira</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Dados serão inseridos aqui -->
+            </tbody>
+          </table>
+        </div>
 
         <!-- Gráfico Mensal -->
         <div class="chart-container" id="chartContainer" style="display: none;">
-          <h3 style="text-align: center; color: #FF6B35; margin-bottom: 1rem;">
-            📊 Evolução Mensal - <span id="chartMonthTitle">Agosto 2025</span>
+          <h3 class="chart-title">
+            📊 Evolução Diária - <span id="chartMonthTitle">Agosto 2025</span>
           </h3>
           <div class="chart-wrapper">
             <canvas id="monthlyChart"></canvas>
@@ -566,6 +845,7 @@ async function debugUserData() {
 
       hideAuthStatus();
       document.getElementById('adminContent').style.display = 'block';
+      document.getElementById('userEmail').textContent = user.email;
       
       debugLog("Admin autorizado", { email: user.email });
       showMessage(`Bem-vindo, admin: ${user.email}`);
@@ -625,7 +905,7 @@ async function debugUserData() {
         for (const userDoc of usersSnapshot.docs) {
           try {
             const userData = userDoc.data();
-            debugLog(`Processando usuário: ${userData.email}`);
+            debugLog(`Processando usuário: ${userData.email || 'email não encontrado'}`);
             
             // Usar o campo sharedMB se existir, senão calcular
             if (userData.sharedMB && userData.sharedMB > 0) {
@@ -693,6 +973,12 @@ async function debugUserData() {
     }
 
     async function getMonthlyTotal(monthKey) {
+      // CORREÇÃO: Validar monthKey
+      if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
+        debugLog("monthKey inválido, usando padrão", monthKey);
+        monthKey = '2025-08';
+      }
+
       let totalMB = 0;
       
       try {
@@ -720,6 +1006,12 @@ async function debugUserData() {
     }
 
     async function getUserMonthlyTotal(uid, monthKey) {
+      // CORREÇÃO: Validar parâmetros
+      if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
+        debugLog("Parâmetros inválidos para getUserMonthlyTotal", { uid, monthKey });
+        return 0;
+      }
+
       let totalMB = 0;
       
       try {
@@ -747,10 +1039,16 @@ async function debugUserData() {
     }
 
     async function loadMonthlyData(monthKey) {
+      // CORREÇÃO: Validar monthKey
+      if (!monthKey || typeof monthKey !== 'string') {
+        console.error("❌ monthKey inválido:", monthKey);
+        monthKey = '2025-08'; // valor padrão
+      }
+
       debugLog(`Carregando dados mensais: ${monthKey}`);
       
       document.getElementById("monthlyLoading").style.display = "block";
-      document.getElementById("usersTable").style.display = "none";
+      document.getElementById("tableContainer").style.display = "none";
       document.getElementById("chartContainer").style.display = "none";
       
       try {
@@ -763,31 +1061,45 @@ async function debugUserData() {
         const monthlyUserData = [];
         let monthlyTotal = 0;
         
+        debugLog("🔍 Processando usuários...", usersSnapshot.size);
+        
         for (const userDoc of usersSnapshot.docs) {
           try {
             const userData = userDoc.data();
+            
+            // CORREÇÃO: Verificar se userData existe e tem email
+            if (!userData || !userData.email) {
+              debugLog(`⚠️ Usuário sem dados válidos: ${userDoc.id}`);
+              continue;
+            }
+
             const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
             
-            if (userStats.totalMB > 0) {
-              const displayName = userData.displayName || userData.email.split('@')[0];
-              
-              monthlyUserData.push({
-                name: displayName,
-                email: userData.email,
-                totalMB: userStats.totalMB,
-                daysActive: userStats.daysActive,
-                avgDaily: userStats.avgDaily,
-                walletAddress: userData.walletAddress || "Não configurado"
-              });
-              
-              monthlyTotal += userStats.totalMB;
-            }
+            debugLog(`📊 Usuário ${userData.email}:`, userStats);
+            
+            // CORREÇÃO: Mostrar usuários mesmo sem dados no mês atual
+            const displayName = userData.displayName || userData.email.split('@')[0];
+            
+            monthlyUserData.push({
+              name: displayName,
+              email: userData.email,
+              totalMB: userStats.totalMB,
+              daysActive: userStats.daysActive,
+              avgDaily: userStats.avgDaily,
+              walletAddress: userData.walletAddress || "Não configurado"
+            });
+            
+            monthlyTotal += userStats.totalMB;
+            
           } catch (userError) {
             debugLog(`Erro ao processar usuário ${userDoc.id}`, userError);
           }
         }
         
+        // Ordenar por total compartilhado
         monthlyUserData.sort((a, b) => b.totalMB - a.totalMB);
+        
+        debugLog("📋 Dados finais:", monthlyUserData);
         
         renderUsersTable(monthlyUserData, monthlyTotal);
         
@@ -797,7 +1109,7 @@ async function debugUserData() {
         await renderMonthlyChart(monthKey);
         
         document.getElementById("monthlyLoading").style.display = "none";
-        document.getElementById("usersTable").style.display = "table";
+        document.getElementById("tableContainer").style.display = "block";
         document.getElementById("chartContainer").style.display = "block";
         
         showMessage(`Dados carregados: ${monthlyGB}GB de ${monthlyUserData.length} usuários`);
@@ -810,6 +1122,12 @@ async function debugUserData() {
     }
 
     async function getUserMonthlyStats(uid, monthKey) {
+      // CORREÇÃO: Validar parâmetros
+      if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
+        debugLog("Parâmetros inválidos para getUserMonthlyStats", { uid, monthKey });
+        return { totalMB: 0, daysActive: 0, avgDaily: 0 };
+      }
+
       let totalMB = 0;
       let daysActive = 0;
       
@@ -846,37 +1164,55 @@ async function debugUserData() {
       const tbody = document.getElementById("usersTableBody");
       tbody.innerHTML = "";
       
+      // CORREÇÃO: Verificar se há dados
+      if (!userData || userData.length === 0) {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td colspan="5" style="text-align: center; padding: 2rem; color: #ccc;">
+            📭 Nenhum usuário encontrado para este mês
+          </td>
+        `;
+        return;
+      }
+      
       userData.forEach(user => {
         const row = tbody.insertRow();
         row.innerHTML = `
           <td class="user-info">
-            <div class="user-name">${user.name}</div>
-            <div class="user-email">${user.email}</div>
+            <div class="user-name">${user.name || 'Nome não disponível'}</div>
+            <div class="user-email">${user.email || 'Email não disponível'}</div>
           </td>
           <td class="shared-amount">${(user.totalMB / 1024).toFixed(3)}</td>
           <td class="days-active">${user.daysActive} dias</td>
           <td>${user.avgDaily} MB</td>
           <td style="font-family: monospace; font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
-            ${user.walletAddress.length > 20 ? user.walletAddress.substring(0, 20) + '...' : user.walletAddress}
+            ${user.walletAddress && user.walletAddress.length > 20 ? 
+              user.walletAddress.substring(0, 20) + '...' : 
+              user.walletAddress || 'Não configurado'}
           </td>
         `;
       });
       
-      if (userData.length > 0) {
-        const totalRow = tbody.insertRow();
-        totalRow.className = "total-row";
-        totalRow.innerHTML = `
-          <td><strong>📊 TOTAL DO MÊS</strong></td>
-          <td><strong>${(monthlyTotal / 1024).toFixed(3)} GB</strong></td>
-          <td><strong>${userData.length} usuários</strong></td>
-          <td><strong>${userData.length > 0 ? (monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0)).toFixed(1) : 0} MB</strong></td>
-          <td><strong>-</strong></td>
-        `;
-      }
+      // Linha de total
+      const totalRow = tbody.insertRow();
+      totalRow.className = "total-row";
+      totalRow.innerHTML = `
+        <td><strong>📊 TOTAL DO MÊS</strong></td>
+        <td><strong>${(monthlyTotal / 1024).toFixed(3)} GB</strong></td>
+        <td><strong>${userData.length} usuários</strong></td>
+        <td><strong>${userData.length > 0 ? (monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0) || 1).toFixed(1) : 0} MB</strong></td>
+        <td><strong>-</strong></td>
+      `;
     }
 
     async function renderMonthlyChart(monthKey) {
-      debugLog("Renderizando gráfico mensal");
+      // CORREÇÃO: Validar monthKey
+      if (!monthKey || typeof monthKey !== 'string') {
+        debugLog("monthKey inválido para gráfico", monthKey);
+        return;
+      }
+
+      debugLog("Renderizando gráfico mensal para:", monthKey);
       
       const ctx = document.getElementById("monthlyChart").getContext('2d');
       
@@ -887,12 +1223,13 @@ async function debugUserData() {
       try {
         const dailyTotals = await getDailyTotalsForMonth(monthKey);
         
-        const labels = Object.keys(dailyTotals).sort().map(date => {
+        const sortedDates = Object.keys(dailyTotals).sort();
+        const labels = sortedDates.map(date => {
           const parts = date.split('-');
-          return parts[2];
+          return parts.length >= 3 ? parts[2] : date;
         });
         
-        const values = Object.keys(dailyTotals).sort().map(date => 
+        const values = sortedDates.map(date => 
           (dailyTotals[date] / 1024).toFixed(3)
         );
 
@@ -903,10 +1240,10 @@ async function debugUserData() {
             datasets: [{
               label: "GB Compartilhados",
               data: values,
-              backgroundColor: "rgba(255,107,53,0.6)",
+              backgroundColor: "rgba(255,107,53,0.7)",
               borderColor: "#FF6B35",
               borderWidth: 2,
-              borderRadius: 4,
+              borderRadius: 8,
               borderSkipped: false,
             }]
           },
@@ -921,11 +1258,12 @@ async function debugUserData() {
                 }
               },
               tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
                 titleColor: '#fff',
                 bodyColor: '#fff',
                 borderColor: '#FF6B35',
-                borderWidth: 1,
+                borderWidth: 2,
+                cornerRadius: 10,
                 callbacks: {
                   label: ctx => `${ctx.parsed.y} GB compartilhados`
                 }
@@ -933,12 +1271,24 @@ async function debugUserData() {
             },
             scales: {
               x: {
-                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                ticks: { color: '#f0f0f0' }
+                grid: { 
+                  color: 'rgba(255, 255, 255, 0.1)',
+                  lineWidth: 1
+                },
+                ticks: { 
+                  color: '#f0f0f0',
+                  font: { weight: '500' }
+                }
               },
               y: {
-                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                ticks: { color: '#f0f0f0' },
+                grid: { 
+                  color: 'rgba(255, 255, 255, 0.1)',
+                  lineWidth: 1
+                },
+                ticks: { 
+                  color: '#f0f0f0',
+                  font: { weight: '500' }
+                },
                 beginAtZero: true
               }
             }
@@ -951,6 +1301,12 @@ async function debugUserData() {
     }
 
     async function getDailyTotalsForMonth(monthKey) {
+      // CORREÇÃO: Validar monthKey
+      if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
+        debugLog("monthKey inválido para totais diários", monthKey);
+        return {};
+      }
+
       const dailyTotals = {};
       
       try {
@@ -994,6 +1350,7 @@ async function debugUserData() {
     function setupMonthSelector() {
       const monthButtons = document.querySelectorAll('.month-btn');
       
+      // Definir mês ativo inicial
       monthButtons.forEach(btn => {
         if (btn.dataset.month === selectedMonth) {
           btn.classList.add('active');
@@ -1010,7 +1367,7 @@ async function debugUserData() {
             '2025-06': 'Junho 2025',
             '2025-05': 'Maio 2025'
           };
-          document.getElementById('chartMonthTitle').textContent = monthNames[selectedMonth];
+          document.getElementById('chartMonthTitle').textContent = monthNames[selectedMonth] || selectedMonth;
           
           await loadMonthlyData(selectedMonth);
         });
@@ -1025,9 +1382,9 @@ async function debugUserData() {
       });
     });
 
-    document.getElementById("refreshBtn").addEventListener("click", () => {
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
       showMessage("Atualizando dados...");
-      loadAdminData();
+      await loadAdminData();
     });
 
     // Autenticação principal
@@ -1059,22 +1416,28 @@ async function debugUserData() {
       try {
         // Teste 1: Listar usuários
         console.log("\n📝 Teste 1: Listar coleção users");
-        const usersTest = await db.collection("users").limit(1).get();
+        const usersTest = await db.collection("users").limit(3).get();
         console.log("✅ Sucesso - Usuários encontrados:", usersTest.size);
         
         if (usersTest.size > 0) {
           const firstUser = usersTest.docs[0];
-          console.log("👤 Primeiro usuário:", firstUser.data().email);
+          const userData = firstUser.data();
+          console.log("👤 Primeiro usuário:", {
+            id: firstUser.id,
+            email: userData.email,
+            displayName: userData.displayName,
+            walletAddress: userData.walletAddress,
+            sharedMB: userData.sharedMB
+          });
           
           // Teste 2: Acessar subcoleção
           console.log("\n📝 Teste 2: Acessar dailyUsage");
-          const dailyTest = await firstUser.ref.collection("dailyUsage").limit(1).get();
+          const dailyTest = await firstUser.ref.collection("dailyUsage").limit(5).get();
           console.log("✅ Sucesso - Registros diários:", dailyTest.size);
           
-          if (dailyTest.size > 0) {
-            const firstDaily = dailyTest.docs[0];
-            console.log("📊 Primeiro registro:", firstDaily.id, firstDaily.data());
-          }
+          dailyTest.forEach(doc => {
+            console.log(`  📅 ${doc.id}:`, doc.data());
+          });
         }
         
         // Teste 3: Criar log admin
@@ -1092,6 +1455,36 @@ async function debugUserData() {
       }
     };
 
+    // Debug adicional para estrutura de dados
+    window.debugUserData = async function() {
+      console.log("🔍 DEBUG: Verificando estrutura de dados...");
+      
+      try {
+        const usersSnapshot = await db.collection("users").get();
+        console.log(`📊 Total usuários encontrados: ${usersSnapshot.size}`);
+        
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          console.log(`\n👤 Usuário ${userDoc.id}:`, {
+            email: userData.email,
+            displayName: userData.displayName,
+            walletAddress: userData.walletAddress,
+            sharedMB: userData.sharedMB
+          });
+          
+          // Verificar dailyUsage
+          const dailySnapshot = await userDoc.ref.collection("dailyUsage").limit(3).get();
+          console.log(`📅 DailyUsage docs: ${dailySnapshot.size}`);
+          
+          dailySnapshot.forEach(doc => {
+            console.log(`  ${doc.id}:`, doc.data());
+          });
+        }
+      } catch (error) {
+        console.error("❌ Erro no debug:", error);
+      }
+    };
+
     // Verificação adicional de segurança
     window.addEventListener('beforeunload', () => {
       sessionStorage.removeItem('adminAccess');
@@ -1104,6 +1497,7 @@ async function debugUserData() {
 
     console.log("🔧 Admin Dashboard carregado");
     console.log("Para testar permissões, execute: testFirestorePermissions()");
+    console.log("Para debug de dados, execute: debugUserData()");
   </script>
 </body>
 </html>
