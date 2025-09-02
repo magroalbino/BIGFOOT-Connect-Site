@@ -52,15 +52,7 @@ export default async function handler(req, res) {
     const earningRef = await db.collection('bigpoints_earnings').add(earningData);
     
     console.log(`BIG Points salvos: ${bigPointsAmount} para ${email} em ${date}`);
-
-    // ✅ OPCIONAL: Atualiza saldo total do usuário
-    try {
-      const userStatsRef = db.collection('user_stats').doc(email);
-      
-      await db.runTransaction(async (transaction) => {
-        const userDoc = await transaction.get(userStatsRef);
-        
-        if (userDoc.exists()) {
+    
           // Usuário existe - atualiza totais
           const currentData = userDoc.data();
           transaction.update(userStatsRef, {
@@ -91,20 +83,6 @@ export default async function handler(req, res) {
     } catch (statsError) {
       // ✅ Se falhar ao atualizar stats, não falha a operação principal
       console.warn('Erro ao atualizar estatísticas do usuário:', statsError);
-    }
-
-    // ✅ OPCIONAL: Mantém compatibilidade com sistema antigo
-    try {
-      // Salva também no formato antigo se necessário
-      await db.collection('dailyUsage').add({
-        email,
-        date,
-        amount: bigPointsAmount,
-        type: 'big_points',
-        timestamp: FieldValue.serverTimestamp()
-      });
-    } catch (legacyError) {
-      console.warn('Erro ao salvar no formato legacy:', legacyError);
     }
 
     // ✅ Resposta de sucesso
