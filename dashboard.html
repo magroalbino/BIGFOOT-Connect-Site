@@ -690,447 +690,662 @@
 
   <script>
     const firebaseConfig = {
-    apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
-    authDomain: "bigfoot-connect.firebaseapp.com",
-    projectId: "bigfoot-connect",
-    storageBucket: "bigfoot-connect.appspot.com",
-    messagingSenderId: "177999879162",
-    appId: "1:177999879162:web:a1ea739930cac97475e243"
-  };
+      apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
+      authDomain: "bigfoot-connect.firebaseapp.com",
+      projectId: "bigfoot-connect",
+      storageBucket: "bigfoot-connect.appspot.com",
+      messagingSenderId: "177999879162",
+      appId: "1:177999879162:web:a1ea739930cac97475e243"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-  let chartInstance = null;
-  let currentUser = null;
-  let allUsageData = {};
+    let chartInstance = null;
+    let currentUser = null;
+    let allUsageData = {}; // Store all usage data for filtering
 
-  async function initDashboard(user) {
-    if (!user) {
-      console.log("Usuário não autenticado, redirecionando para login");
-      return window.location.href = "login.html";
-    }
-
-    currentUser = user;
-    console.log("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
-
-    try {
-      const userDoc = await db.collection("users").doc(user.uid).get();
-      
-      if (!userDoc.exists) {
-        console.log("Documento do usuário não encontrado");
-        await createUserDocument(user);
-        return;
+    async function initDashboard(user) {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando para login");
+        return window.location.href = "login.html";
       }
 
-      const userData = userDoc.data();
-      console.log("Dados do usuário carregados", userData);
+      currentUser = user;
+      console.log("Inicializando dashboard para usuário", { uid: user.uid, email: user.email });
 
-      if (user.email === "fabricioricard23@gmail.com") {
-        createAdminButton();
+      try {
+        // Buscar dados do usuário
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          console.log("Documento do usuário não encontrado");
+          await createUserDocument(user);
+          return;
+        }
+
+        const userData = userDoc.data();
+        console.log("Dados do usuário carregados", userData);
+
+        // Verificar se é admin e mostrar funcionalidades especiais
+        if (user.email === "fabricioricard23@gmail.com") {
+          createAdminButton(); // Criar apenas botão secreto
+        }
+
+        // Configurar carteira
+        document.getElementById("walletInput").value = userData.walletAddress || "";
+
+        // Carregar TODOS os dados de uso (não apenas 7 dias)
+        await loadAllUsageData(user.uid);
+
+        // Link de referência
+        const encodedEmail = encodeURIComponent(user.email);
+        const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
+        document.getElementById("refLink").value = refLink;
+
+        // Estatísticas de referência
+        await loadReferralStats(user.email);
+
+        // Configurar listener do seletor de mês
+        document.getElementById("monthSelect").addEventListener("change", (e) => {
+          const selectedMonth = e.target.value;
+          filterDataByMonth(selectedMonth);
+        });
+
+        // Definir mês atual como padrão
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        document.getElementById("monthSelect").value = currentMonth;
+        filterDataByMonth(currentMonth);
+
+        // Configurar listener em tempo real
+        setupRealtimeListener(user.uid);
+
+      } catch (error) {
+        console.log("Erro ao inicializar dashboard", error);
+        showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
       }
-
-      document.getElementById("walletInput").value = userData.walletAddress || "";
-      await loadAllUsageData(user.uid);
-
-      const encodedEmail = encodeURIComponent(user.email);
-      const refLink = `${window.location.origin}/register.html?ref=${encodedEmail}`;
-      document.getElementById("refLink").value = refLink;
-
-      await loadReferralStats(user.email);
-
-      document.getElementById("monthSelect").addEventListener("change", (e) => {
-        const selectedMonth = e.target.value;
-        filterDataByMonth(selectedMonth);
-      });
-
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      document.getElementById("monthSelect").value = currentMonth;
-      filterDataByMonth(currentMonth);
-
-      setupRealtimeListener(user.uid);
-
-    } catch (error) {
-      console.log("Erro ao inicializar dashboard", error);
-      showStatusMessage("Erro ao carregar dados. Tente recarregar a página.", "error");
     }
-  }
 
-  async function createUserDocument(user) {
-    console.log("Criando documento do usuário");
-    try {
-      await db.collection("users").doc(user.uid).set({
-        email: user.email,
-        createdAt: new Date(),
-        bigPoints: 0,
-        walletAddress: "",
-        referredBy: ""
+    // FUNÇÃO: Criar botão admin secreto
+    function createAdminButton() {
+      // Criar botão discreto que só você vê
+      const adminBtn = document.createElement('button');
+      adminBtn.id = 'secretAdminBtn';
+      adminBtn.innerHTML = '👑 Admin';
+      adminBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        opacity: 0.6;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      `;
+      
+      adminBtn.onclick = () => {
+        window.location.href = 'admin.html';
+      };
+      
+      // Aparecer com animação após 2 segundos
+      adminBtn.style.opacity = '0';
+      adminBtn.style.transform = 'translateY(50px)';
+      document.body.appendChild(adminBtn);
+      
+      setTimeout(() => {
+        adminBtn.style.transition = 'all 0.5s ease';
+        adminBtn.style.opacity = '0.6';
+        adminBtn.style.transform = 'translateY(0)';
+      }, 2000);
+      
+      // Hover effect
+      adminBtn.addEventListener('mouseenter', () => {
+        adminBtn.style.opacity = '1';
+        adminBtn.style.transform = 'scale(1.1) translateY(-3px)';
       });
-      console.log("Documento do usuário criado com sucesso");
-      initDashboard(user);
-    } catch (error) {
-      console.log("Erro ao criar documento do usuário", error);
+      
+      adminBtn.addEventListener('mouseleave', () => {
+        adminBtn.style.opacity = '0.6';
+        adminBtn.style.transform = 'scale(1) translateY(0)';
+      });
+      
+      console.log("Botão admin secreto criado");
     }
-  }
 
-  async function loadAllUsageData(uid) {
-    console.log("Carregando todos os dados de BIG Points");
-    
-    try {
-      const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-      const usageSnap = await usageRef.orderBy("date", "desc").get();
+    async function createUserDocument(user) {
+      console.log("Criando documento do usuário");
+      try {
+        await db.collection("users").doc(user.uid).set({
+          email: user.email,
+          createdAt: new Date(),
+          bigPoints: 0,
+          walletAddress: "",
+          referredBy: ""
+        });
+        console.log("Documento do usuário criado com sucesso");
+        // Reinicializar dashboard
+        initDashboard(user);
+      } catch (error) {
+        console.log("Erro ao criar documento do usuário", error);
+      }
+    }
+
+    async function loadAllUsageData(uid) {
+      console.log("Carregando todos os dados de BIG Points");
       
-      console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
-      
-      allUsageData = {};
-      
-      if (usageSnap.empty) {
-        console.log("Nenhum dado de BIG Points encontrado");
+      try {
+        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+        const usageSnap = await usageRef.orderBy("date", "desc").get();
+        
+        console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
+        
         allUsageData = {};
+        
+        // Se não há dados, mostrar gráfico vazio
+        if (usageSnap.empty) {
+          console.log("Nenhum dado de BIG Points encontrado");
+          allUsageData = {};
+        } else {
+          usageSnap.forEach(doc => {
+            const data = doc.data();
+            const dateKey = doc.id;
+            const sharedMB = data.points || 0;
+            
+            allUsageData[dateKey] = bigPoints;
+            console.log(`Data: ${dateKey}, Compartilhado: ${bigPoints}`);
+          });
+        }
+
+        console.log("Todos os dados de BIG Points carregados", allUsageData);
+        
+      } catch (error) {
+        console.log("Erro ao carregar dados de BIG Points", error);
+        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+      }
+    }
+
+    function filterDataByMonth(selectedMonth) {
+      console.log("Filtrando dados por mês", selectedMonth);
+      
+      let filteredData = {};
+      let monthlyTotalPoints = 0;
+      let monthlyDays = 0;
+      
+      if (selectedMonth === "all") {
+        filteredData = { ...allUsageData };
+        // Para "all data", mostrar apenas os últimos 7 dias no gráfico
+        const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
+        filteredData = {};
+        sortedDates.forEach(date => {
+          filteredData[date] = allUsageData[date];
+        });
       } else {
-        usageSnap.forEach(doc => {
-          const data = doc.data();
-          const dateKey = doc.id;
-          const bigPoints = data.points || 0;
-          
-          allUsageData[dateKey] = bigPoints;
-          console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+        // Filtrar dados do mês selecionado
+        Object.keys(allUsageData).forEach(date => {
+          if (date.startsWith(selectedMonth)) {
+            filteredData[date] = allUsageData[date];
+          }
         });
       }
 
-      console.log("Todos os dados de BIG Points carregados", allUsageData);
-      
-    } catch (error) {
-      console.log("Erro ao carregar dados de BIG Points", error);
-      document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-    }
-  }
-
-  function filterDataByMonth(selectedMonth) {
-    console.log("Filtrando dados por mês", selectedMonth);
-    
-    let filteredData = {};
-    let monthlyTotalPoints = 0;
-    let monthlyDays = 0;
-    
-    if (selectedMonth === "all") {
-      filteredData = { ...allUsageData };
-      const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
-      filteredData = {};
-      sortedDates.forEach(date => {
-        filteredData[date] = allUsageData[date];
+      // Calcular estatísticas do período
+      Object.values(filteredData).forEach(points => {
+        monthlyTotalPoints += points;
+        if (points > 0) monthlyDays++;
       });
-    } else {
-      Object.keys(allUsageData).forEach(date => {
-        if (date.startsWith(selectedMonth)) {
-          filteredData[date] = allUsageData[date];
-        }
+
+      // Calcular estatísticas totais (sempre todos os dados)
+      let totalPoints = 0;
+      let totalDaysActive = 0;
+      Object.values(allUsageData).forEach(points => {
+        totalPoints += points;
+        if (points > 0) totalDaysActive++;
       });
-    }
 
-    Object.values(filteredData).forEach(points => {
-      monthlyTotalPoints += points;
-      if (points > 0) monthlyDays++;
-    });
+      // Atualizar UI principal (sempre mostra totais)
+      document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
+      document.getElementById("daysActive").textContent = totalDaysActive;
 
-    let totalPoints = 0;
-    let totalDaysActive = 0;
-    Object.values(allUsageData).forEach(points => {
-      totalPoints += points;
-      if (points > 0) totalDaysActive++;
-    });
-
-    document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
-    document.getElementById("daysActive").textContent = totalDaysActive;
-
-    const monthlyDisplay = document.getElementById("monthlyDataDisplay");
-    if (selectedMonth !== "all") {
-      const monthNames = {
-        "pt": {
-          "2025-01": "Janeiro 2025",
-          "2025-02": "Fevereiro 2025",
-          "2025-03": "Março 2025",
-          "2025-04": "Abril 2025",
-          "2025-05": "Maio 2025",
-          "2025-06": "Junho 2025",
-          "2025-07": "Julho 2025",
-          "2025-08": "Agosto 2025",
-          "2025-09": "Setembro 2025",
-          "2025-10": "Outubro 2025",
-          "2025-11": "Novembro 2025",
-          "2025-12": "Dezembro 2025"
-        },
-        "en": {
-          "2025-01": "January 2025",
-          "2025-02": "February 2025",
-          "2025-03": "March 2025",
-          "2025-04": "April 2025",
-          "2025-05": "May 2025",
-          "2025-06": "June 2025",
-          "2025-07": "July 2025",
-          "2025-08": "August 2025",
-          "2025-09": "September 2025",
-          "2025-10": "October 2025",
-          "2025-11": "November 2025",
-          "2025-12": "December 2025"
-        }
-      };
-      
-      const currentLang = document.getElementById("languageSwitcher").value || "pt";
-      const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
-      
-      monthlyDisplay.style.display = "block";
-      document.getElementById("monthlyDataTitle").textContent = monthName;
-      document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
-      document.getElementById("monthlyDays").textContent = monthlyDays;
-      
-      const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
-      document.getElementById("monthlyAverage").textContent = average + " BIG";
-      
-      console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
-    } else {
-      monthlyDisplay.style.display = "none";
-    }
-
-    renderChart(filteredData);
-    document.getElementById("loadingChart").style.display = "none";
-  }
-
-  async function loadReferralStats(userEmail) {
-    console.log("Carregando estatísticas de referência");
-    
-    try {
-      const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
-      const referralCount = referrals.size;
-      const referralEarnings = referralCount * 50; // 50 BIG por referência
-      
-      document.getElementById("referralCount").textContent = referralCount;
-      document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
-      
-      console.log(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
-      
-    } catch (error) {
-      console.log("Erro ao carregar estatísticas de referência", error);
-    }
-  }
-
-  function renderChart(data) {
-    console.log("Renderizando gráfico", data);
-    
-    const ctx = document.getElementById("progressChart").getContext('2d');
-    
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-
-    const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
-    const labels = sortedEntries.map(([date]) => {
-      const d = new Date(date);
-      const currentLang = document.getElementById("languageSwitcher").value || "pt";
-      return d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
-    });
-    const values = sortedEntries.map(([, value]) => value);
-
-    const isDarkMode = !document.body.classList.contains('light-mode');
-    const textColor = isDarkMode ? '#f0f0f0' : '#333';
-    const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-    const currentLang = document.getElementById("languageSwitcher").value || "pt";
-    const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
-    const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
-
-    chartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: chartLabel,
-          data: values,
-          borderColor: "#FF6B35",
-          backgroundColor: "rgba(255,107,53,0.2)",
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: "#FF6B35",
-          pointBorderColor: "#ffffff",
-          pointBorderWidth: 2,
-          pointRadius: 6,
-          pointHoverRadius: 8
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            top: 10,
-            right: 10,
-            bottom: 10,
-            left: 10
+      // Mostrar dados mensais se um mês específico foi selecionado
+      const monthlyDisplay = document.getElementById("monthlyDataDisplay");
+      if (selectedMonth !== "all") {
+        const monthNames = {
+          "pt": {
+            "2025-01": "Janeiro 2025",
+            "2025-02": "Fevereiro 2025", 
+            "2025-03": "Março 2025",
+            "2025-04": "Abril 2025",
+            "2025-05": "Maio 2025",
+            "2025-06": "Junho 2025",
+            "2025-07": "Julho 2025",
+            "2025-08": "Agosto 2025",
+            "2025-09": "Setembro 2025",
+            "2025-10": "Outubro 2025",
+            "2025-11": "Novembro 2025",
+            "2025-12": "Dezembro 2025"
+          },
+          "en": {
+            "2025-01": "January 2025",
+            "2025-02": "February 2025",
+            "2025-03": "March 2025", 
+            "2025-04": "April 2025",
+            "2025-05": "May 2025",
+            "2025-06": "June 2025",
+            "2025-07": "July 2025",
+            "2025-08": "August 2025",
+            "2025-09": "September 2025",
+            "2025-10": "October 2025",
+            "2025-11": "November 2025",
+            "2025-12": "December 2025"
           }
+        };
+        
+        const currentLang = document.getElementById("languageSwitcher").value || "pt";
+        const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
+        
+        monthlyDisplay.style.display = "block";
+        document.getElementById("monthlyDataTitle").textContent = monthName;
+        document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
+        document.getElementById("monthlyDays").textContent = monthlyDays;
+        
+        const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
+        document.getElementById("monthlyAverage").textContent = average + " BIG";
+        
+        console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
+      } else {
+        monthlyDisplay.style.display = "none";
+      }
+
+      // Renderizar gráfico com dados filtrados
+      renderChart(filteredData);
+      
+      // Ocultar loading
+      document.getElementById("loadingChart").style.display = "none";
+    }
+
+    async function createUserDocument(user) {
+      console.log("Criando documento do usuário");
+      try {
+        await db.collection("users").doc(user.uid).set({
+          email: user.email,
+          createdAt: new Date(),
+          sharedPoints: 0,
+          walletAddress: "",
+          referredBy: ""
+        });
+        console.log("Documento do usuário criado com sucesso");
+        // Reinicializar dashboard
+        initDashboard(user);
+      } catch (error) {
+        console.log("Erro ao criar documento do usuário", error);
+      }
+    }
+
+    async function loadAllUsageData(uid) {
+      console.log("Carregando todos os dados de uso");
+      
+      try {
+        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+        const usageSnap = await usageRef.orderBy("date", "desc").get();
+        
+        console.log(`Encontrados ${usageSnap.size} registros de uso total`);
+        
+        allUsageData = {};
+        
+        // Se não há dados, manter vazio (sem criar dados exemplo)
+        if (usageSnap.empty) {
+          console.log("Nenhum dado de uso encontrado");
+          allUsageData = {};
+        } else {
+          usageSnap.forEach(doc => {
+            const data = doc.data();
+            const dateKey = doc.id;
+            const sharedPoints = data.shared || 0;
+            
+            allUsageData[dateKey] = sharedPoints;
+            console.log(`Data: ${dateKey}, Compartilhado: ${sharedPoints} BIG`);
+          });
+        }
+
+        console.log("Todos os dados de uso carregados", allUsageData);
+        
+      } catch (error) {
+        console.log("Erro ao carregar dados de uso", error);
+        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+      }
+    }
+
+    async function loadReferralStats(userEmail) {
+      console.log("Carregando estatísticas de referência");
+      
+      try {
+        const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
+        const referralCount = referrals.size;
+        const referralEarnings = referralCount * 1000; // 1000 BIG por referência
+        
+        document.getElementById("referralCount").textContent = referralCount;
+        document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
+        
+        console.log(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
+        
+      } catch (error) {
+        console.log("Erro ao carregar estatísticas de referência", error);
+      }
+    }
+
+    function renderChart(data) {
+      console.log("Renderizando gráfico", data);
+      
+      const ctx = document.getElementById("progressChart").getContext('2d');
+      
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      // Ordenar dados por data
+      const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+      const labels = sortedEntries.map(([date]) => {
+        const d = new Date(date);
+        const currentLang = document.getElementById("languageSwitcher").value || "pt";
+        return d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
+      });
+      const values = sortedEntries.map(([, value]) => value);
+
+      const isDarkMode = !document.body.classList.contains('light-mode');
+      const textColor = isDarkMode ? '#f0f0f0' : '#333';
+      const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+      const currentLang = document.getElementById("languageSwitcher").value || "pt";
+      const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
+      const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
+
+      chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: chartLabel,
+            data: values,
+            borderColor: "#FF6B35",
+            backgroundColor: "rgba(255,107,53,0.2)",
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: "#FF6B35",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
         },
-        plugins: {
-          legend: {
-            labels: {
-              color: textColor,
-              font: {
-                size: 14,
-                weight: '600'
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 10,
+              right: 10,
+              bottom: 10,
+              left: 10
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: textColor,
+                font: {
+                  size: 14,
+                  weight: '600'
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              borderColor: '#FF6B35',
+              borderWidth: 1,
+              callbacks: {
+                label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
               }
             }
           },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            borderColor: '#FF6B35',
-            borderWidth: 1,
-            callbacks: {
-              label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: {
-              color: gridColor,
-              lineWidth: 1,
-              drawBorder: false
-            },
-            ticks: {
-              color: textColor,
-              font: {
-                size: 12
+          scales: {
+            x: {
+              grid: {
+                color: gridColor,
+                lineWidth: 1,
+                drawBorder: false
               },
-              padding: 8
-            },
-            border: {
-              display: false
-            }
-          },
-          y: {
-            grid: {
-              color: gridColor,
-              lineWidth: 1,
-              drawBorder: false
-            },
-            ticks: {
-              color: textColor,
-              font: {
-                size: 12
+              ticks: {
+                color: textColor,
+                font: {
+                  size: 12
+                },
+                padding: 8
               },
-              padding: 8,
-              callback: function(value) {
-                return value + ' BIG';
+              border: {
+                display: false
               }
             },
-            beginAtZero: true,
-            border: {
-              display: false
+            y: {
+              grid: {
+                color: gridColor,
+                lineWidth: 1,
+                drawBorder: false
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  size: 12
+                },
+                padding: 8,
+                callback: function(value) {
+                  return value + ' BIG';
+                }
+              },
+              beginAtZero: true,
+              border: {
+                display: false
+              }
             }
           }
         }
+      });
+      
+      console.log("Gráfico renderizado com sucesso");
+    }
+    
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type === 'copy' ? 'copy-success' : ''}`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => notification.classList.add('show'), 100);
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 3000);
+    }
+
+    function showStatusMessage(message, type = 'success') {
+      const statusEl = document.getElementById("statusMessage");
+      statusEl.textContent = message;
+      statusEl.className = `show ${type}`;
+      
+      setTimeout(() => {
+        statusEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // Event Listeners
+    document.getElementById("saveWalletBtn").addEventListener("click", async () => {
+      const wallet = document.getElementById("walletInput").value.trim();
+      if (!wallet) {
+        showStatusMessage("Digite um endereço válido.", "error");
+        return;
+      }
+      
+      // Validação básica do endereço Solana
+      if (wallet.length < 32 || wallet.length > 44) {
+        showStatusMessage("Endereço Solana inválido.", "error");
+        return;
+      }
+      
+      try {
+        await db.collection("users").doc(currentUser.uid).update({
+          walletAddress: wallet,
+          walletUpdatedAt: new Date()
+        });
+        showStatusMessage("Endereço salvo com sucesso!");
+        console.log("Carteira salva", { wallet });
+      } catch (error) {
+        console.log("Erro ao salvar carteira", error);
+        showStatusMessage("Erro ao salvar endereço. Tente novamente.", "error");
       }
     });
-    
-    console.log("Gráfico renderizado com sucesso");
-  }
 
-  function setupRealtimeListener(uid) {
-    console.log("Configurando listener em tempo real");
-    
-    const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-    
-    usageRef.onSnapshot((snapshot) => {
-      console.log("Dados atualizados em tempo real");
-      
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added" || change.type === "modified") {
-          console.log(`Documento ${change.type}:`, change.doc.data());
-        }
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        console.log("Usuário deslogado");
+        localStorage.clear();
+        location.href = "index.html";
       });
-      
-      loadAllUsageData(uid).then(() => {
-        const currentMonth = document.getElementById("monthSelect").value;
-        filterDataByMonth(currentMonth);
-      });
-    }, (error) => {
-      console.log("Erro no listener em tempo real", error);
     });
-  }
 
-  const translations = {
-    pt: {
-      heading: "Bem-vindo ao seu Painel",
-      progress: "📊 Seu Progresso",
-      shared: "Total de BIG Points",
-      daysActive: "Dias Ativos",
-      chartTitle: "Histórico de BIG Points",
-      walletTitle: "💰 Carteira Solana",
-      walletDesc: "Configure seu endereço Solana para receber as recompensas em tokens BIG.",
-      placeholder: "Digite seu endereço Solana (ex: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU)",
-      saveWallet: "💾 Salvar Endereço",
-      logout: "Sair",
-      referralTitle: "👥 Sistema de Referência",
-      referralDesc: "Convide amigos e ganhe <strong>10% extra</strong> em BIG para cada pessoa que você indicar!",
-      copyBtn: "📋 Copiar Link de Referência",
-      referrals: "Indicações",
-      referralEarnings: "Ganhos por Ref.",
-      loading: "Carregando dados do gráfico",
-      selectMonth: "Selecionar Mês:",
-      allData: "Todos os dados",
-      jan2025: "Janeiro 2025",
-      feb2025: "Fevereiro 2025",
-      mar2025: "Março 2025",
-      apr2025: "Abril 2025",
-      may2025: "Maio 2025",
-      jun2025: "Junho 2025",
-      jul2025: "Julho 2025",
-      aug2025: "Agosto 2025",
-      sep2025: "Setembro 2025",
-      oct2025: "Outubro 2025",
-      nov2025: "Novembro 2025",
-      dec2025: "Dezembro 2025",
-      sharedThisMonth: "BIG Points no Mês",
-      activeDaysMonth: "Dias Ativos",
-      dailyAverage: "Média Diária"
-    },
-    en: {
-      heading: "Welcome to your Dashboard",
-      progress: "📊 Your Progress",
-      shared: "Total BIG Points",
-      daysActive: "Active Days",
-      chartTitle: "BIG Points History",
-      walletTitle: "💰 Solana Wallet",
-      walletDesc: "Set up your Solana address to receive BIG token rewards.",
-      placeholder: "Enter your Solana address (ex: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU)",
-      saveWallet: "💾 Save Address",
-      logout: "Logout",
-      referralTitle: "👥 Referral System",
-      referralDesc: "Invite friends and earn <strong>10% extra</strong> BIG for each person you refer!",
-      copyBtn: "📋 Copy Referral Link",
-      referrals: "Referrals",
-      referralEarnings: "Ref. Earnings",
-      loading: "Loading chart data",
-      selectMonth: "Select Month:",
-      allData: "All data",
-      jan2025: "January 2025",
-      feb2025: "February 2025",
-      mar2025: "March 2025",
-      apr2025: "April 2025",
-      may2025: "May 2025",
-      jun2025: "June 2025",
-      jul2025: "July 2025",
-      aug2025: "August 2025",
-      sep2025: "September 2025",
-      oct2025: "October 2025",
-      nov2025: "November 2025",
-      dec2025: "December 2025",
-      sharedThisMonth: "BIG Points this Month",
-      activeDaysMonth: "Active Days",
-      dailyAverage: "Daily Average"
+    document.getElementById("copyRefLinkBtn").addEventListener("click", async () => {
+      const refLink = document.getElementById("refLink");
+      try {
+        await navigator.clipboard.writeText(refLink.value);
+        showNotification("Link copiado!", "copy");
+      } catch (error) {
+        // Fallback para navegadores mais antigos
+        refLink.select();
+        refLink.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        showNotification("Link copiado!", "copy");
+      }
+    });
+
+    // Autenticação
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("Usuário autenticado", { uid: user.uid, email: user.email });
+        initDashboard(user);
+      } else {
+        console.log("Usuário não autenticado");
+        location.href = "login.html";
+      }
+    });
+
+    // Listener em tempo real para dados de uso
+    function setupRealtimeListener(uid) {
+      console.log("Configurando listener em tempo real");
+      
+      const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+      
+      usageRef.onSnapshot((snapshot) => {
+        console.log("Dados atualizados em tempo real");
+        
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added" || change.type === "modified") {
+            console.log(`Documento ${change.type}:`, change.doc.data());
+          }
+        });
+        
+        // Recarregar dados quando houver mudanças
+        loadAllUsageData(uid).then(() => {
+          const currentMonth = document.getElementById("monthSelect").value;
+          filterDataByMonth(currentMonth);
+        });
+      }, (error) => {
+        console.log("Erro no listener em tempo real", error);
+      });
     }
-  };
+
+    // Sistema de tradução atualizado
+    const translations = {
+      pt: {
+        heading: "Bem-vindo ao seu Painel",
+        progress: "📊 Seu Progresso",
+        shared: "Total de BIG Points",
+        daysActive: "Dias Ativos",
+        chartTitle: "Histórico de BIG Points",
+        walletTitle: "💰 Carteira Solana",
+        walletDesc: "Configure seu endereço Solana para receber as recompensas em tokens BIG.",
+        placeholder: "Digite seu endereço Solana (ex: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU)",
+        saveWallet: "💾 Salvar Endereço",
+        logout: "Sair",
+        referralTitle: "👥 Sistema de Referência",
+        referralDesc: "Convide amigos e ganhe <strong>10% extra</strong> em BIG para cada pessoa que você indicar!",
+        copyBtn: "📋 Copiar Link de Referência",
+        referrals: "Indicações",
+        referralEarnings: "Ganhos por Ref.",
+        loading: "Carregando dados do gráfico",
+        selectMonth: "Selecionar Mês:",
+        allData: "Todos os dados",
+        jan2025: "Janeiro 2025",
+        feb2025: "Fevereiro 2025", 
+        mar2025: "Março 2025",
+        apr2025: "Abril 2025",
+        may2025: "Maio 2025",
+        jun2025: "Junho 2025",
+        jul2025: "Julho 2025",
+        aug2025: "Agosto 2025",
+        sep2025: "Setembro 2025",
+        oct2025: "Outubro 2025",
+        nov2025: "Novembro 2025",
+        dec2025: "Dezembro 2025",
+        sharedThisMonth: "BIG Points no Mês",
+        activeDaysMonth: "Dias Ativos",
+        dailyAverage: "Média Diária"
+      },
+      en: {
+        heading: "Welcome to your Dashboard",
+        progress: "📊 Your Progress",
+        shared: "Total BIG Points",
+        daysActive: "Active Days",
+        chartTitle: "BIG Points History",
+        walletTitle: "💰 Solana Wallet",
+        walletDesc: "Set up your Solana address to receive BIG token rewards.",
+        placeholder: "Enter your Solana address (ex: 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU)",
+        saveWallet: "💾 Save Address",
+        logout: "Logout",
+        referralTitle: "👥 Referral System",
+        referralDesc: "Invite friends and earn <strong>10% extra</strong> BIG for each person you refer!",
+        copyBtn: "📋 Copy Referral Link",
+        referrals: "Referrals",
+        referralEarnings: "Ref. Earnings",
+        loading: "Loading chart data",
+        selectMonth: "Select Month:",
+        allData: "All data",
+        jan2025: "January 2025",
+        feb2025: "February 2025",
+        mar2025: "March 2025",
+        apr2025: "April 2025",
+        may2025: "May 2025",
+        jun2025: "June 2025",
+        jul2025: "July 2025",
+        aug2025: "August 2025",
+        sep2025: "September 2025",
+        oct2025: "October 2025",
+        nov2025: "November 2025",
+        dec2025: "December 2025",
+        sharedThisMonth: "BIG Points this Month",
+        activeDaysMonth: "Active Days",
+        dailyAverage: "Daily Average"
+      }
+    };
 
     function applyTranslations(lang) {
       const t = translations[lang];
