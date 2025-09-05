@@ -1,8 +1,8 @@
+// Arquivo: /pages/api/bigpoints.js
 const { db, auth } = require('../../lib/firebaseAdmin');
 
-// Handler deve ser exportado corretamente para Next.js
 export default async function handler(req, res) {
-  // Configurar CORS se necessário
+  // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
