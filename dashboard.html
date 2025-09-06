@@ -940,38 +940,37 @@
     }
 
     async function loadAllUsageData(uid) {
-      console.log("Carregando todos os dados de uso");
-      
-      try {
-        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-        const usageSnap = await usageRef.orderBy("date", "desc").get();
+  console.log("Carregando todos os dados de BIG Points");
+  
+  try {
+    const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+    const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
+    
+    console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
+    
+    allUsageData = {};
+    
+    if (usageSnap.empty) {
+      console.log("Nenhum dado de BIG Points encontrado");
+      allUsageData = {};
+    } else {
+      usageSnap.forEach(doc => {
+        const data = doc.data();
+        const dateKey = doc.id;
+        const bigPoints = data.bigpoints || 0;
         
-        console.log(`Encontrados ${usageSnap.size} registros de uso total`);
-        
-        allUsageData = {};
-        
-        // Se não há dados, manter vazio (sem criar dados exemplo)
-        if (usageSnap.empty) {
-          console.log("Nenhum dado de uso encontrado");
-          allUsageData = {};
-        } else {
-          usageSnap.forEach(doc => {
-            const data = doc.data();
-            const dateKey = doc.id;
-            const sharedPoints = data.shared || 0;
-            
-            allUsageData[dateKey] = sharedPoints;
-            console.log(`Data: ${dateKey}, Compartilhado: ${sharedPoints} BIG`);
-          });
-        }
-
-        console.log("Todos os dados de uso carregados", allUsageData);
-        
-      } catch (error) {
-        console.log("Erro ao carregar dados de uso", error);
-        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-      }
+        allUsageData[dateKey] = bigPoints;
+        console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+      });
     }
+
+    console.log("Todos os dados de BIG Points carregados", allUsageData);
+    
+  } catch (error) {
+    console.log("Erro ao carregar dados de BIG Points", error);
+    document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+  }
+}
 
     async function loadReferralStats(userEmail) {
       console.log("Carregando estatísticas de referência");
