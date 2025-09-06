@@ -841,38 +841,40 @@
     }
 
     async function loadAllUsageData(uid) {
-      console.log("Carregando todos os dados de BIG Points");
-      
-      try {
-        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-        const usageSnap = await usageRef.orderBy("date", "desc").get();
+  console.log("Carregando todos os dados de BIG Points");
+  
+  try {
+    // CORREÇÃO: Usar o nome correto da subcoleção
+    const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+    const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
+    
+    console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
+    
+    allUsageData = {};
+    
+    // Se não há dados, mostrar gráfico vazio
+    if (usageSnap.empty) {
+      console.log("Nenhum dado de BIG Points encontrado");
+      allUsageData = {};
+    } else {
+      usageSnap.forEach(doc => {
+        const data = doc.data();
+        const dateKey = doc.id; // ID do documento é a data (YYYY-MM-DD)
+        // CORREÇÃO: Ler campo correto 'bigpoints' conforme API
+        const bigPoints = data.bigpoints || 0;
         
-        console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
-        
-        allUsageData = {};
-        
-        // Se não há dados, mostrar gráfico vazio
-        if (usageSnap.empty) {
-          console.log("Nenhum dado de BIG Points encontrado");
-          allUsageData = {};
-        } else {
-          usageSnap.forEach(doc => {
-            const data = doc.data();
-            const dateKey = doc.id;
-            const sharedMB = data.points || 0;
-            
-            allUsageData[dateKey] = bigPoints;
-            console.log(`Data: ${dateKey}, Compartilhado: ${bigPoints}`);
-          });
-        }
-
-        console.log("Todos os dados de BIG Points carregados", allUsageData);
-        
-      } catch (error) {
-        console.log("Erro ao carregar dados de BIG Points", error);
-        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-      }
+        allUsageData[dateKey] = bigPoints;
+        console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+      });
     }
+
+    console.log("Todos os dados de BIG Points carregados", allUsageData);
+    
+  } catch (error) {
+    console.log("Erro ao carregar dados de BIG Points", error);
+    document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+  }
+}
 
     function filterDataByMonth(selectedMonth) {
       console.log("Filtrando dados por mês", selectedMonth);
