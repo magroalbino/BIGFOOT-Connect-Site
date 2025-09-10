@@ -628,13 +628,12 @@
         
         const userData = {
           email: user.email,
-          uid: user.uid, // Adiciona o UID para garantir referência
+          uid: user.uid,
           referredBy: referredBy,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        // Usa merge: true para garantir que o documento seja criado ou atualizado
         await db.collection("users").doc(user.uid).set(userData, { merge: true });
         
         console.log('Documento do usuário criado/atualizado com sucesso:', userData);
@@ -642,29 +641,26 @@
         
       } catch (error) {
         console.error('Erro ao criar documento do usuário no Firestore:', error);
-        // Re-throw para que o erro seja tratado na função principal
         throw new Error(`Erro ao salvar dados do usuário: ${error.message}`);
       }
     }
 
-    // Função para adicionar contato ao Brevo
+    // Configuração da URL da API
+    const API_BASE_URL = 'https://api.bigfootconnect.tech';
+
+    // Função para adicionar contato ao Brevo via API própria (VERSÃO SEGURA)
     async function adicionarContatoBrevo(email, nome = '') {
       try {
-        console.log('Adicionando contato ao Brevo:', email);
+        console.log('Adicionando contato ao Brevo via API própria:', email);
         
-        const response = await fetch('https://api.brevo.com/v3/contacts', {
+        const response = await fetch(`${API_BASE_URL}/api/addcontact`, {
           method: 'POST',
           headers: {
-            'accept': 'application/json',
-            'api-key': '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',
-            'content-type': 'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             email: email,
-            attributes: {
-              PRENOME: nome || email.split('@')[0]
-            },
-            listIds: [5] // ID da lista "BIGFOOT Users - #5"
+            nome: nome || email.split('@')[0] // Usa nome ou primeira parte do email
           })
         });
 
@@ -675,13 +671,11 @@
         } else {
           const errorData = await response.json();
           console.warn('Aviso ao adicionar contato ao Brevo:', errorData);
-          // Não falha o registro mesmo se der erro no Brevo
           return null;
         }
         
       } catch (error) {
         console.warn('Aviso ao adicionar contato ao Brevo:', error);
-        // Não falha o registro mesmo se der erro no Brevo
         return null;
       }
     }
@@ -739,7 +733,6 @@
       document.getElementById("backHome").textContent = t.backHome;
       document.getElementById("dividerText").textContent = t.dividerText;
       
-      // Update password toggle aria-label
       const passwordInput = document.getElementById("password");
       const toggle = document.getElementById("passwordToggle");
       if (passwordInput.type === "password") {
@@ -816,7 +809,7 @@
       checkPasswordStrength(e.target.value);
     });
 
-    // Form submission - VERSÃO MELHORADA
+    // Form submission - VERSÃO ATUALIZADA COM API SEGURA
     document.getElementById("registerForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
@@ -856,18 +849,15 @@
           console.log('✅ Documento do usuário salvo no Firestore com sucesso');
         } catch (firestoreError) {
           console.error('❌ Erro crítico ao salvar no Firestore:', firestoreError);
-          
-          // Exibe mensagem de aviso mas não impede o fluxo
           showMessage(t.firestoreError, 'error');
           
-          // Aguarda 3 segundos antes de redirecionar mesmo com erro
           setTimeout(() => {
             window.location.href = "login.html";
           }, 3000);
           return;
         }
 
-        // 4. Adicionar ao Brevo (não bloqueia se der erro)
+        // 4. Adicionar ao Brevo via API própria (não bloqueia se der erro)
         try {
           await adicionarContatoBrevo(user.email);
           console.log('✅ Contato adicionado ao Brevo com sucesso');
