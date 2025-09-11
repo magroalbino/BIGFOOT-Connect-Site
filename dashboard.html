@@ -956,10 +956,36 @@
     } else {
       usageSnap.forEach(doc => {
         const data = doc.data();
-        const dateKey = doc.id;
         const bigPoints = data.bigpoints || 0;
         
-        allUsageData[dateKey] = bigPoints;
+        // CORREÇÃO: Usar o campo createdAt para gerar a chave da data
+        let dateKey;
+        
+        if (data.createdAt && data.createdAt.toDate) {
+          // Se createdAt é um Timestamp do Firestore
+          const date = data.createdAt.toDate();
+          // Converter para timezone local (Brasil) e formatar como YYYY-MM-DD
+          dateKey = date.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+          // Ou se preferir manter o formato americano: date.toISOString().split('T')[0]
+        } else if (data.createdAt instanceof Date) {
+          // Se createdAt já é um objeto Date
+          dateKey = data.createdAt.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+        } else if (typeof data.createdAt === 'string') {
+          // Se createdAt é uma string, extrair apenas a data
+          dateKey = data.createdAt.split('T')[0];
+        } else {
+          // Fallback: usar o ID do documento se não houver createdAt
+          console.warn(`Documento ${doc.id} sem createdAt válido, usando ID como fallback`);
+          dateKey = doc.id;
+        }
+        
+        // Se já existem dados para esta data, somar os pontos
+        if (allUsageData[dateKey]) {
+          allUsageData[dateKey] += bigPoints;
+        } else {
+          allUsageData[dateKey] = bigPoints;
+        }
+        
         console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
       });
     }
