@@ -940,7 +940,7 @@
     }
 
     async function loadAllUsageData(uid) {
-  console.log("=== DEBUG: Carregando dados de BIG Points ===");
+  console.log("Carregando todos os dados de BIG Points");
   
   try {
     const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
@@ -948,101 +948,59 @@
     
     console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
     
-    // PRIMEIRO: Vamos ver EXATAMENTE como os dados estão estruturados
-    console.log("=== ESTRUTURA COMPLETA DOS DADOS ===");
-    usageSnap.forEach((doc, index) => {
-      const data = doc.data();
-      console.log(`Documento ${index + 1}:`, {
-        documentId: doc.id,
-        createdAt: data.createdAt,
-        createdAtType: typeof data.createdAt,
-        createdAtToString: data.createdAt ? data.createdAt.toString() : 'null',
-        bigpoints: data.bigpoints,
-        allData: data
-      });
-      
-      // Tentar diferentes formas de extrair a data
-      if (data.createdAt && data.createdAt.toDate) {
-        const date = data.createdAt.toDate();
-        console.log(`  - Como Timestamp: ${date.toISOString()}`);
-        console.log(`  - Data local: ${date.toLocaleDateString('pt-BR')}`);
-        console.log(`  - Formato YYYY-MM-DD: ${date.toISOString().split('T')[0]}`);
-      }
-    });
-    
     allUsageData = {};
     
     if (usageSnap.empty) {
       console.log("Nenhum dado de BIG Points encontrado");
       allUsageData = {};
     } else {
-      console.log("=== PROCESSANDO DADOS ===");
-      
       usageSnap.forEach(doc => {
         const data = doc.data();
         const bigPoints = data.bigpoints || 0;
         
         let dateKey;
         
-        // Estratégia 1: Usar createdAt se disponível
         if (data.createdAt && data.createdAt.toDate) {
           const date = data.createdAt.toDate();
-          dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
-          console.log(`Estratégia 1 - Timestamp para data: ${dateKey}`);
+          
+          // CORREÇÃO: Usar timezone local em vez de UTC
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          dateKey = `${year}-${month}-${day}`;
+          
+          console.log(`Data corrigida: ${dateKey} (era UTC: ${date.toISOString().split('T')[0]})`);
         }
-        // Estratégia 2: Usar createdAt como Date
         else if (data.createdAt instanceof Date) {
-          dateKey = data.createdAt.toISOString().split('T')[0];
-          console.log(`Estratégia 2 - Date para data: ${dateKey}`);
+          const date = data.createdAt;
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          dateKey = `${year}-${month}-${day}`;
         }
-        // Estratégia 3: Verificar se doc.id já é uma data válida (YYYY-MM-DD)
         else if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
           dateKey = doc.id;
-          console.log(`Estratégia 3 - ID é data válida: ${dateKey}`);
         }
-        // Estratégia 4: Tentar extrair data do ID se contém data
-        else if (doc.id.includes('-')) {
-          // Procurar padrão de data dentro do ID
-          const dateMatch = doc.id.match(/(\d{4}-\d{2}-\d{2})/);
-          if (dateMatch) {
-            dateKey = dateMatch[1];
-            console.log(`Estratégia 4 - Data extraída do ID: ${dateKey}`);
-          } else {
-            console.warn(`ID complexo sem data reconhecível: ${doc.id}`);
-            dateKey = doc.id; // Fallback
-          }
-        }
-        // Estratégia 5: Fallback completo
         else {
           console.warn(`Usando ID como fallback: ${doc.id}`);
           dateKey = doc.id;
         }
         
-        // Adicionar ou somar pontos para a data
+        // Somar pontos se a data já existe
         if (allUsageData[dateKey]) {
           allUsageData[dateKey] += bigPoints;
-          console.log(`Somando pontos para ${dateKey}: ${allUsageData[dateKey]} total`);
         } else {
           allUsageData[dateKey] = bigPoints;
-          console.log(`Nova data ${dateKey}: ${bigPoints} pontos`);
         }
+        
+        console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
       });
     }
 
-    console.log("=== DADOS FINAIS PROCESSADOS ===");
-    console.log("allUsageData:", allUsageData);
-    
-    // Verificar se as datas estão em ordem
-    const sortedDates = Object.keys(allUsageData).sort();
-    console.log("Datas em ordem:", sortedDates);
-    
-    // Mostrar último registro para comparação
-    const lastDate = sortedDates[sortedDates.length - 1];
-    console.log(`Última data registrada: ${lastDate} com ${allUsageData[lastDate]} pontos`);
-    console.log(`Data atual: ${new Date().toISOString().split('T')[0]}`);
+    console.log("Todos os dados de BIG Points carregados", allUsageData);
     
   } catch (error) {
-    console.error("Erro ao carregar dados de BIG Points", error);
+    console.log("Erro ao carregar dados de BIG Points", error);
     document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
   }
 }
