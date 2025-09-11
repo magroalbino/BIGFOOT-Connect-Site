@@ -823,103 +823,112 @@
     }
 
     function filterDataByMonth(selectedMonth) {
-      console.log("Filtrando dados por mês", selectedMonth);
-      
-      let filteredData = {};
-      let monthlyTotalPoints = 0;
-      let monthlyDays = 0;
-      
-      if (selectedMonth === "all") {
-        filteredData = { ...allUsageData };
-        // Para "all data", mostrar apenas os últimos 7 dias no gráfico
-        const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
-        filteredData = {};
-        sortedDates.forEach(date => {
-          filteredData[date] = allUsageData[date];
-        });
-      } else {
-        // Filtrar dados do mês selecionado
-        Object.keys(allUsageData).forEach(date => {
-          if (date.startsWith(selectedMonth)) {
-            filteredData[date] = allUsageData[date];
-          }
-        });
+  console.log("=== DEBUG FILTRO ===");
+  console.log("Mês selecionado:", selectedMonth);
+  console.log("Todos os dados disponíveis:", allUsageData);
+  
+  let filteredData = {};
+  let monthlyTotalPoints = 0;
+  let monthlyDays = 0;
+  
+  if (selectedMonth === "all") {
+    filteredData = { ...allUsageData };
+    // Para "all data", mostrar apenas os últimos 7 dias no gráfico
+    const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
+    console.log("Últimas 7 datas (all mode):", sortedDates);
+    filteredData = {};
+    sortedDates.forEach(date => {
+      filteredData[date] = allUsageData[date];
+    });
+  } else {
+    // Filtrar dados do mês selecionado
+    console.log("Filtrando por mês:", selectedMonth);
+    Object.keys(allUsageData).forEach(date => {
+      console.log(`Verificando data ${date} - começa com ${selectedMonth}?`, date.startsWith(selectedMonth));
+      if (date.startsWith(selectedMonth)) {
+        filteredData[date] = allUsageData[date];
+        console.log(`Incluindo: ${date} = ${allUsageData[date]} pontos`);
       }
+    });
+  }
 
-      // Calcular estatísticas do período
-      Object.values(filteredData).forEach(points => {
-        monthlyTotalPoints += points;
-        if (points > 0) monthlyDays++;
-      });
+  console.log("Dados filtrados:", filteredData);
+  
+  // Calcular estatísticas do período
+  Object.values(filteredData).forEach(points => {
+    monthlyTotalPoints += points;
+    if (points > 0) monthlyDays++;
+  });
 
-      // Calcular estatísticas totais (sempre todos os dados)
-      let totalPoints = 0;
-      let totalDaysActive = 0;
-      Object.values(allUsageData).forEach(points => {
-        totalPoints += points;
-        if (points > 0) totalDaysActive++;
-      });
+  // Calcular estatísticas totais (sempre todos os dados)
+  let totalPoints = 0;
+  let totalDaysActive = 0;
+  Object.values(allUsageData).forEach(points => {
+    totalPoints += points;
+    if (points > 0) totalDaysActive++;
+  });
 
-      // Atualizar UI principal (sempre mostra totais)
-      document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
-      document.getElementById("daysActive").textContent = totalDaysActive;
+  // Atualizar UI principal (sempre mostra totais)
+  document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
+  document.getElementById("daysActive").textContent = totalDaysActive;
 
-      // Mostrar dados mensais se um mês específico foi selecionado
-      const monthlyDisplay = document.getElementById("monthlyDataDisplay");
-      if (selectedMonth !== "all") {
-        const monthNames = {
-          "pt": {
-            "2025-01": "Janeiro 2025",
-            "2025-02": "Fevereiro 2025", 
-            "2025-03": "Março 2025",
-            "2025-04": "Abril 2025",
-            "2025-05": "Maio 2025",
-            "2025-06": "Junho 2025",
-            "2025-07": "Julho 2025",
-            "2025-08": "Agosto 2025",
-            "2025-09": "Setembro 2025",
-            "2025-10": "Outubro 2025",
-            "2025-11": "Novembro 2025",
-            "2025-12": "Dezembro 2025"
-          },
-          "en": {
-            "2025-01": "January 2025",
-            "2025-02": "February 2025",
-            "2025-03": "March 2025", 
-            "2025-04": "April 2025",
-            "2025-05": "May 2025",
-            "2025-06": "June 2025",
-            "2025-07": "July 2025",
-            "2025-08": "August 2025",
-            "2025-09": "September 2025",
-            "2025-10": "October 2025",
-            "2025-11": "November 2025",
-            "2025-12": "December 2025"
-          }
-        };
-        
-        const currentLang = document.getElementById("languageSwitcher").value || "pt";
-        const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
-        
-        monthlyDisplay.style.display = "block";
-        document.getElementById("monthlyDataTitle").textContent = monthName;
-        document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
-        document.getElementById("monthlyDays").textContent = monthlyDays;
-        
-        const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
-        document.getElementById("monthlyAverage").textContent = average + " BIG";
-        
-        console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
-      } else {
-        monthlyDisplay.style.display = "none";
+  // Mostrar dados mensais se um mês específico foi selecionado
+  const monthlyDisplay = document.getElementById("monthlyDataDisplay");
+  if (selectedMonth !== "all") {
+    const monthNames = {
+      "pt": {
+        "2025-01": "Janeiro 2025",
+        "2025-02": "Fevereiro 2025", 
+        "2025-03": "Março 2025",
+        "2025-04": "Abril 2025",
+        "2025-05": "Maio 2025",
+        "2025-06": "Junho 2025",
+        "2025-07": "Julho 2025",
+        "2025-08": "Agosto 2025",
+        "2025-09": "Setembro 2025",
+        "2025-10": "Outubro 2025",
+        "2025-11": "Novembro 2025",
+        "2025-12": "Dezembro 2025"
+      },
+      "en": {
+        "2025-01": "January 2025",
+        "2025-02": "February 2025",
+        "2025-03": "March 2025", 
+        "2025-04": "April 2025",
+        "2025-05": "May 2025",
+        "2025-06": "June 2025",
+        "2025-07": "July 2025",
+        "2025-08": "August 2025",
+        "2025-09": "September 2025",
+        "2025-10": "October 2025",
+        "2025-11": "November 2025",
+        "2025-12": "December 2025"
       }
+    };
+    
+    const currentLang = document.getElementById("languageSwitcher").value || "pt";
+    const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
+    
+    monthlyDisplay.style.display = "block";
+    document.getElementById("monthlyDataTitle").textContent = monthName;
+    document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
+    document.getElementById("monthlyDays").textContent = monthlyDays;
+    
+    const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
+    document.getElementById("monthlyAverage").textContent = average + " BIG";
+    
+    console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
+  } else {
+    monthlyDisplay.style.display = "none";
+  }
 
-      // Renderizar gráfico com dados filtrados
-      renderChart(filteredData);
-      
-      // Ocultar loading
-      document.getElementById("loadingChart").style.display = "none";
-    }
+  // Renderizar gráfico com dados filtrados
+  console.log("Enviando para renderChart:", filteredData);
+  renderChart(filteredData);
+  
+  // Ocultar loading
+  document.getElementById("loadingChart").style.display = "none";
+}
 
     async function createUserDocument(user) {
       console.log("Criando documento do usuário");
@@ -1024,126 +1033,149 @@
     }
 
     function renderChart(data) {
-      console.log("Renderizando gráfico", data);
-      
-      const ctx = document.getElementById("progressChart").getContext('2d');
-      
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
+  console.log("=== DEBUG RENDER CHART ===");
+  console.log("Dados recebidos para renderizar:", data);
+  
+  const ctx = document.getElementById("progressChart").getContext('2d');
+  
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
 
-      // Ordenar dados por data
-      const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
-      const labels = sortedEntries.map(([date]) => {
-        const d = new Date(date);
-        const currentLang = document.getElementById("languageSwitcher").value || "pt";
-        return d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
-      });
-      const values = sortedEntries.map(([, value]) => value);
+  // Ordenar dados por data
+  const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+  console.log("Entradas ordenadas:", sortedEntries);
+  
+  const labels = sortedEntries.map(([date]) => {
+    const d = new Date(date);
+    const currentLang = document.getElementById("languageSwitcher").value || "pt";
+    const formatted = d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
+    console.log(`Data ${date} formatada como: ${formatted}`);
+    return formatted;
+  });
+  
+  const values = sortedEntries.map(([date, value]) => {
+    console.log(`${date}: ${value} BIG`);
+    return value;
+  });
 
-      const isDarkMode = !document.body.classList.contains('light-mode');
-      const textColor = isDarkMode ? '#f0f0f0' : '#333';
-      const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  console.log("Labels para o gráfico:", labels);
+  console.log("Valores para o gráfico:", values);
 
-      const currentLang = document.getElementById("languageSwitcher").value || "pt";
-      const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
-      const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
+  // Vamos também verificar se temos dados para dias específicos
+  const currentDate = new Date();
+  for (let i = 0; i < 8; i++) {
+    const checkDate = new Date(currentDate);
+    checkDate.setDate(currentDate.getDate() - i);
+    const dateStr = checkDate.toISOString().split('T')[0];
+    const hasData = data[dateStr] !== undefined;
+    console.log(`${dateStr} (${checkDate.toLocaleDateString('pt-BR')}): ${hasData ? data[dateStr] + ' BIG' : 'SEM DADOS'}`);
+  }
 
-      chartInstance = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: [{
-            label: chartLabel,
-            data: values,
-            borderColor: "#FF6B35",
-            backgroundColor: "rgba(255,107,53,0.2)",
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: "#FF6B35",
-            pointBorderColor: "#ffffff",
-            pointBorderWidth: 2,
-            pointRadius: 6,
-            pointHoverRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: {
-            padding: {
-              top: 10,
-              right: 10,
-              bottom: 10,
-              left: 10
-            }
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: textColor,
-                font: {
-                  size: 14,
-                  weight: '600'
-                }
-              }
-            },
-            tooltip: {
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              titleColor: '#fff',
-              bodyColor: '#fff',
-              borderColor: '#FF6B35',
-              borderWidth: 1,
-              callbacks: {
-                label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: {
-                color: gridColor,
-                lineWidth: 1,
-                drawBorder: false
-              },
-              ticks: {
-                color: textColor,
-                font: {
-                  size: 12
-                },
-                padding: 8
-              },
-              border: {
-                display: false
-              }
-            },
-            y: {
-              grid: {
-                color: gridColor,
-                lineWidth: 1,
-                drawBorder: false
-              },
-              ticks: {
-                color: textColor,
-                font: {
-                  size: 12
-                },
-                padding: 8,
-                callback: function(value) {
-                  return value + ' BIG';
-                }
-              },
-              beginAtZero: true,
-              border: {
-                display: false
-              }
+  const isDarkMode = !document.body.classList.contains('light-mode');
+  const textColor = isDarkMode ? '#f0f0f0' : '#333';
+  const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+  const currentLang = document.getElementById("languageSwitcher").value || "pt";
+  const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
+  const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
+
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: chartLabel,
+        data: values,
+        borderColor: "#FF6B35",
+        backgroundColor: "rgba(255,107,53,0.2)",
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "#FF6B35",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: 10,
+          right: 10,
+          bottom: 10,
+          left: 10
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: {
+              size: 14,
+              weight: '600'
             }
           }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: '#FF6B35',
+          borderWidth: 1,
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
+          }
         }
-      });
-      
-      console.log("Gráfico renderizado com sucesso");
+      },
+      scales: {
+        x: {
+          grid: {
+            color: gridColor,
+            lineWidth: 1,
+            drawBorder: false
+          },
+          ticks: {
+            color: textColor,
+            font: {
+              size: 12
+            },
+            padding: 8
+          },
+          border: {
+            display: false
+          }
+        },
+        y: {
+          grid: {
+            color: gridColor,
+            lineWidth: 1,
+            drawBorder: false
+          },
+          ticks: {
+            color: textColor,
+            font: {
+              size: 12
+            },
+            padding: 8,
+            callback: function(value) {
+              return value + ' BIG';
+            }
+          },
+          beginAtZero: true,
+          border: {
+            display: false
+          }
+        }
+      }
     }
+  });
+  
+  console.log("Gráfico renderizado com sucesso");
+  console.log("=== FIM DEBUG RENDER CHART ===");
+}
     
     function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
