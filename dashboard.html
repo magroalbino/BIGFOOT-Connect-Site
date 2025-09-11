@@ -823,112 +823,112 @@
     }
 
     function filterDataByMonth(selectedMonth) {
-  console.log("=== DEBUG FILTRO ===");
-  console.log("Mês selecionado:", selectedMonth);
-  console.log("Todos os dados disponíveis:", allUsageData);
-  
-  let filteredData = {};
-  let monthlyTotalPoints = 0;
-  let monthlyDays = 0;
-  
-  if (selectedMonth === "all") {
-    filteredData = { ...allUsageData };
-    // Para "all data", mostrar apenas os últimos 7 dias no gráfico
-    const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
-    console.log("Últimas 7 datas (all mode):", sortedDates);
-    filteredData = {};
-    sortedDates.forEach(date => {
-      filteredData[date] = allUsageData[date];
-    });
-  } else {
-    // Filtrar dados do mês selecionado
-    console.log("Filtrando por mês:", selectedMonth);
-    Object.keys(allUsageData).forEach(date => {
-      console.log(`Verificando data ${date} - começa com ${selectedMonth}?`, date.startsWith(selectedMonth));
-      if (date.startsWith(selectedMonth)) {
-        filteredData[date] = allUsageData[date];
-        console.log(`Incluindo: ${date} = ${allUsageData[date]} pontos`);
+      console.log("=== DEBUG FILTRO ===");
+      console.log("Mês selecionado:", selectedMonth);
+      console.log("Todos os dados disponíveis:", allUsageData);
+      
+      let filteredData = {};
+      let monthlyTotalPoints = 0;
+      let monthlyDays = 0;
+      
+      if (selectedMonth === "all") {
+        filteredData = { ...allUsageData };
+        // Para "all data", mostrar apenas os últimos 7 dias no gráfico
+        const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
+        console.log("Últimas 7 datas (all mode):", sortedDates);
+        filteredData = {};
+        sortedDates.forEach(date => {
+          filteredData[date] = allUsageData[date];
+        });
+      } else {
+        // Filtrar dados do mês selecionado
+        console.log("Filtrando por mês:", selectedMonth);
+        Object.keys(allUsageData).forEach(date => {
+          console.log(`Verificando data ${date} - começa com ${selectedMonth}?`, date.startsWith(selectedMonth));
+          if (date.startsWith(selectedMonth)) {
+            filteredData[date] = allUsageData[date];
+            console.log(`Incluindo: ${date} = ${allUsageData[date]} pontos`);
+          }
+        });
       }
-    });
-  }
 
-  console.log("Dados filtrados:", filteredData);
-  
-  // Calcular estatísticas do período
-  Object.values(filteredData).forEach(points => {
-    monthlyTotalPoints += points;
-    if (points > 0) monthlyDays++;
-  });
+      console.log("Dados filtrados:", filteredData);
+      
+      // Calcular estatísticas do período
+      Object.values(filteredData).forEach(points => {
+        monthlyTotalPoints += points;
+        if (points > 0) monthlyDays++;
+      });
 
-  // Calcular estatísticas totais (sempre todos os dados)
-  let totalPoints = 0;
-  let totalDaysActive = 0;
-  Object.values(allUsageData).forEach(points => {
-    totalPoints += points;
-    if (points > 0) totalDaysActive++;
-  });
+      // Calcular estatísticas totais (sempre todos os dados)
+      let totalPoints = 0;
+      let totalDaysActive = 0;
+      Object.values(allUsageData).forEach(points => {
+        totalPoints += points;
+        if (points > 0) totalDaysActive++;
+      });
 
-  // Atualizar UI principal (sempre mostra totais)
-  document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
-  document.getElementById("daysActive").textContent = totalDaysActive;
+      // Atualizar UI principal (sempre mostra totais)
+      document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
+      document.getElementById("daysActive").textContent = totalDaysActive;
 
-  // Mostrar dados mensais se um mês específico foi selecionado
-  const monthlyDisplay = document.getElementById("monthlyDataDisplay");
-  if (selectedMonth !== "all") {
-    const monthNames = {
-      "pt": {
-        "2025-01": "Janeiro 2025",
-        "2025-02": "Fevereiro 2025", 
-        "2025-03": "Março 2025",
-        "2025-04": "Abril 2025",
-        "2025-05": "Maio 2025",
-        "2025-06": "Junho 2025",
-        "2025-07": "Julho 2025",
-        "2025-08": "Agosto 2025",
-        "2025-09": "Setembro 2025",
-        "2025-10": "Outubro 2025",
-        "2025-11": "Novembro 2025",
-        "2025-12": "Dezembro 2025"
-      },
-      "en": {
-        "2025-01": "January 2025",
-        "2025-02": "February 2025",
-        "2025-03": "March 2025", 
-        "2025-04": "April 2025",
-        "2025-05": "May 2025",
-        "2025-06": "June 2025",
-        "2025-07": "July 2025",
-        "2025-08": "August 2025",
-        "2025-09": "September 2025",
-        "2025-10": "October 2025",
-        "2025-11": "November 2025",
-        "2025-12": "December 2025"
+      // Mostrar dados mensais se um mês específico foi selecionado
+      const monthlyDisplay = document.getElementById("monthlyDataDisplay");
+      if (selectedMonth !== "all") {
+        const monthNames = {
+          "pt": {
+            "2025-01": "Janeiro 2025",
+            "2025-02": "Fevereiro 2025", 
+            "2025-03": "Março 2025",
+            "2025-04": "Abril 2025",
+            "2025-05": "Maio 2025",
+            "2025-06": "Junho 2025",
+            "2025-07": "Julho 2025",
+            "2025-08": "Agosto 2025",
+            "2025-09": "Setembro 2025",
+            "2025-10": "Outubro 2025",
+            "2025-11": "Novembro 2025",
+            "2025-12": "Dezembro 2025"
+          },
+          "en": {
+            "2025-01": "January 2025",
+            "2025-02": "February 2025",
+            "2025-03": "March 2025", 
+            "2025-04": "April 2025",
+            "2025-05": "May 2025",
+            "2025-06": "June 2025",
+            "2025-07": "July 2025",
+            "2025-08": "August 2025",
+            "2025-09": "September 2025",
+            "2025-10": "October 2025",
+            "2025-11": "November 2025",
+            "2025-12": "December 2025"
+          }
+        };
+        
+        const currentLang = document.getElementById("languageSwitcher").value || "pt";
+        const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
+        
+        monthlyDisplay.style.display = "block";
+        document.getElementById("monthlyDataTitle").textContent = monthName;
+        document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
+        document.getElementById("monthlyDays").textContent = monthlyDays;
+        
+        const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
+        document.getElementById("monthlyAverage").textContent = average + " BIG";
+        
+        console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
+      } else {
+        monthlyDisplay.style.display = "none";
       }
-    };
-    
-    const currentLang = document.getElementById("languageSwitcher").value || "pt";
-    const monthName = monthNames[currentLang][selectedMonth] || selectedMonth;
-    
-    monthlyDisplay.style.display = "block";
-    document.getElementById("monthlyDataTitle").textContent = monthName;
-    document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
-    document.getElementById("monthlyDays").textContent = monthlyDays;
-    
-    const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
-    document.getElementById("monthlyAverage").textContent = average + " BIG";
-    
-    console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
-  } else {
-    monthlyDisplay.style.display = "none";
-  }
 
-  // Renderizar gráfico com dados filtrados
-  console.log("Enviando para renderChart:", filteredData);
-  renderChart(filteredData);
-  
-  // Ocultar loading
-  document.getElementById("loadingChart").style.display = "none";
-}
+      // Renderizar gráfico com dados filtrados
+      console.log("Enviando para renderChart:", filteredData);
+      renderChart(filteredData);
+      
+      // Ocultar loading
+      document.getElementById("loadingChart").style.display = "none";
+    }
 
     async function createUserDocument(user) {
       console.log("Criando documento do usuário");
@@ -949,70 +949,70 @@
     }
 
     async function loadAllUsageData(uid) {
-  console.log("Carregando todos os dados de BIG Points");
-  
-  try {
-    const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-    const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
-    
-    console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
-    
-    allUsageData = {};
-    
-    if (usageSnap.empty) {
-      console.log("Nenhum dado de BIG Points encontrado");
-      allUsageData = {};
-    } else {
-      usageSnap.forEach(doc => {
-        const data = doc.data();
-        const bigPoints = data.bigpoints || 0;
+      console.log("Carregando todos os dados de BIG Points");
+      
+      try {
+        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+        const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
         
-        let dateKey;
+        console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
         
-        if (data.createdAt && data.createdAt.toDate) {
-          const date = data.createdAt.toDate();
-          
-          // CORREÇÃO: Usar timezone local em vez de UTC
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          dateKey = `${year}-${month}-${day}`;
-          
-          console.log(`Data corrigida: ${dateKey} (era UTC: ${date.toISOString().split('T')[0]})`);
-        }
-        else if (data.createdAt instanceof Date) {
-          const date = data.createdAt;
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          dateKey = `${year}-${month}-${day}`;
-        }
-        else if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
-          dateKey = doc.id;
-        }
-        else {
-          console.warn(`Usando ID como fallback: ${doc.id}`);
-          dateKey = doc.id;
-        }
+        allUsageData = {};
         
-        // Somar pontos se a data já existe
-        if (allUsageData[dateKey]) {
-          allUsageData[dateKey] += bigPoints;
+        if (usageSnap.empty) {
+          console.log("Nenhum dado de BIG Points encontrado");
+          allUsageData = {};
         } else {
-          allUsageData[dateKey] = bigPoints;
+          usageSnap.forEach(doc => {
+            const data = doc.data();
+            const bigPoints = data.bigpoints || 0;
+            
+            let dateKey;
+            
+            if (data.createdAt && data.createdAt.toDate) {
+              const date = data.createdAt.toDate();
+              
+              // CORREÇÃO: Usar timezone local em vez de UTC
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              dateKey = `${year}-${month}-${day}`;
+              
+              console.log(`Data corrigida: ${dateKey} (era UTC: ${date.toISOString().split('T')[0]})`);
+            }
+            else if (data.createdAt instanceof Date) {
+              const date = data.createdAt;
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              dateKey = `${year}-${month}-${day}`;
+            }
+            else if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
+              dateKey = doc.id;
+            }
+            else {
+              console.warn(`Usando ID como fallback: ${doc.id}`);
+              dateKey = doc.id;
+            }
+            
+            // Somar pontos se a data já existe
+            if (allUsageData[dateKey]) {
+              allUsageData[dateKey] += bigPoints;
+            } else {
+              allUsageData[dateKey] = bigPoints;
+            }
+            
+            console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+          });
         }
-        
-        console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
-      });
-    }
 
-    console.log("Todos os dados de BIG Points carregados", allUsageData);
-    
-  } catch (error) {
-    console.log("Erro ao carregar dados de BIG Points", error);
-    document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-  }
-}
+        console.log("Todos os dados de BIG Points carregados", allUsageData);
+        
+      } catch (error) {
+        console.log("Erro ao carregar dados de BIG Points", error);
+        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+      }
+    }
 
     async function loadReferralStats(userEmail) {
       console.log("Carregando estatísticas de referência");
@@ -1033,149 +1033,150 @@
     }
 
     function renderChart(data) {
-  console.log("=== DEBUG RENDER CHART ===");
-  console.log("Dados recebidos para renderizar:", data);
-  
-  const ctx = document.getElementById("progressChart").getContext('2d');
-  
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
-
-  // Ordenar dados por data
-  const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
-  console.log("Entradas ordenadas:", sortedEntries);
-  
-  const labels = sortedEntries.map(([date]) => {
-    const d = new Date(date);
-    const currentLang = document.getElementById("languageSwitcher").value || "pt";
-    const formatted = d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
-    console.log(`Data ${date} formatada como: ${formatted}`);
-    return formatted;
-  });
-  
-  const values = sortedEntries.map(([date, value]) => {
-    console.log(`${date}: ${value} BIG`);
-    return value;
-  });
-
-  console.log("Labels para o gráfico:", labels);
-  console.log("Valores para o gráfico:", values);
-
-  // Vamos também verificar se temos dados para dias específicos
-  const currentDate = new Date();
-  for (let i = 0; i < 8; i++) {
-    const checkDate = new Date(currentDate);
-    checkDate.setDate(currentDate.getDate() - i);
-    const dateStr = checkDate.toISOString().split('T')[0];
-    const hasData = data[dateStr] !== undefined;
-    console.log(`${dateStr} (${checkDate.toLocaleDateString('pt-BR')}): ${hasData ? data[dateStr] + ' BIG' : 'SEM DADOS'}`);
-  }
-
-  const isDarkMode = !document.body.classList.contains('light-mode');
-  const textColor = isDarkMode ? '#f0f0f0' : '#333';
-  const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-  const currentLang = document.getElementById("languageSwitcher").value || "pt";
-  const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
-  const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
-
-  chartInstance = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: chartLabel,
-        data: values,
-        borderColor: "#FF6B35",
-        backgroundColor: "rgba(255,107,53,0.2)",
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: "#FF6B35",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-        pointRadius: 6,
-        pointHoverRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: {
-          top: 10,
-          right: 10,
-          bottom: 10,
-          left: 10
-        }
-      },
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-            font: {
-              size: 14,
-              weight: '600'
-            }
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: '#FF6B35',
-          borderWidth: 1,
-          callbacks: {
-            label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: {
-            color: gridColor,
-            lineWidth: 1,
-            drawBorder: false
-          },
-          ticks: {
-            color: textColor,
-            font: {
-              size: 12
-            },
-            padding: 8
-          },
-          border: {
-            display: false
-          }
-        },
-        y: {
-          grid: {
-            color: gridColor,
-            lineWidth: 1,
-            drawBorder: false
-          },
-          ticks: {
-            color: textColor,
-            font: {
-              size: 12
-            },
-            padding: 8,
-            callback: function(value) {
-              return value + ' BIG';
-            }
-          },
-          beginAtZero: true,
-          border: {
-            display: false
-          }
-        }
+      console.log("=== DEBUG RENDER CHART ===");
+      console.log("Dados recebidos para renderizar:", data);
+      
+      const ctx = document.getElementById("progressChart").getContext('2d');
+      
+      if (chartInstance) {
+        chartInstance.destroy();
       }
+
+      // Ordenar dados por data
+      const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+      console.log("Entradas ordenadas:", sortedEntries);
+      
+      // CORREÇÃO: Formatação de datas sem usar new Date()
+      const labels = sortedEntries.map(([dateStr]) => {
+        // Parse manual da data para evitar problemas de timezone
+        const [year, month, day] = dateStr.split('-');
+        const formatted = `${month}/${day}`;
+        console.log(`Data ${dateStr} formatada como: ${formatted}`);
+        return formatted;
+      });
+      
+      const values = sortedEntries.map(([date, value]) => {
+        console.log(`${date}: ${value} BIG`);
+        return value;
+      });
+
+      console.log("Labels para o gráfico:", labels);
+      console.log("Valores para o gráfico:", values);
+
+      // Vamos também verificar se temos dados para dias específicos
+      const currentDate = new Date();
+      for (let i = 0; i < 8; i++) {
+        const checkDate = new Date(currentDate);
+        checkDate.setDate(currentDate.getDate() - i);
+        const dateStr = checkDate.toISOString().split('T')[0];
+        const hasData = data[dateStr] !== undefined;
+        console.log(`${dateStr} (${checkDate.toLocaleDateString('pt-BR')}): ${hasData ? data[dateStr] + ' BIG' : 'SEM DADOS'}`);
+      }
+
+      const isDarkMode = !document.body.classList.contains('light-mode');
+      const textColor = isDarkMode ? '#f0f0f0' : '#333';
+      const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+      const currentLang = document.getElementById("languageSwitcher").value || "pt";
+      const chartLabel = currentLang === "pt" ? "BIG Points Ganhos" : "BIG Points Earned";
+      const tooltipLabel = currentLang === "pt" ? "BIG Points ganhos" : "BIG Points earned";
+
+      chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: chartLabel,
+            data: values,
+            borderColor: "#FF6B35",
+            backgroundColor: "rgba(255,107,53,0.2)",
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: "#FF6B35",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 10,
+              right: 10,
+              bottom: 10,
+              left: 10
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: textColor,
+                font: {
+                  size: 14,
+                  weight: '600'
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              borderColor: '#FF6B35',
+              borderWidth: 1,
+              callbacks: {
+                label: ctx => `${ctx.parsed.y} ${tooltipLabel}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: gridColor,
+                lineWidth: 1,
+                drawBorder: false
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  size: 12
+                },
+                padding: 8
+              },
+              border: {
+                display: false
+              }
+            },
+            y: {
+              grid: {
+                color: gridColor,
+                lineWidth: 1,
+                drawBorder: false
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  size: 12
+                },
+                padding: 8,
+                callback: function(value) {
+                  return value + ' BIG';
+                }
+              },
+              beginAtZero: true,
+              border: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+      
+      console.log("Gráfico renderizado com sucesso");
+      console.log("=== FIM DEBUG RENDER CHART ===");
     }
-  });
-  
-  console.log("Gráfico renderizado com sucesso");
-  console.log("=== FIM DEBUG RENDER CHART ===");
-}
     
     function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
