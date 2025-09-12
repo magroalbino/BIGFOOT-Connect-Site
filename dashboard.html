@@ -1078,15 +1078,20 @@
       console.log("Labels para o gráfico:", labels);
       console.log("Valores para o gráfico:", values);
 
-      // Vamos também verificar se temos dados para dias específicos
-      const currentDate = new Date();
-      for (let i = 0; i < 8; i++) {
-        const checkDate = new Date(currentDate);
-        checkDate.setDate(currentDate.getDate() - i);
-        const dateStr = checkDate.toISOString().split('T')[0];
-        const hasData = data[dateStr] !== undefined;
-        console.log(`${dateStr} (${checkDate.toLocaleDateString('pt-BR')}): ${hasData ? data[dateStr] + ' BIG' : 'SEM DADOS'}`);
-      }
+      // Debug dos dados - usando as datas reais em vez de calcular
+      const today = new Date();
+      const currentDateStr = today.toISOString().split('T')[0];
+      console.log(`Data atual: ${currentDateStr}`);
+      
+      // Mostrar dados das últimas datas encontradas
+      const sortedDates = Object.keys(data).sort().reverse();
+      console.log("Últimas datas com dados:", sortedDates);
+      
+      sortedDates.forEach(dateStr => {
+        const [year, month, day] = dateStr.split('-');
+        const dateFormatted = `${day}/${month}/${year}`;
+        console.log(`${dateStr} (${dateFormatted}): ${data[dateStr]} BIG`);
+      });
 
       const isDarkMode = !document.body.classList.contains('light-mode');
       const textColor = isDarkMode ? '#f0f0f0' : '#333';
