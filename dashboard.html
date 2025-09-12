@@ -868,8 +868,8 @@
         if (points > 0) totalDaysActive++;
       });
 
-      // Atualizar UI principal (sempre mostra totais)
-      document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
+      // Atualizar UI principal (sempre mostra totais) - formatando para 2 casas decimais
+      document.getElementById("sharedAmount").textContent = totalPoints.toFixed(2) + " BIG";
       document.getElementById("daysActive").textContent = totalDaysActive;
 
       // Mostrar dados mensais se um mês específico foi selecionado
@@ -911,13 +911,13 @@
         
         monthlyDisplay.style.display = "block";
         document.getElementById("monthlyDataTitle").textContent = monthName;
-        document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
+        document.getElementById("monthlyShared").textContent = monthlyTotalPoints.toFixed(2) + " BIG";
         document.getElementById("monthlyDays").textContent = monthlyDays;
         
-        const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
-        document.getElementById("monthlyAverage").textContent = average + " BIG";
+        const average = monthlyDays > 0 ? (monthlyTotalPoints / monthlyDays) : 0;
+        document.getElementById("monthlyAverage").textContent = average.toFixed(2) + " BIG";
         
-        console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
+        console.log(`Dados mensais: ${monthlyTotalPoints.toFixed(2)} BIG, ${monthlyDays} dias, média: ${average.toFixed(2)} BIG`);
       } else {
         monthlyDisplay.style.display = "none";
       }
