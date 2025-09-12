@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -731,7 +732,6 @@
         // Verificar se é admin e mostrar funcionalidades especiais
         if (user.email === "fabricioricard23@gmail.com") {
           createAdminButton(); // Criar apenas botão secreto
-          addRefreshButton(); // Adicionar botão de refresh para debug
         }
 
         // Configurar carteira
@@ -824,9 +824,7 @@
     }
 
     function filterDataByMonth(selectedMonth) {
-      console.log("=== DEBUG FILTRO ===");
-      console.log("Mês selecionado:", selectedMonth);
-      console.log("Todos os dados disponíveis:", allUsageData);
+      console.log("Filtrando dados por mês", selectedMonth);
       
       let filteredData = {};
       let monthlyTotalPoints = 0;
@@ -836,25 +834,19 @@
         filteredData = { ...allUsageData };
         // Para "all data", mostrar apenas os últimos 7 dias no gráfico
         const sortedDates = Object.keys(allUsageData).sort().reverse().slice(0, 7);
-        console.log("Últimas 7 datas (all mode):", sortedDates);
         filteredData = {};
         sortedDates.forEach(date => {
           filteredData[date] = allUsageData[date];
         });
       } else {
         // Filtrar dados do mês selecionado
-        console.log("Filtrando por mês:", selectedMonth);
         Object.keys(allUsageData).forEach(date => {
-          console.log(`Verificando data ${date} - começa com ${selectedMonth}?`, date.startsWith(selectedMonth));
           if (date.startsWith(selectedMonth)) {
             filteredData[date] = allUsageData[date];
-            console.log(`Incluindo: ${date} = ${allUsageData[date]} pontos`);
           }
         });
       }
 
-      console.log("Dados filtrados:", filteredData);
-      
       // Calcular estatísticas do período
       Object.values(filteredData).forEach(points => {
         monthlyTotalPoints += points;
@@ -869,8 +861,8 @@
         if (points > 0) totalDaysActive++;
       });
 
-      // Atualizar UI principal (sempre mostra totais) - formatando para 2 casas decimais
-      document.getElementById("sharedAmount").textContent = totalPoints.toFixed(2) + " BIG";
+      // Atualizar UI principal (sempre mostra totais)
+      document.getElementById("sharedAmount").textContent = totalPoints + " BIG";
       document.getElementById("daysActive").textContent = totalDaysActive;
 
       // Mostrar dados mensais se um mês específico foi selecionado
@@ -912,19 +904,18 @@
         
         monthlyDisplay.style.display = "block";
         document.getElementById("monthlyDataTitle").textContent = monthName;
-        document.getElementById("monthlyShared").textContent = monthlyTotalPoints.toFixed(2) + " BIG";
+        document.getElementById("monthlyShared").textContent = monthlyTotalPoints + " BIG";
         document.getElementById("monthlyDays").textContent = monthlyDays;
         
-        const average = monthlyDays > 0 ? (monthlyTotalPoints / monthlyDays) : 0;
-        document.getElementById("monthlyAverage").textContent = average.toFixed(2) + " BIG";
+        const average = monthlyDays > 0 ? Math.round(monthlyTotalPoints / monthlyDays) : 0;
+        document.getElementById("monthlyAverage").textContent = average + " BIG";
         
-        console.log(`Dados mensais: ${monthlyTotalPoints.toFixed(2)} BIG, ${monthlyDays} dias, média: ${average.toFixed(2)} BIG`);
+        console.log(`Dados mensais: ${monthlyTotalPoints} BIG, ${monthlyDays} dias, média: ${average} BIG`);
       } else {
         monthlyDisplay.style.display = "none";
       }
 
       // Renderizar gráfico com dados filtrados
-      console.log("Enviando para renderChart:", filteredData);
       renderChart(filteredData);
       
       // Ocultar loading
@@ -950,85 +941,37 @@
     }
 
     async function loadAllUsageData(uid) {
-      console.log("Carregando todos os dados de BIG Points");
-      
-      try {
-        const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
-        const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
+  console.log("Carregando todos os dados de BIG Points");
+  
+  try {
+    const usageRef = db.collection("users").doc(uid).collection("bigpoints_earnings");
+    const usageSnap = await usageRef.orderBy("createdAt", "desc").get();
+    
+    console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
+    
+    allUsageData = {};
+    
+    if (usageSnap.empty) {
+      console.log("Nenhum dado de BIG Points encontrado");
+      allUsageData = {};
+    } else {
+      usageSnap.forEach(doc => {
+        const data = doc.data();
+        const dateKey = doc.id;
+        const bigPoints = data.bigpoints || 0;
         
-        console.log(`Encontrados ${usageSnap.size} registros de BIG Points`);
-        
-        allUsageData = {};
-        
-        if (usageSnap.empty) {
-          console.log("Nenhum dado de BIG Points encontrado");
-          allUsageData = {};
-        } else {
-          usageSnap.forEach(doc => {
-            const data = doc.data();
-            const bigPoints = data.bigpoints || 0;
-            
-            console.log(`=== PROCESSANDO DOC ${doc.id} ===`);
-            console.log(`BIG Points: ${bigPoints}`);
-            console.log(`Data original:`, data.createdAt);
-            
-            let dateKey;
-            
-            // PRIORIDADE 1: Usar o ID do documento se for uma data válida
-            if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
-              dateKey = doc.id;
-              console.log(`Usando ID do documento como data: ${dateKey}`);
-            }
-            // PRIORIDADE 2: Converter createdAt timestamp
-            else if (data.createdAt && data.createdAt.toDate) {
-              const date = data.createdAt.toDate();
-              console.log(`Timestamp original: ${date.toISOString()}`);
-              
-              // Usar UTC para evitar problemas de fuso horário
-              const year = date.getUTCFullYear();
-              const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-              const day = String(date.getUTCDate()).padStart(2, '0');
-              dateKey = `${year}-${month}-${day}`;
-              
-              console.log(`Data convertida (UTC): ${dateKey}`);
-            }
-            // PRIORIDADE 3: createdAt como Date object
-            else if (data.createdAt instanceof Date) {
-              const date = data.createdAt;
-              const year = date.getUTCFullYear();
-              const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-              const day = String(date.getUTCDate()).padStart(2, '0');
-              dateKey = `${year}-${month}-${day}`;
-              console.log(`Data convertida (Date object UTC): ${dateKey}`);
-            }
-            // FALLBACK: Usar o ID do documento mesmo que não seja uma data
-            else {
-              console.warn(`Usando ID do documento como fallback: ${doc.id}`);
-              dateKey = doc.id;
-            }
-            
-            // Somar pontos se a data já existe (pode haver múltiplos registros por dia)
-            if (allUsageData[dateKey]) {
-              console.log(`Data ${dateKey} já existe com ${allUsageData[dateKey]} pontos, somando +${bigPoints}`);
-              allUsageData[dateKey] += bigPoints;
-            } else {
-              allUsageData[dateKey] = bigPoints;
-            }
-            
-            console.log(`FINAL - Data: ${dateKey}, BIG Points: ${allUsageData[dateKey]}`);
-            console.log(`=== FIM PROCESSAMENTO DOC ===`);
-          });
-        }
-
-        console.log("=== DADOS FINAIS CARREGADOS ===");
-        console.log("Todas as datas encontradas:", Object.keys(allUsageData).sort());
-        console.log("Todos os dados:", allUsageData);
-        
-      } catch (error) {
-        console.log("Erro ao carregar dados de BIG Points", error);
-        document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
-      }
+        allUsageData[dateKey] = bigPoints;
+        console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+      });
     }
+
+    console.log("Todos os dados de BIG Points carregados", allUsageData);
+    
+  } catch (error) {
+    console.log("Erro ao carregar dados de BIG Points", error);
+    document.getElementById("loadingChart").innerHTML = "Erro ao carregar dados";
+  }
+}
 
     async function loadReferralStats(userEmail) {
       console.log("Carregando estatísticas de referência");
@@ -1049,8 +992,7 @@
     }
 
     function renderChart(data) {
-      console.log("=== DEBUG RENDER CHART ===");
-      console.log("Dados recebidos para renderizar:", data);
+      console.log("Renderizando gráfico", data);
       
       const ctx = document.getElementById("progressChart").getContext('2d');
       
@@ -1060,39 +1002,12 @@
 
       // Ordenar dados por data
       const sortedEntries = Object.entries(data).sort((a, b) => new Date(a[0]) - new Date(b[0]));
-      console.log("Entradas ordenadas:", sortedEntries);
-      
-      // CORREÇÃO: Formatação de datas sem usar new Date()
-      const labels = sortedEntries.map(([dateStr]) => {
-        // Parse manual da data para evitar problemas de timezone
-        const [year, month, day] = dateStr.split('-');
-        const formatted = `${month}/${day}`;
-        console.log(`Data ${dateStr} formatada como: ${formatted}`);
-        return formatted;
+      const labels = sortedEntries.map(([date]) => {
+        const d = new Date(date);
+        const currentLang = document.getElementById("languageSwitcher").value || "pt";
+        return d.toLocaleDateString(currentLang === "pt" ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit' });
       });
-      
-      const values = sortedEntries.map(([date, value]) => {
-        console.log(`${date}: ${value} BIG`);
-        return value;
-      });
-
-      console.log("Labels para o gráfico:", labels);
-      console.log("Valores para o gráfico:", values);
-
-      // Debug dos dados - usando as datas reais em vez de calcular
-      const today = new Date();
-      const currentDateStr = today.toISOString().split('T')[0];
-      console.log(`Data atual: ${currentDateStr}`);
-      
-      // Mostrar dados das últimas datas encontradas
-      const sortedDates = Object.keys(data).sort().reverse();
-      console.log("Últimas datas com dados:", sortedDates);
-      
-      sortedDates.forEach(dateStr => {
-        const [year, month, day] = dateStr.split('-');
-        const dateFormatted = `${day}/${month}/${year}`;
-        console.log(`${dateStr} (${dateFormatted}): ${data[dateStr]} BIG`);
-      });
+      const values = sortedEntries.map(([, value]) => value);
 
       const isDarkMode = !document.body.classList.contains('light-mode');
       const textColor = isDarkMode ? '#f0f0f0' : '#333';
@@ -1196,7 +1111,6 @@
       });
       
       console.log("Gráfico renderizado com sucesso");
-      console.log("=== FIM DEBUG RENDER CHART ===");
     }
     
     function showNotification(message, type = 'success') {
