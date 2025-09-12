@@ -967,46 +967,61 @@
             const data = doc.data();
             const bigPoints = data.bigpoints || 0;
             
+            console.log(`=== PROCESSANDO DOC ${doc.id} ===`);
+            console.log(`BIG Points: ${bigPoints}`);
+            console.log(`Data original:`, data.createdAt);
+            
             let dateKey;
             
-            if (data.createdAt && data.createdAt.toDate) {
+            // PRIORIDADE 1: Usar o ID do documento se for uma data válida
+            if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
+              dateKey = doc.id;
+              console.log(`Usando ID do documento como data: ${dateKey}`);
+            }
+            // PRIORIDADE 2: Converter createdAt timestamp
+            else if (data.createdAt && data.createdAt.toDate) {
               const date = data.createdAt.toDate();
+              console.log(`Timestamp original: ${date.toISOString()}`);
               
-              // CORREÇÃO: Usar timezone local em vez de UTC
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
+              // Usar UTC para evitar problemas de fuso horário
+              const year = date.getUTCFullYear();
+              const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+              const day = String(date.getUTCDate()).padStart(2, '0');
               dateKey = `${year}-${month}-${day}`;
               
-              console.log(`Data corrigida: ${dateKey} (era UTC: ${date.toISOString().split('T')[0]})`);
+              console.log(`Data convertida (UTC): ${dateKey}`);
             }
+            // PRIORIDADE 3: createdAt como Date object
             else if (data.createdAt instanceof Date) {
               const date = data.createdAt;
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
+              const year = date.getUTCFullYear();
+              const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+              const day = String(date.getUTCDate()).padStart(2, '0');
               dateKey = `${year}-${month}-${day}`;
+              console.log(`Data convertida (Date object UTC): ${dateKey}`);
             }
-            else if (/^\d{4}-\d{2}-\d{2}$/.test(doc.id)) {
-              dateKey = doc.id;
-            }
+            // FALLBACK: Usar o ID do documento mesmo que não seja uma data
             else {
-              console.warn(`Usando ID como fallback: ${doc.id}`);
+              console.warn(`Usando ID do documento como fallback: ${doc.id}`);
               dateKey = doc.id;
             }
             
-            // Somar pontos se a data já existe
+            // Somar pontos se a data já existe (pode haver múltiplos registros por dia)
             if (allUsageData[dateKey]) {
+              console.log(`Data ${dateKey} já existe com ${allUsageData[dateKey]} pontos, somando +${bigPoints}`);
               allUsageData[dateKey] += bigPoints;
             } else {
               allUsageData[dateKey] = bigPoints;
             }
             
-            console.log(`Data: ${dateKey}, BIG Points: ${bigPoints}`);
+            console.log(`FINAL - Data: ${dateKey}, BIG Points: ${allUsageData[dateKey]}`);
+            console.log(`=== FIM PROCESSAMENTO DOC ===`);
           });
         }
 
-        console.log("Todos os dados de BIG Points carregados", allUsageData);
+        console.log("=== DADOS FINAIS CARREGADOS ===");
+        console.log("Todas as datas encontradas:", Object.keys(allUsageData).sort());
+        console.log("Todos os dados:", allUsageData);
         
       } catch (error) {
         console.log("Erro ao carregar dados de BIG Points", error);
