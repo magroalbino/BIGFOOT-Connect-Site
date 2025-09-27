@@ -419,7 +419,7 @@
       z-index: 1;
     }
 
-    /* Tabela melhorada com e-mail mais visível */
+    /* Tabela melhorada */
     .table-container {
       background: rgba(15, 15, 15, 0.8);
       border-radius: 20px;
@@ -466,38 +466,33 @@
       background: rgba(255, 107, 53, 0.08);
     }
 
-    /* Estilização específica para info do usuário */
-    .user-info {
-      min-width: 250px;
-    }
-
-    .user-name {
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-      color: #ffffff;
-      display: block;
-    }
-
     .user-email {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #3498db !important;
       font-weight: 500;
-      opacity: 1 !important;
-      display: block;
       word-break: break-word;
       line-height: 1.3;
+      min-width: 200px;
     }
 
-    .shared-amount {
-      color: #2ed573;
+    .bigpoints-amount {
+      color: #f39c12;
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .days-active {
-      color: #f39c12;
+      color: #2ed573;
       font-weight: 600;
+    }
+
+    .wallet-address {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #9b59b6;
+      word-break: break-all;
+      line-height: 1.3;
+      max-width: 300px;
     }
 
     .total-row {
@@ -588,20 +583,6 @@
       border: 1px solid rgba(255, 107, 53, 0.1);
     }
 
-    /* Debug info para teste */
-    .debug-info {
-      background: rgba(26, 26, 26, 0.9);
-      border: 1px solid rgba(255, 107, 53, 0.3);
-      border-radius: 10px;
-      padding: 1rem;
-      margin: 1rem 0;
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #ccc;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
     /* Responsividade */
     @media (max-width: 768px) {
       .header-content {
@@ -667,11 +648,11 @@
       
       <div class="header-right">
         <div class="user-info">
-          <div class="admin-badge">👑 ADMIN</div>
+          <div class="admin-badge">ADMIN</div>
           <div class="user-email" id="userEmail">Carregando...</div>
         </div>
         <button class="logout-btn" id="logoutBtn">
-          <span>🚪 Sair</span>
+          <span>Sair</span>
         </button>
       </div>
     </div>
@@ -684,62 +665,59 @@
 
     <div id="adminContent" style="display: none;">
       <div class="page-title">
-        <h1>🎯 Painel Administrativo</h1>
-        <p class="page-subtitle">Gerenciamento completo da rede BIGFOOT Connect</p>
+        <h1>Painel Administrativo - BIG Points</h1>
+        <p class="page-subtitle">Gerenciamento completo dos BIG Points da rede BIGFOOT Connect</p>
       </div>
 
       <!-- Resumo Geral -->
       <div class="summary-grid">
         <div class="summary-card">
           <span class="summary-value" id="totalUsers">0</span>
-          <span class="summary-label">👥 Usuários Registrados</span>
+          <span class="summary-label">Usuários Registrados</span>
         </div>
         <div class="summary-card">
-          <span class="summary-value" id="totalSharedGB">0 GB</span>
-          <span class="summary-label">📊 Total Compartilhado</span>
+          <span class="summary-value" id="totalBigPoints">0</span>
+          <span class="summary-label">Total BIG Points</span>
         </div>
         <div class="summary-card">
-          <span class="summary-value" id="monthlySharedGB">0 GB</span>
-          <span class="summary-label">📅 Este Mês</span>
+          <span class="summary-value" id="monthlyBigPoints">0</span>
+          <span class="summary-label">Este Mês</span>
         </div>
         <div class="summary-card">
-          <span class="summary-value" id="avgPerUser">0 MB</span>
-          <span class="summary-label">📈 Média por Usuário</span>
+          <span class="summary-value" id="avgPerUser">0</span>
+          <span class="summary-label">Média por Usuário</span>
         </div>
       </div>
 
-      <button class="refresh-btn" id="refreshBtn">🔄 Atualizar Dados</button>
-
-      <!-- Debug Info (temporário) -->
-      <div id="debugInfo" class="debug-info" style="display: none;">
-        <strong>🔍 DEBUG INFO:</strong><br>
-        <div id="debugContent"></div>
-      </div>
-      <button onclick="toggleDebug()" style="margin-bottom: 1rem; padding: 0.5rem 1rem; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
-        Toggle Debug Info
-      </button>
+      <button class="refresh-btn" id="refreshBtn">Atualizar Dados</button>
 
       <!-- Dados Mensais -->
       <div class="monthly-data">
-        <h2>📅 Análise Mensal Detalhada</h2>
+        <h2>Análise Mensal de BIG Points</h2>
         
         <div class="month-selector">
+          <button class="month-btn" data-month="2025-12">
+            <span>Dezembro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-11">
+            <span>Novembro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-10">
+            <span>Outubro 2025</span>
+          </button>
+          <button class="month-btn" data-month="2025-09">
+            <span>Setembro 2025</span>
+          </button>
           <button class="month-btn" data-month="2025-08">
             <span>Agosto 2025</span>
           </button>
           <button class="month-btn" data-month="2025-07">
             <span>Julho 2025</span>
           </button>
-          <button class="month-btn" data-month="2025-06">
-            <span>Junho 2025</span>
-          </button>
-          <button class="month-btn" data-month="2025-05">
-            <span>Maio 2025</span>
-          </button>
         </div>
 
         <div id="monthlyLoading" class="loading" style="display: none;">
-          Carregando análise mensal
+          Carregando análise mensal de BIG Points
         </div>
         
         <div id="errorMessage" class="error-message" style="display: none;"></div>
@@ -749,11 +727,11 @@
           <table class="users-table" id="usersTable">
             <thead>
               <tr>
-                <th>👤 Usuário & E-mail</th>
-                <th>📊 Total no Mês (GB)</th>
-                <th>📅 Dias Ativos</th>
-                <th>📈 Média Diária (MB)</th>
-                <th>💰 Carteira</th>
+                <th>E-mail</th>
+                <th>BIG Points no Mês</th>
+                <th>Dias Ativos</th>
+                <th>Média Diária</th>
+                <th>Endereço da Carteira</th>
               </tr>
             </thead>
             <tbody id="usersTableBody">
@@ -765,7 +743,7 @@
         <!-- Gráfico Mensal -->
         <div class="chart-container" id="chartContainer" style="display: none;">
           <h3 class="chart-title">
-            📊 Evolução Diária - <span id="chartMonthTitle">Agosto 2025</span>
+            Evolução Diária de BIG Points - <span id="chartMonthTitle">Setembro 2025</span>
           </h3>
           <div class="chart-wrapper">
             <canvas id="monthlyChart"></canvas>
@@ -791,9 +769,8 @@
 
     let chartInstance = null;
     let currentUser = null;
-    let selectedMonth = '2025-08';
+    let selectedMonth = '2025-09'; // Setembro como padrão
     let isAuthChecked = false;
-    let debugData = [];
 
     // Lista de emails de admin
     const ADMIN_EMAILS = [
@@ -802,39 +779,6 @@
 
     function isAdmin(email) {
       return ADMIN_EMAILS.includes(email);
-    }
-
-    function debugLog(message, data = null) {
-      const timestamp = new Date().toLocaleTimeString();
-      console.log(`[ADMIN] ${timestamp} - ${message}`, data);
-      
-      // Adicionar ao debug info
-      debugData.push({
-        time: timestamp,
-        message: message,
-        data: data
-      });
-      
-      // Manter apenas os últimos 50 logs
-      if (debugData.length > 50) {
-        debugData = debugData.slice(-50);
-      }
-      
-      updateDebugDisplay();
-    }
-
-    function updateDebugDisplay() {
-      const debugContent = document.getElementById('debugContent');
-      if (debugContent) {
-        debugContent.innerHTML = debugData.slice(-10).map(log => 
-          `[${log.time}] ${log.message}${log.data ? ': ' + JSON.stringify(log.data, null, 2) : ''}`
-        ).join('<br><br>');
-      }
-    }
-
-    function toggleDebug() {
-      const debugInfo = document.getElementById('debugInfo');
-      debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
     }
 
     function showAuthStatus(message) {
@@ -888,7 +832,7 @@
     }
 
     async function initAdminDashboard(user) {
-      debugLog("Inicializando dashboard", { email: user?.email });
+      console.log("Inicializando dashboard BIG Points");
       
       if (!user) {
         showAuthStatus("Usuário não autenticado - redirecionando...");
@@ -897,7 +841,7 @@
       }
 
       if (!isAdmin(user.email)) {
-        debugLog("Usuário não autorizado", { email: user.email });
+        console.log("Usuário não autorizado");
         showAuthStatus("Acesso negado - redirecionando...");
         setTimeout(() => window.location.href = "dashboard.html", 2000);
         return;
@@ -907,138 +851,89 @@
       document.getElementById('adminContent').style.display = 'block';
       document.getElementById('userEmail').textContent = user.email;
       
-      debugLog("Admin autorizado", { email: user.email });
       showMessage(`Bem-vindo, admin: ${user.email}`);
 
       try {
         // Log de acesso admin
         await db.collection("adminLogs").add({
-          type: "admin_access",
+          type: "admin_access_bigpoints",
           email: user.email,
           timestamp: new Date(),
           userAgent: navigator.userAgent
         });
 
-        // Aguardar um pouco para garantir que a autenticação está estável
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Carregar dados
         await loadAdminData();
         setupMonthSelector();
 
       } catch (error) {
-        debugLog("Erro na inicialização", error);
+        console.error("Erro na inicialização", error);
         showMessage(`Erro de inicialização: ${error.message}`, true);
       }
     }
 
     async function loadAdminData() {
-      debugLog("Carregando dados administrativos");
+      console.log("Carregando dados administrativos BIG Points");
       
       try {
         await loadSummaryStats();
         await loadMonthlyData(selectedMonth);
         
       } catch (error) {
-        debugLog("Erro ao carregar dados", error);
+        console.error("Erro ao carregar dados", error);
         showMessage(`Erro ao carregar: ${error.message}`, true);
       }
     }
 
     async function loadSummaryStats() {
-      debugLog("Carregando estatísticas gerais");
+      console.log("Carregando estatísticas gerais de BIG Points");
       
       try {
-        // Verificar autenticação antes de fazer consultas
         const user = await waitForAuth();
         if (!user || !isAdmin(user.email)) {
           throw new Error("Usuário não autorizado");
         }
 
-        const usersSnapshot = await db.collection("users").get();
-        const totalUsers = usersSnapshot.size;
-        let totalSharedMB = 0;
+        // Buscar todos os usuários únicos na coleção bigpoints_earnings
+        const bigPointsSnapshot = await db.collection("bigpoints_earnings").get();
+        const userEmails = new Set();
+        let totalBigPoints = 0;
         
-        debugLog(`Encontrados ${totalUsers} usuários`);
+        console.log(`Encontrados ${bigPointsSnapshot.size} registros de BIG Points`);
         
-        // Processar usuários um por vez para evitar timeout
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const userData = userDoc.data();
-            debugLog(`Processando usuário: ${userData.email || 'email não encontrado'}`);
-            
-            // Usar o campo sharedMB se existir, senão calcular
-            if (userData.sharedMB && userData.sharedMB > 0) {
-              totalSharedMB += userData.sharedMB;
-              debugLog(`Usando sharedMB existente: ${userData.sharedMB}MB`);
-            } else {
-              // Calcular das subcoleções se necessário
-              const userTotalMB = await getUserTotalSharedMB(userDoc.id);
-              totalSharedMB += userTotalMB;
-              debugLog(`Calculado da subcoleção: ${userTotalMB}MB`);
-            }
-          } catch (userError) {
-            debugLog(`Erro ao processar usuário ${userDoc.id}`, userError);
-            // Continuar com próximo usuário
+        bigPointsSnapshot.forEach(doc => {
+          const data = doc.data();
+          if (data.email) {
+            userEmails.add(data.email);
           }
-        }
+          totalBigPoints += data.earnedBIG || 0;
+        });
         
-        const totalSharedGB = (totalSharedMB / 1024).toFixed(2);
-        const avgPerUser = totalUsers > 0 ? (totalSharedMB / totalUsers).toFixed(0) : 0;
+        const totalUsers = userEmails.size;
+        const avgPerUser = totalUsers > 0 ? Math.round(totalBigPoints / totalUsers) : 0;
         
         // Calcular dados do mês
-        const monthlyMB = await getMonthlyTotal(selectedMonth);
-        const monthlyGB = (monthlyMB / 1024).toFixed(2);
+        const monthlyBigPoints = await getMonthlyBigPointsTotal(selectedMonth);
         
         // Atualizar UI
         document.getElementById("totalUsers").textContent = totalUsers;
-        document.getElementById("totalSharedGB").textContent = totalSharedGB + " GB";
-        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
-        document.getElementById("avgPerUser").textContent = avgPerUser + " MB";
-        
-        debugLog("Estatísticas atualizadas", {
-          totalUsers,
-          totalSharedGB,
-          monthlyGB,
-          avgPerUser
-        });
+        document.getElementById("totalBigPoints").textContent = totalBigPoints.toLocaleString();
+        document.getElementById("monthlyBigPoints").textContent = monthlyBigPoints.toLocaleString();
+        document.getElementById("avgPerUser").textContent = avgPerUser.toLocaleString();
         
       } catch (error) {
-        debugLog("Erro ao carregar estatísticas", error);
+        console.error("Erro ao carregar estatísticas", error);
         throw error;
       }
     }
 
-    async function getUserTotalSharedMB(uid) {
-      let totalMB = 0;
-      
-      try {
-        const dailyUsageSnapshot = await db
-          .collection("users")
-          .doc(uid)
-          .collection("dailyUsage")
-          .limit(100) // Limitar para evitar timeout
-          .get();
-        
-        dailyUsageSnapshot.forEach(doc => {
-          const data = doc.data();
-          totalMB += data.shared || 0;
-        });
-        
-      } catch (error) {
-        debugLog(`Erro ao obter total do usuário ${uid}`, error);
-      }
-      
-      return totalMB;
-    }
-
-    async function getMonthlyTotal(monthKey) {
+    async function getMonthlyBigPointsTotal(monthKey) {
       if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
-        debugLog("monthKey inválido, usando padrão", monthKey);
-        monthKey = '2025-08';
+        monthKey = '2025-09';
       }
 
-      let totalMB = 0;
+      let totalBigPoints = 0;
       
       try {
         const user = await waitForAuth();
@@ -1046,63 +941,32 @@
           throw new Error("Usuário não autorizado para consulta mensal");
         }
 
-        const usersSnapshot = await db.collection("users").get();
-        
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const userMonthlyMB = await getUserMonthlyTotal(userDoc.id, monthKey);
-            totalMB += userMonthlyMB;
-          } catch (userError) {
-            debugLog(`Erro mensal usuário ${userDoc.id}`, userError);
-          }
-        }
-        
-      } catch (error) {
-        debugLog("Erro ao calcular total mensal", error);
-      }
-      
-      return totalMB;
-    }
-
-    async function getUserMonthlyTotal(uid, monthKey) {
-      if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
-        debugLog("Parâmetros inválidos para getUserMonthlyTotal", { uid, monthKey });
-        return 0;
-      }
-
-      let totalMB = 0;
-      
-      try {
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        const dailyUsageSnapshot = await db
-          .collection("users")
-          .doc(uid)
-          .collection("dailyUsage")
-          .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
-          .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
+        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
+          .where("date", ">=", `${year}-${month}-01`)
+          .where("date", "<=", `${year}-${month}-31`)
           .get();
         
-        dailyUsageSnapshot.forEach(doc => {
+        bigPointsSnapshot.forEach(doc => {
           const data = doc.data();
-          totalMB += data.shared || 0;
+          totalBigPoints += data.earnedBIG || 0;
         });
         
       } catch (error) {
-        debugLog(`Erro mensal do usuário ${uid}`, error);
+        console.error("Erro ao calcular total mensal", error);
       }
       
-      return totalMB;
+      return totalBigPoints;
     }
 
     async function loadMonthlyData(monthKey) {
       if (!monthKey || typeof monthKey !== 'string') {
-        console.error("❌ monthKey inválido:", monthKey);
-        monthKey = '2025-08';
+        monthKey = '2025-09';
       }
 
-      debugLog(`Carregando dados mensais: ${monthKey}`);
+      console.log(`Carregando dados mensais de BIG Points: ${monthKey}`);
       
       document.getElementById("monthlyLoading").style.display = "block";
       document.getElementById("tableContainer").style.display = "none";
@@ -1114,84 +978,58 @@
           throw new Error("Usuário não autorizado");
         }
 
-        const usersSnapshot = await db.collection("users").get();
-        const monthlyUserData = [];
+        const year = monthKey.split('-')[0];
+        const month = monthKey.split('-')[1];
+        
+        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
+          .where("date", ">=", `${year}-${month}-01`)
+          .where("date", "<=", `${year}-${month}-31`)
+          .get();
+        
+        const userStats = new Map();
         let monthlyTotal = 0;
         
-        debugLog("🔍 Processando usuários...", usersSnapshot.size);
-        
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const userData = userDoc.data();
-            
-            // MELHORAMENTO: Log detalhado de cada usuário
-            debugLog(`Processando usuário ${userDoc.id}`, {
-              email: userData.email,
-              displayName: userData.displayName,
-              hasEmail: !!userData.email,
-              dataKeys: Object.keys(userData)
+        bigPointsSnapshot.forEach(doc => {
+          const data = doc.data();
+          const email = data.email;
+          const earnedBIG = data.earnedBIG || 0;
+          const date = data.date;
+          
+          if (!email) return;
+          
+          if (!userStats.has(email)) {
+            userStats.set(email, {
+              email: email,
+              totalBigPoints: 0,
+              daysActive: new Set(),
+              walletAddress: data.walletAddress || "Não configurado"
             });
-            
-            // Verificar se userData existe
-            if (!userData) {
-              debugLog(`⚠️ userData é null para ${userDoc.id}`);
-              continue;
-            }
-
-            // Tentar obter email de diferentes fontes
-            let userEmail = userData.email || userData.emailAddress || userDoc.id;
-            
-            // Se ainda não tem email, tentar buscar do Auth
-            if (!userEmail || userEmail === userDoc.id) {
-              try {
-                // Nota: Em produção, só admins podem listar usuários do Auth
-                debugLog(`Tentando obter email do Auth para ${userDoc.id}`);
-                userEmail = userDoc.id; // Usar UID como fallback
-              } catch (authError) {
-                debugLog(`Erro ao buscar no Auth: ${userDoc.id}`, authError);
-                userEmail = `user-${userDoc.id.substring(0, 8)}`;
-              }
-            }
-
-            const userStats = await getUserMonthlyStats(userDoc.id, monthKey);
-            
-            debugLog(`📊 Stats finais para ${userEmail}:`, userStats);
-            
-            const displayName = userData.displayName || userData.name || userEmail.split('@')[0] || 'Usuário';
-            
-            const userInfo = {
-              id: userDoc.id,
-              name: displayName,
-              email: userEmail,
-              totalMB: userStats.totalMB,
-              daysActive: userStats.daysActive,
-              avgDaily: userStats.avgDaily,
-              walletAddress: userData.walletAddress || "Não configurado"
-            };
-            
-            monthlyUserData.push(userInfo);
-            monthlyTotal += userStats.totalMB;
-            
-            debugLog(`✅ Usuário adicionado:`, userInfo);
-            
-          } catch (userError) {
-            debugLog(`❌ Erro ao processar usuário ${userDoc.id}`, userError);
           }
-        }
-        
-        // Ordenar por total compartilhado
-        monthlyUserData.sort((a, b) => b.totalMB - a.totalMB);
-        
-        debugLog("📋 Dados finais processados:", {
-          totalUsers: monthlyUserData.length,
-          totalMB: monthlyTotal,
-          users: monthlyUserData.map(u => ({ name: u.name, email: u.email, totalMB: u.totalMB }))
+          
+          const userStat = userStats.get(email);
+          userStat.totalBigPoints += earnedBIG;
+          if (earnedBIG > 0) {
+            userStat.daysActive.add(date);
+          }
+          
+          monthlyTotal += earnedBIG;
         });
+        
+        // Converter Map para Array e calcular médias
+        const monthlyUserData = Array.from(userStats.values()).map(user => ({
+          email: user.email,
+          totalBigPoints: user.totalBigPoints,
+          daysActive: user.daysActive.size,
+          avgDaily: user.daysActive.size > 0 ? Math.round(user.totalBigPoints / user.daysActive.size) : 0,
+          walletAddress: user.walletAddress
+        }));
+        
+        // Ordenar por total de BIG Points
+        monthlyUserData.sort((a, b) => b.totalBigPoints - a.totalBigPoints);
         
         renderUsersTable(monthlyUserData, monthlyTotal);
         
-        const monthlyGB = (monthlyTotal / 1024).toFixed(2);
-        document.getElementById("monthlySharedGB").textContent = monthlyGB + " GB";
+        document.getElementById("monthlyBigPoints").textContent = monthlyTotal.toLocaleString();
         
         await renderMonthlyChart(monthKey);
         
@@ -1199,50 +1037,12 @@
         document.getElementById("tableContainer").style.display = "block";
         document.getElementById("chartContainer").style.display = "block";
         
-        showMessage(`✅ Dados carregados: ${monthlyGB}GB de ${monthlyUserData.length} usuários`);
+        showMessage(`Dados carregados: ${monthlyTotal.toLocaleString()} BIG Points de ${monthlyUserData.length} usuários`);
         
       } catch (error) {
         document.getElementById("monthlyLoading").style.display = "none";
-        debugLog("Erro ao carregar dados mensais", error);
-        showMessage(`❌ Erro nos dados mensais: ${error.message}`, true);
-      }
-    }
-
-    async function getUserMonthlyStats(uid, monthKey) {
-      if (!uid || !monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
-        debugLog("Parâmetros inválidos para getUserMonthlyStats", { uid, monthKey });
-        return { totalMB: 0, daysActive: 0, avgDaily: 0 };
-      }
-
-      let totalMB = 0;
-      let daysActive = 0;
-      
-      try {
-        const year = monthKey.split('-')[0];
-        const month = monthKey.split('-')[1];
-        
-        const dailyUsageSnapshot = await db
-          .collection("users")
-          .doc(uid)
-          .collection("dailyUsage")
-          .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
-          .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
-          .get();
-        
-        dailyUsageSnapshot.forEach(doc => {
-          const data = doc.data();
-          const shared = data.shared || 0;
-          totalMB += shared;
-          if (shared > 0) daysActive++;
-        });
-        
-        const avgDaily = daysActive > 0 ? (totalMB / daysActive).toFixed(1) : 0;
-        
-        return { totalMB, daysActive, avgDaily };
-        
-      } catch (error) {
-        debugLog(`Erro stats usuário ${uid}`, error);
-        return { totalMB: 0, daysActive: 0, avgDaily: 0 };
+        console.error("Erro ao carregar dados mensais", error);
+        showMessage(`Erro nos dados mensais: ${error.message}`, true);
       }
     }
 
@@ -1250,67 +1050,45 @@
       const tbody = document.getElementById("usersTableBody");
       tbody.innerHTML = "";
       
-      debugLog("🎨 Renderizando tabela", { 
-        usuariosRecebidos: userData.length,
-        primeiroUsuario: userData[0] || null
-      });
-      
       if (!userData || userData.length === 0) {
         const row = tbody.insertRow();
         row.innerHTML = `
           <td colspan="5" style="text-align: center; padding: 2rem; color: #ccc;">
-            📭 Nenhum usuário encontrado para este mês
+            Nenhum usuário encontrado para este mês
           </td>
         `;
         return;
       }
       
       userData.forEach((user, index) => {
-        debugLog(`Renderizando usuário ${index}:`, user);
-        
         const row = tbody.insertRow();
         
-        // CORREÇÃO PRINCIPAL: Estrutura HTML mais clara para o e-mail
         row.innerHTML = `
-          <td class="user-info">
-            <div class="user-name">${user.name || 'Nome não disponível'}</div>
-            <div class="user-email">📧 ${user.email || 'Email não disponível'}</div>
-          </td>
-          <td class="shared-amount">${(user.totalMB / 1024).toFixed(3)}</td>
+          <td class="user-email">${user.email || 'Email não disponível'}</td>
+          <td class="bigpoints-amount">${user.totalBigPoints.toLocaleString()}</td>
           <td class="days-active">${user.daysActive} dias</td>
-          <td>${user.avgDaily} MB</td>
-          <td style="font-family: monospace; font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; color: #f39c12;">
-            ${user.walletAddress && user.walletAddress !== 'Não configurado' && user.walletAddress.length > 20 ? 
-              user.walletAddress.substring(0, 20) + '...' : 
-              user.walletAddress}
-          </td>
+          <td>${user.avgDaily.toLocaleString()}</td>
+          <td class="wallet-address">${user.walletAddress}</td>
         `;
-        
-        debugLog(`✅ Linha ${index} renderizada com email: ${user.email}`);
       });
       
       // Linha de total
       const totalRow = tbody.insertRow();
       totalRow.className = "total-row";
       totalRow.innerHTML = `
-        <td><strong>📊 TOTAL DO MÊS</strong></td>
-        <td><strong>${(monthlyTotal / 1024).toFixed(3)} GB</strong></td>
+        <td><strong>TOTAL DO MÊS</strong></td>
+        <td><strong>${monthlyTotal.toLocaleString()}</strong></td>
         <td><strong>${userData.length} usuários</strong></td>
-        <td><strong>${userData.length > 0 ? (monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0) || 1).toFixed(1) : 0} MB</strong></td>
+        <td><strong>${userData.length > 0 ? Math.round(monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0) || 1).toLocaleString() : 0}</strong></td>
         <td><strong>-</strong></td>
       `;
-      
-      debugLog("✅ Tabela renderizada completamente");
     }
 
     async function renderMonthlyChart(monthKey) {
       if (!monthKey || typeof monthKey !== 'string') {
-        debugLog("monthKey inválido para gráfico", monthKey);
         return;
       }
 
-      debugLog("Renderizando gráfico mensal para:", monthKey);
-      
       const ctx = document.getElementById("monthlyChart").getContext('2d');
       
       if (chartInstance) {
@@ -1318,7 +1096,7 @@
       }
 
       try {
-        const dailyTotals = await getDailyTotalsForMonth(monthKey);
+        const dailyTotals = await getDailyBigPointsForMonth(monthKey);
         
         const sortedDates = Object.keys(dailyTotals).sort();
         const labels = sortedDates.map(date => {
@@ -1326,19 +1104,17 @@
           return parts.length >= 3 ? parts[2] : date;
         });
         
-        const values = sortedDates.map(date => 
-          (dailyTotals[date] / 1024).toFixed(3)
-        );
+        const values = sortedDates.map(date => dailyTotals[date] || 0);
 
         chartInstance = new Chart(ctx, {
           type: "bar",
           data: {
             labels: labels,
             datasets: [{
-              label: "GB Compartilhados",
+              label: "BIG Points",
               data: values,
-              backgroundColor: "rgba(255,107,53,0.7)",
-              borderColor: "#FF6B35",
+              backgroundColor: "rgba(243, 156, 18, 0.7)",
+              borderColor: "#f39c12",
               borderWidth: 2,
               borderRadius: 8,
               borderSkipped: false,
@@ -1358,11 +1134,11 @@
                 backgroundColor: 'rgba(0, 0, 0, 0.9)',
                 titleColor: '#fff',
                 bodyColor: '#fff',
-                borderColor: '#FF6B35',
+                borderColor: '#f39c12',
                 borderWidth: 2,
                 cornerRadius: 10,
                 callbacks: {
-                  label: ctx => `${ctx.parsed.y} GB compartilhados`
+                  label: ctx => `${ctx.parsed.y.toLocaleString()} BIG Points`
                 }
               }
             },
@@ -1384,7 +1160,10 @@
                 },
                 ticks: { 
                   color: '#f0f0f0',
-                  font: { weight: '500' }
+                  font: { weight: '500' },
+                  callback: function(value) {
+                    return value.toLocaleString();
+                  }
                 },
                 beginAtZero: true
               }
@@ -1393,13 +1172,12 @@
         });
         
       } catch (error) {
-        debugLog("Erro ao renderizar gráfico", error);
+        console.error("Erro ao renderizar gráfico", error);
       }
     }
 
-    async function getDailyTotalsForMonth(monthKey) {
+    async function getDailyBigPointsForMonth(monthKey) {
       if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
-        debugLog("monthKey inválido para totais diários", monthKey);
         return {};
       }
 
@@ -1409,35 +1187,27 @@
         const user = await waitForAuth();
         if (!user || !isAdmin(user.email)) return dailyTotals;
 
-        const usersSnapshot = await db.collection("users").get();
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const dailyUsageSnapshot = await userDoc.ref
-              .collection("dailyUsage")
-              .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
-              .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
-              .get();
-            
-            dailyUsageSnapshot.forEach(doc => {
-              const data = doc.data();
-              const dateKey = doc.id;
-              const shared = data.shared || 0;
-              
-              if (!dailyTotals[dateKey]) {
-                dailyTotals[dateKey] = 0;
-              }
-              dailyTotals[dateKey] += shared;
-            });
-          } catch (userError) {
-            debugLog(`Erro dados diários usuário ${userDoc.id}`, userError);
+        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
+          .where("date", ">=", `${year}-${month}-01`)
+          .where("date", "<=", `${year}-${month}-31`)
+          .get();
+        
+        bigPointsSnapshot.forEach(doc => {
+          const data = doc.data();
+          const dateKey = data.date;
+          const earnedBIG = data.earnedBIG || 0;
+          
+          if (!dailyTotals[dateKey]) {
+            dailyTotals[dateKey] = 0;
           }
-        }
+          dailyTotals[dateKey] += earnedBIG;
+        });
         
       } catch (error) {
-        debugLog("Erro ao obter totais diários", error);
+        console.error("Erro ao obter totais diários", error);
       }
       
       return dailyTotals;
@@ -1446,7 +1216,7 @@
     function setupMonthSelector() {
       const monthButtons = document.querySelectorAll('.month-btn');
       
-      // Definir mês ativo inicial
+      // Definir mês ativo inicial (setembro)
       monthButtons.forEach(btn => {
         if (btn.dataset.month === selectedMonth) {
           btn.classList.add('active');
@@ -1458,10 +1228,12 @@
           selectedMonth = btn.dataset.month;
           
           const monthNames = {
+            '2025-12': 'Dezembro 2025',
+            '2025-11': 'Novembro 2025',
+            '2025-10': 'Outubro 2025',
+            '2025-09': 'Setembro 2025',
             '2025-08': 'Agosto 2025',
-            '2025-07': 'Julho 2025',
-            '2025-06': 'Junho 2025',
-            '2025-05': 'Maio 2025'
+            '2025-07': 'Julho 2025'
           };
           document.getElementById('chartMonthTitle').textContent = monthNames[selectedMonth] || selectedMonth;
           
@@ -1473,19 +1245,19 @@
     // Event Listeners
     document.getElementById("logoutBtn").addEventListener("click", () => {
       auth.signOut().then(() => {
-        debugLog("Admin deslogado");
+        console.log("Admin deslogado");
         location.href = "index.html";
       });
     });
 
     document.getElementById("refreshBtn").addEventListener("click", async () => {
-      showMessage("🔄 Atualizando dados...");
+      showMessage("Atualizando dados de BIG Points...");
       await loadAdminData();
     });
 
     // Autenticação principal
     firebase.auth().onAuthStateChanged(user => {
-      debugLog("Estado de auth mudou", { user: user?.email });
+      console.log("Estado de auth mudou");
       
       if (user) {
         showAuthStatus(`Usuário autenticado: ${user.email}`);
@@ -1498,78 +1270,17 @@
       }
     });
 
-    // Função de debug melhorada
-    window.testFirestorePermissions = async function() {
-      if (!currentUser) {
-        console.log("❌ Nenhum usuário logado");
-        return;
-      }
-      
-      console.log("🔍 Testando permissões Firestore...");
-      console.log("👤 Usuário:", currentUser.email);
-      console.log("🔑 Admin?", isAdmin(currentUser.email));
-      
-      try {
-        // Teste 1: Listar usuários
-        console.log("\n📝 Teste 1: Listar coleção users");
-        const usersTest = await db.collection("users").limit(5).get();
-        console.log("✅ Sucesso - Usuários encontrados:", usersTest.size);
-        
-        usersTest.forEach((doc, index) => {
-          const userData = doc.data();
-          console.log(`👤 Usuário ${index + 1}:`, {
-            id: doc.id,
-            email: userData.email,
-            displayName: userData.displayName,
-            walletAddress: userData.walletAddress,
-            sharedMB: userData.sharedMB,
-            allFields: Object.keys(userData)
-          });
-        });
-        
-      } catch (error) {
-        console.error("❌ Erro no teste:", error.message);
-        console.error("Código:", error.code);
-      }
-    };
-
-    // Debug específico para emails
-    window.debugEmails = async function() {
-      console.log("📧 DEBUG: Verificando emails especificamente...");
-      
-      try {
-        const usersSnapshot = await db.collection("users").get();
-        console.log(`📊 Total usuários: ${usersSnapshot.size}`);
-        
-        usersSnapshot.forEach((doc, index) => {
-          const userData = doc.data();
-          console.log(`📧 Usuário ${index + 1}:`, {
-            id: doc.id,
-            email: userData.email,
-            emailExists: !!userData.email,
-            emailType: typeof userData.email,
-            displayName: userData.displayName,
-            allKeys: Object.keys(userData)
-          });
-        });
-      } catch (error) {
-        console.error("❌ Erro no debug de emails:", error);
-      }
-    };
-
     // Verificação adicional de segurança
     window.addEventListener('beforeunload', () => {
       sessionStorage.removeItem('adminAccess');
     });
 
     if (window.top !== window.self) {
-      debugLog("Página em iframe - bloqueando");
+      console.log("Página em iframe - bloqueando");
       window.top.location = window.self.location;
     }
 
-    console.log("🔧 Admin Dashboard carregado");
-    console.log("📧 Para debug de emails, execute: debugEmails()");
-    console.log("🔍 Para testar permissões, execute: testFirestorePermissions()");
+    console.log("Admin Dashboard BIG Points carregado");
   </script>
 </body>
 </html>
