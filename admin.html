@@ -1003,12 +1003,14 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
+        console.log(`Buscando dados para ${year}-${month}`);
+        
         // Buscar todos os usuários
         const usersSnapshot = await db.collection("users").get();
+        console.log(`Encontrados ${usersSnapshot.size} usuários na coleção users`);
+        
         const monthlyUserData = [];
         let monthlyTotal = 0;
-        
-        console.log(`Processando ${usersSnapshot.size} usuários...`);
         
         for (const userDoc of usersSnapshot.docs) {
           try {
@@ -1016,14 +1018,29 @@
             const userEmail = userData.email || userData.emailAddress || `user-${userDoc.id}`;
             const walletAddress = userData.walletAddress || "Não configurado";
             
-            // Buscar BIG Points do mês para este usuário
-            const bigPointsSnapshot = await db
-              .collection("users")
-              .doc(userDoc.id)
-              .collection("bigpoints_earnings")
+            console.log(`Processando usuário: ${userEmail} (${userDoc.id})`);
+            
+            // Primeiro, vamos ver se existe a subcoleção bigpoints_earnings
+            const bigPointsRef = db.collection("users").doc(userDoc.id).collection("bigpoints_earnings");
+            
+            // Buscar todos os documentos da subcoleção para debug
+            const allBigPointsSnapshot = await bigPointsRef.get();
+            console.log(`Usuário ${userEmail} tem ${allBigPointsSnapshot.size} registros de BIG Points total`);
+            
+            // Se tiver registros, vamos ver alguns exemplos
+            if (allBigPointsSnapshot.size > 0) {
+              allBigPointsSnapshot.docs.slice(0, 3).forEach(doc => {
+                console.log(`  Documento: ${doc.id}, dados:`, doc.data());
+              });
+            }
+            
+            // Agora buscar especificamente do mês
+            const bigPointsSnapshot = await bigPointsRef
               .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
               .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
               .get();
+            
+            console.log(`Usuário ${userEmail} tem ${bigPointsSnapshot.size} registros em ${monthKey}`);
             
             let userTotalBigPoints = 0;
             const activeDays = new Set();
@@ -1031,28 +1048,29 @@
             bigPointsSnapshot.forEach(doc => {
               const data = doc.data();
               const earnedBIG = data.earnedBIG || 0;
+              console.log(`  Data: ${doc.id}, BIG Points: ${earnedBIG}`);
               userTotalBigPoints += earnedBIG;
               
               if (earnedBIG > 0) {
-                activeDays.add(doc.id); // doc.id é a data (YYYY-MM-DD)
+                activeDays.add(doc.id);
               }
             });
             
             const daysActive = activeDays.size;
             const avgDaily = daysActive > 0 ? Math.round(userTotalBigPoints / daysActive) : 0;
             
-            // Só adicionar usuários que tiveram atividade no mês
-            if (userTotalBigPoints > 0) {
-              monthlyUserData.push({
-                email: userEmail,
-                totalBigPoints: userTotalBigPoints,
-                daysActive: daysActive,
-                avgDaily: avgDaily,
-                walletAddress: walletAddress
-              });
-              
-              monthlyTotal += userTotalBigPoints;
-            }
+            console.log(`Resultado para ${userEmail}: ${userTotalBigPoints} BIG Points, ${daysActive} dias ativos`);
+            
+            // Adicionar TODOS os usuários, mesmo com 0 BIG Points (para debug)
+            monthlyUserData.push({
+              email: userEmail,
+              totalBigPoints: userTotalBigPoints,
+              daysActive: daysActive,
+              avgDaily: avgDaily,
+              walletAddress: walletAddress
+            });
+            
+            monthlyTotal += userTotalBigPoints;
             
           } catch (error) {
             console.error(`Erro ao processar usuário ${userDoc.id}:`, error);
@@ -1062,7 +1080,8 @@
         // Ordenar por total de BIG Points
         monthlyUserData.sort((a, b) => b.totalBigPoints - a.totalBigPoints);
         
-        console.log(`Dados processados: ${monthlyUserData.length} usuários ativos, ${monthlyTotal} BIG Points total`);
+        console.log(`Dados finais: ${monthlyUserData.length} usuários processados, ${monthlyTotal} BIG Points total`);
+        console.log("Primeiros 5 usuários:", monthlyUserData.slice(0, 5));
         
         renderUsersTable(monthlyUserData, monthlyTotal);
         
@@ -1074,7 +1093,11 @@
         document.getElementById("tableContainer").style.display = "block";
         document.getElementById("chartContainer").style.display = "block";
         
-        showMessage(`Dados carregados: ${monthlyTotal.toLocaleString()} BIG Points de ${monthlyUserData.length} usuários`);
+        if (monthlyUserData.length > 0) {
+          showMessage(`Dados carregados: ${monthlyTotal.toLocaleString()} BIG Points de ${monthlyUserData.length} usuários`);
+        } else {
+          showMessage("Nenhum usuário encontrado. Verifique se há dados para este período.", true);
+        }
         
       } catch (error) {
         document.getElementById("monthlyLoading").style.display = "none";
@@ -1087,11 +1110,13 @@
       const tbody = document.getElementById("usersTableBody");
       tbody.innerHTML = "";
       
+      console.log("Renderizando tabela com dados:", userData);
+      
       if (!userData || userData.length === 0) {
         const row = tbody.insertRow();
         row.innerHTML = `
           <td colspan="5" style="text-align: center; padding: 2rem; color: #ccc;">
-            Nenhum usuário encontrado para este mês
+            Nenhum usuário encontrado na base de dados
           </td>
         `;
         return;
@@ -1119,6 +1144,8 @@
         <td><strong>${userData.length > 0 ? Math.round(monthlyTotal / userData.reduce((sum, u) => sum + u.daysActive, 0) || 1).toLocaleString() : 0}</strong></td>
         <td><strong>-</strong></td>
       `;
+      
+      console.log("Tabela renderizada com sucesso");
     }
 
     async function renderMonthlyChart(monthKey) {
