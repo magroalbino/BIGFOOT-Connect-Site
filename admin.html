@@ -895,22 +895,31 @@
           throw new Error("Usuário não autorizado");
         }
 
-        // Buscar todos os usuários únicos na coleção bigpoints_earnings
-        const bigPointsSnapshot = await db.collection("bigpoints_earnings").get();
-        const userEmails = new Set();
+        // Buscar todos os usuários da coleção users
+        const usersSnapshot = await db.collection("users").get();
+        const totalUsers = usersSnapshot.size;
         let totalBigPoints = 0;
         
-        console.log(`Encontrados ${bigPointsSnapshot.size} registros de BIG Points`);
+        console.log(`Encontrados ${totalUsers} usuários`);
         
-        bigPointsSnapshot.forEach(doc => {
-          const data = doc.data();
-          if (data.email) {
-            userEmails.add(data.email);
+        // Para cada usuário, somar todos os BIG Points da subcoleção bigpoints_earnings
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            const bigPointsSnapshot = await db
+              .collection("users")
+              .doc(userDoc.id)
+              .collection("bigpoints_earnings")
+              .get();
+            
+            bigPointsSnapshot.forEach(doc => {
+              const data = doc.data();
+              totalBigPoints += data.earnedBIG || 0;
+            });
+          } catch (error) {
+            console.error(`Erro ao processar usuário ${userDoc.id}:`, error);
           }
-          totalBigPoints += data.earnedBIG || 0;
-        });
+        }
         
-        const totalUsers = userEmails.size;
         const avgPerUser = totalUsers > 0 ? Math.round(totalBigPoints / totalUsers) : 0;
         
         // Calcular dados do mês
@@ -944,15 +953,28 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
-          .where("date", ">=", `${year}-${month}-01`)
-          .where("date", "<=", `${year}-${month}-31`)
-          .get();
+        // Buscar todos os usuários
+        const usersSnapshot = await db.collection("users").get();
         
-        bigPointsSnapshot.forEach(doc => {
-          const data = doc.data();
-          totalBigPoints += data.earnedBIG || 0;
-        });
+        // Para cada usuário, buscar os BIG Points do mês específico
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            const bigPointsSnapshot = await db
+              .collection("users")
+              .doc(userDoc.id)
+              .collection("bigpoints_earnings")
+              .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
+              .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
+              .get();
+            
+            bigPointsSnapshot.forEach(doc => {
+              const data = doc.data();
+              totalBigPoints += data.earnedBIG || 0;
+            });
+          } catch (error) {
+            console.error(`Erro ao processar usuário ${userDoc.id} no mês ${monthKey}:`, error);
+          }
+        }
         
       } catch (error) {
         console.error("Erro ao calcular total mensal", error);
@@ -981,51 +1003,66 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
-          .where("date", ">=", `${year}-${month}-01`)
-          .where("date", "<=", `${year}-${month}-31`)
-          .get();
-        
-        const userStats = new Map();
+        // Buscar todos os usuários
+        const usersSnapshot = await db.collection("users").get();
+        const monthlyUserData = [];
         let monthlyTotal = 0;
         
-        bigPointsSnapshot.forEach(doc => {
-          const data = doc.data();
-          const email = data.email;
-          const earnedBIG = data.earnedBIG || 0;
-          const date = data.date;
-          
-          if (!email) return;
-          
-          if (!userStats.has(email)) {
-            userStats.set(email, {
-              email: email,
-              totalBigPoints: 0,
-              daysActive: new Set(),
-              walletAddress: data.walletAddress || "Não configurado"
-            });
-          }
-          
-          const userStat = userStats.get(email);
-          userStat.totalBigPoints += earnedBIG;
-          if (earnedBIG > 0) {
-            userStat.daysActive.add(date);
-          }
-          
-          monthlyTotal += earnedBIG;
-        });
+        console.log(`Processando ${usersSnapshot.size} usuários...`);
         
-        // Converter Map para Array e calcular médias
-        const monthlyUserData = Array.from(userStats.values()).map(user => ({
-          email: user.email,
-          totalBigPoints: user.totalBigPoints,
-          daysActive: user.daysActive.size,
-          avgDaily: user.daysActive.size > 0 ? Math.round(user.totalBigPoints / user.daysActive.size) : 0,
-          walletAddress: user.walletAddress
-        }));
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            const userData = userDoc.data();
+            const userEmail = userData.email || userData.emailAddress || `user-${userDoc.id}`;
+            const walletAddress = userData.walletAddress || "Não configurado";
+            
+            // Buscar BIG Points do mês para este usuário
+            const bigPointsSnapshot = await db
+              .collection("users")
+              .doc(userDoc.id)
+              .collection("bigpoints_earnings")
+              .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
+              .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
+              .get();
+            
+            let userTotalBigPoints = 0;
+            const activeDays = new Set();
+            
+            bigPointsSnapshot.forEach(doc => {
+              const data = doc.data();
+              const earnedBIG = data.earnedBIG || 0;
+              userTotalBigPoints += earnedBIG;
+              
+              if (earnedBIG > 0) {
+                activeDays.add(doc.id); // doc.id é a data (YYYY-MM-DD)
+              }
+            });
+            
+            const daysActive = activeDays.size;
+            const avgDaily = daysActive > 0 ? Math.round(userTotalBigPoints / daysActive) : 0;
+            
+            // Só adicionar usuários que tiveram atividade no mês
+            if (userTotalBigPoints > 0) {
+              monthlyUserData.push({
+                email: userEmail,
+                totalBigPoints: userTotalBigPoints,
+                daysActive: daysActive,
+                avgDaily: avgDaily,
+                walletAddress: walletAddress
+              });
+              
+              monthlyTotal += userTotalBigPoints;
+            }
+            
+          } catch (error) {
+            console.error(`Erro ao processar usuário ${userDoc.id}:`, error);
+          }
+        }
         
         // Ordenar por total de BIG Points
         monthlyUserData.sort((a, b) => b.totalBigPoints - a.totalBigPoints);
+        
+        console.log(`Dados processados: ${monthlyUserData.length} usuários ativos, ${monthlyTotal} BIG Points total`);
         
         renderUsersTable(monthlyUserData, monthlyTotal);
         
@@ -1190,21 +1227,34 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        const bigPointsSnapshot = await db.collection("bigpoints_earnings")
-          .where("date", ">=", `${year}-${month}-01`)
-          .where("date", "<=", `${year}-${month}-31`)
-          .get();
+        // Buscar todos os usuários
+        const usersSnapshot = await db.collection("users").get();
         
-        bigPointsSnapshot.forEach(doc => {
-          const data = doc.data();
-          const dateKey = data.date;
-          const earnedBIG = data.earnedBIG || 0;
-          
-          if (!dailyTotals[dateKey]) {
-            dailyTotals[dateKey] = 0;
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            // Para cada usuário, buscar os BIG Points do mês específico
+            const bigPointsSnapshot = await db
+              .collection("users")
+              .doc(userDoc.id)
+              .collection("bigpoints_earnings")
+              .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
+              .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
+              .get();
+            
+            bigPointsSnapshot.forEach(doc => {
+              const data = doc.data();
+              const dateKey = doc.id; // doc.id é a data (YYYY-MM-DD)
+              const earnedBIG = data.earnedBIG || 0;
+              
+              if (!dailyTotals[dateKey]) {
+                dailyTotals[dateKey] = 0;
+              }
+              dailyTotals[dateKey] += earnedBIG;
+            });
+          } catch (error) {
+            console.error(`Erro ao processar usuário ${userDoc.id} para gráfico:`, error);
           }
-          dailyTotals[dateKey] += earnedBIG;
-        });
+        }
         
       } catch (error) {
         console.error("Erro ao obter totais diários", error);
