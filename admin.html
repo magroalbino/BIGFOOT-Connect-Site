@@ -632,7 +632,7 @@
   <header>
     <div class="header-content">
       <div class="logo">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FF6B35'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='Arial Black' font-size='40' font-weight='bold'%3EB%3C/text%3E%3C/svg%3E" alt="BIGFOOT Logo" />
+        <img src="images/logo.png" alt="BIGFOOT Logo" />
         <span class="logo-text">BIGFOOT Connect</span>
       </div>
       
@@ -898,16 +898,38 @@
         
         console.log(`Total de usuários: ${totalUsers}`);
         
-        // Para o resumo geral, usar dados em cache do mês se já carregados
+        // Calcular o total geral de BIG Points de todos os tempos
+        let totalBigPoints = 0;
+        for (const userDoc of usersSnapshot.docs) {
+          try {
+            const bigPointsSnapshot = await db
+              .collection("users")
+              .doc(userDoc.id)
+              .collection("bigpoints_earnings")
+              .get();
+            
+            bigPointsSnapshot.forEach(doc => {
+              const data = doc.data();
+              const dailyPoints = parseFloat(data.bigpoints) || 0;
+              totalBigPoints += dailyPoints;
+            });
+          } catch (error) {
+            console.error(`Erro ao processar usuário ${userDoc.id}:`, error);
+          }
+        }
+        
+        const avgPerUser = totalUsers > 0 ? Math.round(totalBigPoints / totalUsers) : 0;
+        
+        // Para o mês atual
         const monthlyBigPoints = await getMonthlyBigPointsTotal(selectedMonth);
         
-        // Atualizar UI sem fazer muitas leituras
+        // Atualizar UI
         document.getElementById("totalUsers").textContent = totalUsers;
-        document.getElementById("totalBigPoints").textContent = "...";
+        document.getElementById("totalBigPoints").textContent = totalBigPoints.toLocaleString();
         document.getElementById("monthlyBigPoints").textContent = monthlyBigPoints.toLocaleString();
-        document.getElementById("avgPerUser").textContent = "...";
+        document.getElementById("avgPerUser").textContent = avgPerUser.toLocaleString();
         
-        showMessage("Estatísticas carregadas. Use 'Atualizar Dados' para atualizar totais gerais.");
+        showMessage("Estatísticas carregadas com sucesso!");
         
       } catch (error) {
         console.error("Erro ao carregar estatísticas", error);
