@@ -1180,12 +1180,24 @@
         
         const values = sortedDates.map(date => dailyTotals[date] || 0);
 
+        console.log("Dados do gráfico:", { labels, values, totalDias: labels.length });
+        
+        if (labels.length === 0 || values.every(v => v === 0)) {
+          console.warn("Gráfico sem dados válidos");
+          document.querySelector('.chart-wrapper').innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 1.1rem;">
+              <p>Nenhum dado de BIG Points para exibir no gráfico deste mês</p>
+            </div>
+          `;
+          return;
+        }
+
         chartInstance = new Chart(ctx, {
           type: "bar",
           data: {
             labels: labels,
             datasets: [{
-              label: "BIG Points",
+              label: "BIG Points Diários",
               data: values,
               backgroundColor: "rgba(243, 156, 18, 0.7)",
               borderColor: "#f39c12",
@@ -1199,6 +1211,7 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
+                display: true,
                 labels: {
                   color: '#f0f0f0',
                   font: { size: 14, weight: '600' }
@@ -1212,7 +1225,7 @@
                 borderWidth: 2,
                 cornerRadius: 10,
                 callbacks: {
-                  label: ctx => `${ctx.parsed.y.toLocaleString()} BIG Points`
+                  label: ctx => `${ctx.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} BIG Points`
                 }
               }
             },
@@ -1236,7 +1249,7 @@
                   color: '#f0f0f0',
                   font: { weight: '500' },
                   callback: function(value) {
-                    return value.toLocaleString();
+                    return value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
                   }
                 },
                 beginAtZero: true
@@ -1244,6 +1257,8 @@
             }
           }
         });
+        
+        console.log("Gráfico renderizado com sucesso");
         
       } catch (error) {
         console.error("Erro ao renderizar gráfico", error);
