@@ -25,7 +25,6 @@
       overflow-x: hidden;
     }
 
-    /* Animated background */
     body::before {
       content: '';
       position: fixed;
@@ -46,7 +45,6 @@
       50% { opacity: 0.6; }
     }
 
-    /* Header modernizado */
     header {
       background: rgba(15, 15, 15, 0.95);
       backdrop-filter: blur(20px);
@@ -182,7 +180,6 @@
       z-index: 1;
     }
 
-    /* Main content */
     main {
       max-width: 1600px;
       margin: 0 auto;
@@ -212,7 +209,6 @@
       opacity: 0.8;
     }
 
-    /* Cards de resumo melhorados */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -296,7 +292,6 @@
       z-index: 2;
     }
 
-    /* Botão de atualização melhorado */
     .refresh-btn {
       background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
       border: none;
@@ -334,7 +329,6 @@
       box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
     }
 
-    /* Seção de dados mensais */
     .monthly-data {
       background: rgba(26, 26, 26, 0.8);
       backdrop-filter: blur(20px);
@@ -419,7 +413,6 @@
       z-index: 1;
     }
 
-    /* Tabela melhorada */
     .table-container {
       background: rgba(15, 15, 15, 0.8);
       border-radius: 20px;
@@ -507,7 +500,6 @@
       padding: 1.5rem 1rem;
     }
 
-    /* Loading e mensagens */
     .loading {
       text-align: center;
       color: #FF6B35;
@@ -556,7 +548,6 @@
       color: #3498db;
     }
 
-    /* Gráfico melhorado */
     .chart-container {
       background: rgba(15, 15, 15, 0.8);
       border-radius: 20px;
@@ -583,7 +574,6 @@
       border: 1px solid rgba(255, 107, 53, 0.1);
     }
 
-    /* Responsividade */
     @media (max-width: 768px) {
       .header-content {
         padding: 1rem;
@@ -669,7 +659,6 @@
         <p class="page-subtitle">Gerenciamento completo dos BIG Points da rede BIGFOOT Connect</p>
       </div>
 
-      <!-- Resumo Geral -->
       <div class="summary-grid">
         <div class="summary-card">
           <span class="summary-value" id="totalUsers">0</span>
@@ -691,7 +680,6 @@
 
       <button class="refresh-btn" id="refreshBtn">Atualizar Dados</button>
 
-      <!-- Dados Mensais -->
       <div class="monthly-data">
         <h2>Análise Mensal de BIG Points</h2>
         
@@ -735,12 +723,10 @@
               </tr>
             </thead>
             <tbody id="usersTableBody">
-              <!-- Dados serão inseridos aqui -->
             </tbody>
           </table>
         </div>
 
-        <!-- Gráfico Mensal -->
         <div class="chart-container" id="chartContainer" style="display: none;">
           <h3 class="chart-title">
             Evolução Diária de BIG Points - <span id="chartMonthTitle">Setembro 2025</span>
@@ -769,10 +755,14 @@
 
     let chartInstance = null;
     let currentUser = null;
-    let selectedMonth = '2025-09'; // Setembro como padrão
+    let selectedMonth = '2025-09';
     let isAuthChecked = false;
 
-    // Lista de emails de admin
+    // Cache global para reduzir leituras
+    let usersCache = null;
+    let cacheTimestamp = null;
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
     const ADMIN_EMAILS = [
       'fabricioricard23@gmail.com'
     ];
@@ -811,7 +801,6 @@
       }, 5000);
     }
 
-    // Aguardar autenticação completa antes de fazer qualquer consulta
     function waitForAuth() {
       return new Promise((resolve) => {
         if (isAuthChecked && currentUser) {
@@ -854,7 +843,6 @@
       showMessage(`Bem-vindo, admin: ${user.email}`);
 
       try {
-        // Log de acesso admin
         await db.collection("adminLogs").add({
           type: "admin_access_bigpoints",
           email: user.email,
@@ -895,41 +883,31 @@
           throw new Error("Usuário não autorizado");
         }
 
-        // Buscar todos os usuários da coleção users
-        const usersSnapshot = await db.collection("users").get();
-        const totalUsers = usersSnapshot.size;
-        let totalBigPoints = 0;
-        
-        console.log(`Encontrados ${totalUsers} usuários`);
-        
-        // Para cada usuário, somar todos os BIG Points da subcoleção bigpoints_earnings
-        for (const userDoc of usersSnapshot.docs) {
-          try {
-            const bigPointsSnapshot = await db
-              .collection("users")
-              .doc(userDoc.id)
-              .collection("bigpoints_earnings")
-              .get();
-            
-            bigPointsSnapshot.forEach(doc => {
-              const data = doc.data();
-              totalBigPoints += data.earnedBIG || 0;
-            });
-          } catch (error) {
-            console.error(`Erro ao processar usuário ${userDoc.id}:`, error);
-          }
+        // Usar cache se disponível
+        let usersSnapshot;
+        const now = Date.now();
+        if (usersCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+          usersSnapshot = usersCache;
+        } else {
+          usersSnapshot = await db.collection("users").get();
+          usersCache = usersSnapshot;
+          cacheTimestamp = now;
         }
         
-        const avgPerUser = totalUsers > 0 ? Math.round(totalBigPoints / totalUsers) : 0;
+        const totalUsers = usersSnapshot.size;
         
-        // Calcular dados do mês
+        console.log(`Total de usuários: ${totalUsers}`);
+        
+        // Para o resumo geral, usar dados em cache do mês se já carregados
         const monthlyBigPoints = await getMonthlyBigPointsTotal(selectedMonth);
         
-        // Atualizar UI
+        // Atualizar UI sem fazer muitas leituras
         document.getElementById("totalUsers").textContent = totalUsers;
-        document.getElementById("totalBigPoints").textContent = totalBigPoints.toLocaleString();
+        document.getElementById("totalBigPoints").textContent = "...";
         document.getElementById("monthlyBigPoints").textContent = monthlyBigPoints.toLocaleString();
-        document.getElementById("avgPerUser").textContent = avgPerUser.toLocaleString();
+        document.getElementById("avgPerUser").textContent = "...";
+        
+        showMessage("Estatísticas carregadas. Use 'Atualizar Dados' para atualizar totais gerais.");
         
       } catch (error) {
         console.error("Erro ao carregar estatísticas", error);
@@ -953,10 +931,17 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        // Buscar todos os usuários
-        const usersSnapshot = await db.collection("users").get();
+        // Usar cache se disponível
+        let usersSnapshot;
+        const now = Date.now();
+        if (usersCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+          usersSnapshot = usersCache;
+        } else {
+          usersSnapshot = await db.collection("users").get();
+          usersCache = usersSnapshot;
+          cacheTimestamp = now;
+        }
         
-        // Para cada usuário, buscar os BIG Points do mês específico
         for (const userDoc of usersSnapshot.docs) {
           try {
             const bigPointsSnapshot = await db
@@ -969,7 +954,8 @@
             
             bigPointsSnapshot.forEach(doc => {
               const data = doc.data();
-              totalBigPoints += data.earnedBIG || 0;
+              const dailyPoints = parseFloat(data.bigpoints) || 0;
+              totalBigPoints += dailyPoints;
             });
           } catch (error) {
             console.error(`Erro ao processar usuário ${userDoc.id} no mês ${monthKey}:`, error);
@@ -1005,12 +991,26 @@
         
         console.log(`Buscando dados para ${year}-${month}`);
         
-        // Buscar todos os usuários
-        const usersSnapshot = await db.collection("users").get();
+        // Usar cache de usuários se disponível
+        let usersSnapshot;
+        const now = Date.now();
+        if (usersCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+          console.log("Usando cache de usuários");
+          usersSnapshot = usersCache;
+        } else {
+          console.log("Buscando usuários do Firestore");
+          usersSnapshot = await db.collection("users").get();
+          usersCache = usersSnapshot;
+          cacheTimestamp = now;
+        }
+        
         console.log(`Encontrados ${usersSnapshot.size} usuários na coleção users`);
         
         const monthlyUserData = [];
         let monthlyTotal = 0;
+        
+        // Processar apenas os primeiros 3 usuários com logs detalhados
+        let debugCount = 0;
         
         for (const userDoc of usersSnapshot.docs) {
           try {
@@ -1018,40 +1018,47 @@
             const userEmail = userData.email || userData.emailAddress || `user-${userDoc.id}`;
             const walletAddress = userData.walletAddress || "Não configurado";
             
-            console.log(`Processando usuário: ${userEmail} (${userDoc.id})`);
-            
-            // Primeiro, vamos ver se existe a subcoleção bigpoints_earnings
             const bigPointsRef = db.collection("users").doc(userDoc.id).collection("bigpoints_earnings");
             
-            // Buscar todos os documentos da subcoleção para debug
-            const allBigPointsSnapshot = await bigPointsRef.get();
-            console.log(`Usuário ${userEmail} tem ${allBigPointsSnapshot.size} registros de BIG Points total`);
-            
-            // Se tiver registros, vamos ver alguns exemplos
-            if (allBigPointsSnapshot.size > 0) {
-              allBigPointsSnapshot.docs.slice(0, 3).forEach(doc => {
-                console.log(`  Documento: ${doc.id}, dados:`, doc.data());
-              });
+            // Log detalhado apenas para os primeiros 3 usuários
+            if (debugCount < 3) {
+              console.log(`\n=== DEBUG USUÁRIO ${debugCount + 1}: ${userEmail} ===`);
+              
+              // Buscar UM documento de exemplo para ver a estrutura
+              const sampleDoc = await bigPointsRef.limit(1).get();
+              if (!sampleDoc.empty) {
+                const sample = sampleDoc.docs[0];
+                console.log("Estrutura do documento:", sample.id);
+                console.log("Dados completos:", JSON.stringify(sample.data(), null, 2));
+                console.log("Campos disponíveis:", Object.keys(sample.data()));
+              } else {
+                console.log("Nenhum documento encontrado para este usuário");
+              }
+              debugCount++;
             }
             
-            // Agora buscar especificamente do mês
+            // Buscar documentos do mês específico
             const bigPointsSnapshot = await bigPointsRef
               .where(firebase.firestore.FieldPath.documentId(), '>=', `${year}-${month}-01`)
               .where(firebase.firestore.FieldPath.documentId(), '<=', `${year}-${month}-31`)
               .get();
-            
-            console.log(`Usuário ${userEmail} tem ${bigPointsSnapshot.size} registros em ${monthKey}`);
             
             let userTotalBigPoints = 0;
             const activeDays = new Set();
             
             bigPointsSnapshot.forEach(doc => {
               const data = doc.data();
-              const earnedBIG = data.earnedBIG || 0;
-              console.log(`  Data: ${doc.id}, BIG Points: ${earnedBIG}`);
-              userTotalBigPoints += earnedBIG;
               
-              if (earnedBIG > 0) {
+              // Campo correto: bigpoints
+              const dailyPoints = parseFloat(data.bigpoints) || 0;
+              
+              if (debugCount <= 3) {
+                console.log(`  ${doc.id}: ${dailyPoints} pontos (bigpoints: ${data.bigpoints})`);
+              }
+              
+              userTotalBigPoints += dailyPoints;
+              
+              if (dailyPoints > 0) {
                 activeDays.add(doc.id);
               }
             });
@@ -1059,9 +1066,10 @@
             const daysActive = activeDays.size;
             const avgDaily = daysActive > 0 ? Math.round(userTotalBigPoints / daysActive) : 0;
             
-            console.log(`Resultado para ${userEmail}: ${userTotalBigPoints} BIG Points, ${daysActive} dias ativos`);
+            if (userTotalBigPoints > 0 || debugCount <= 3) {
+              console.log(`${userEmail}: ${userTotalBigPoints} BIG Points, ${daysActive} dias ativos`);
+            }
             
-            // Adicionar TODOS os usuários, mesmo com 0 BIG Points (para debug)
             monthlyUserData.push({
               email: userEmail,
               totalBigPoints: userTotalBigPoints,
@@ -1080,8 +1088,10 @@
         // Ordenar por total de BIG Points
         monthlyUserData.sort((a, b) => b.totalBigPoints - a.totalBigPoints);
         
-        console.log(`Dados finais: ${monthlyUserData.length} usuários processados, ${monthlyTotal} BIG Points total`);
-        console.log("Primeiros 5 usuários:", monthlyUserData.slice(0, 5));
+        console.log(`\n=== RESUMO ===`);
+        console.log(`Total de usuários: ${monthlyUserData.length}`);
+        console.log(`Total de BIG Points: ${monthlyTotal}`);
+        console.log("Top 3 usuários:", monthlyUserData.slice(0, 3));
         
         renderUsersTable(monthlyUserData, monthlyTotal);
         
@@ -1093,10 +1103,10 @@
         document.getElementById("tableContainer").style.display = "block";
         document.getElementById("chartContainer").style.display = "block";
         
-        if (monthlyUserData.length > 0) {
-          showMessage(`Dados carregados: ${monthlyTotal.toLocaleString()} BIG Points de ${monthlyUserData.length} usuários`);
+        if (monthlyTotal > 0) {
+          showMessage(`Dados carregados: ${monthlyTotal.toLocaleString()} BIG Points de ${monthlyUserData.filter(u => u.totalBigPoints > 0).length} usuários ativos`);
         } else {
-          showMessage("Nenhum usuário encontrado. Verifique se há dados para este período.", true);
+          showMessage("Nenhum BIG Point registrado neste período. Verifique a estrutura dos dados no console.", true);
         }
         
       } catch (error) {
@@ -1254,12 +1264,19 @@
         const year = monthKey.split('-')[0];
         const month = monthKey.split('-')[1];
         
-        // Buscar todos os usuários
-        const usersSnapshot = await db.collection("users").get();
+        // Usar cache se disponível
+        let usersSnapshot;
+        const now = Date.now();
+        if (usersCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+          usersSnapshot = usersCache;
+        } else {
+          usersSnapshot = await db.collection("users").get();
+          usersCache = usersSnapshot;
+          cacheTimestamp = now;
+        }
         
         for (const userDoc of usersSnapshot.docs) {
           try {
-            // Para cada usuário, buscar os BIG Points do mês específico
             const bigPointsSnapshot = await db
               .collection("users")
               .doc(userDoc.id)
@@ -1270,13 +1287,13 @@
             
             bigPointsSnapshot.forEach(doc => {
               const data = doc.data();
-              const dateKey = doc.id; // doc.id é a data (YYYY-MM-DD)
-              const earnedBIG = data.earnedBIG || 0;
+              const dateKey = doc.id;
+              const dailyPoints = parseFloat(data.bigpoints) || 0;
               
               if (!dailyTotals[dateKey]) {
                 dailyTotals[dateKey] = 0;
               }
-              dailyTotals[dateKey] += earnedBIG;
+              dailyTotals[dateKey] += dailyPoints;
             });
           } catch (error) {
             console.error(`Erro ao processar usuário ${userDoc.id} para gráfico:`, error);
