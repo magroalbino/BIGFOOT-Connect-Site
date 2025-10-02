@@ -686,8 +686,6 @@
     </div>
   </main>
 
-  <footer>© 2025 BIGFOOT Connect. Todos os direitos reservados.</footer>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
@@ -1342,6 +1340,7 @@
         sharedThisMonth: "BIG Points no Mês",
         activeDaysMonth: "Dias Ativos",
         dailyAverage: "Média Diária"
+        footer: "© 2025 BIGFOOT Connect. Todos os direitos reservados."
       },
       en: {
         heading: "Welcome to your Dashboard",
@@ -1377,6 +1376,7 @@
         sharedThisMonth: "BIG Points this Month",
         activeDaysMonth: "Active Days",
         dailyAverage: "Daily Average"
+        footer: "© 2025 BIGFOOT Connect. All rights reserved."
       }
     };
 
@@ -1434,6 +1434,9 @@
       document.querySelectorAll(".card p")[1].innerHTML = t.referralDesc;
       document.querySelectorAll(".referral-stat .label")[0].textContent = t.referrals;
       document.querySelectorAll(".referral-stat .label")[1].textContent = t.referralEarnings;
+
+      // Footer (adicione esta linha no final da função)
+  document.querySelector("footer").textContent = t.footer;
     }
 
     // Inicialização do tema e idioma
