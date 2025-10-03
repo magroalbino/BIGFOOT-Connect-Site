@@ -1030,22 +1030,26 @@
     }
 
     async function loadReferralStats(userEmail) {
-      console.log("Carregando estatísticas de referência");
-      
-      try {
-        const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
-        const referralCount = referrals.size;
-        const referralEarnings = referralCount * 1000; // 1000 BIG por referência
-        
-        document.getElementById("referralCount").textContent = referralCount;
-        document.getElementById("referralEarnings").textContent = referralEarnings + " BIG";
-        
-        console.log(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
-        
-      } catch (error) {
-        console.log("Erro ao carregar estatísticas de referência", error);
-      }
-    }
+  console.log("Carregando estatísticas de referência");
+  
+  try {
+    // Buscar quantas pessoas foram indicadas
+    const referrals = await db.collection("users").where("referredBy", "==", userEmail).get();
+    const referralCount = referrals.size;
+    
+    // Buscar ganhos por referral do documento principal do usuário
+    const userDoc = await db.collection("users").doc(currentUser.uid).get();
+    const referralEarnings = userDoc.data().referralEarnings || 0;
+    
+    document.getElementById("referralCount").textContent = referralCount;
+    document.getElementById("referralEarnings").textContent = referralEarnings.toFixed(3) + " BIG";
+    
+    console.log(`Referências: ${referralCount}, Ganhos: ${referralEarnings} BIG`);
+    
+  } catch (error) {
+    console.log("Erro ao carregar estatísticas de referência", error);
+  }
+}
 
     function renderChart(data) {
       console.log("=== DEBUG RENDER CHART ===");
