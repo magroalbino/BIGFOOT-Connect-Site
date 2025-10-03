@@ -723,6 +723,55 @@ body.light-mode .contact-purpose:hover {
             background: rgba(255, 107, 53, 0.1);
             border-color: #FF6B35;
         }
+
+        /* Botão Voltar ao Topo */
+#backToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 999;
+    opacity: 0;
+    transform: scale(0);
+}
+
+#backToTop.show {
+    display: flex;
+    opacity: 1;
+    transform: scale(1);
+}
+
+#backToTop:hover {
+    background: linear-gradient(135deg, #e55a2b 0%, #cc4922 100%);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+}
+
+#backToTop svg {
+    transition: transform 0.3s ease;
+}
+
+#backToTop:hover svg {
+    transform: translateY(-3px);
+}
+
+/* Modo claro */
+body.light-mode #backToTop {
+    background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+        
     </style>
 </head>
 
@@ -838,6 +887,13 @@ body.light-mode .contact-purpose:hover {
         </div>
     </main>
 
+<!-- Botão Voltar ao Topo -->
+<button id="backToTop" aria-label="Voltar ao topo" title="Voltar ao topo">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+</button>
+    
     <footer>
         © 2025 BIGFOOT Connect. Todos os direitos reservados.
     </footer>
@@ -1006,6 +1062,24 @@ body.light-mode .contact-purpose:hover {
 
             const themeToggle = document.getElementById("themeToggle");
             const currentTheme = localStorage.getItem("theme") || "dark";
+
+// Botão Voltar ao Topo
+const backToTopBtn = document.getElementById("backToTop");
+
+window.addEventListener("scroll", () => {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add("show");
+    } else {
+        backToTopBtn.classList.remove("show");
+    }
+});
+
+backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
             
             // Inicializar o tema
             if (currentTheme === "light") {
