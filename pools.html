@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BIGFOOT Connect - Pools</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+            border-bottom: 2px solid #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+            color: #FF6B35;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .logo-link:hover .logo-name,
+        .logo-link:hover img {
+            color: #ff8c5a;
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
+
+        .logo-link img {
+            height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-left: auto;
+            width: auto;
+        }
+
+        nav span {
+            color: #f0f0f0;
+            white-space: nowrap;
+            margin-right: 0;
+            font-weight: 500;
+            background: rgba(255, 107, 53, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #FF6B35;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover {
+            color: #fff;
+            background: rgba(255, 107, 53, 0.2);
+            border-color: #FF6B35;
+            transform: translateY(-1px);
+        }
+
+        #languageSwitcher {
+            margin-left: 1rem;
+            background: #2a2a2a;
+            color: #f0f0f0;
+            border: 1px solid #555;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        #languageSwitcher:hover {
+            background: #333;
+            border-color: #FF6B35;
+        }
+
+        #themeToggle {
+            margin-left: 1rem;
+            background: #2a2a2a;
+            border: 1px solid #555;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            color: #FF6B35;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        #themeToggle:hover {
+            background: #333;
+            border-color: #FF6B35;
+            transform: scale(1.1);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .pools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            margin-bottom: 3rem;
+        }
+
+        .pool-card {
+            background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .pool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.3);
+            border-color: #FF6B35;
+        }
+
+        .pool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .pool-icons {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .pool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid #2a2a2a;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .pool-icon:last-child {
+            margin-left: -15px;
+        }
+
+        .pool-title {
+            flex: 1;
+        }
+
+        .pool-title h3 {
+            margin: 0 0 0.3rem 0;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+        .pool-title p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        .pool-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 107, 53, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #bbb;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .token-input {
+            display: flex;
+            align-items: center;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .token-input:focus-within {
+            border-color: #FF6B35;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .token-input input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            outline: none;
+            font-weight: 600;
+        }
+
+        .token-input input::placeholder {
+            color: #666;
+        }
+
+        .token-label {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 107, 53, 0.2);
+            border-radius: 6px;
+            color: #FF6B35;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .max-button {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .max-button:hover {
+            background: #e55a2b;
+            transform: scale(1.05);
+        }
+
+        .pool-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .pool-action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: linear-gradient(135deg, #e55a2b 0%, #cc4922 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, #555 0%, #444 100%);
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: linear-gradient(135deg, #666 0%, #555 100%);
+            transform: translateY(-2px);
+        }
+
+        .wallet-connect {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            margin-bottom: 3rem;
+        }
+
+        .wallet-connect h2 {
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .wallet-connect p {
+            color: #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .connect-wallet-btn {
+            background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .connect-wallet-btn:hover {
+            background: linear-gradient(135deg, #e55a2b 0%, #cc4922 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #2a1f1a 0%, #332217 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #FF6B35;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+            font-size: 0.9rem;
+            color: #bbb;
+            border-top: 2px solid #333;
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            background-color: #fefefe;
+            color: #1a1a1a;
+        }
+
+        body.light-mode header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode nav a,
+        body.light-mode .logo-link {
+            color: #1a1a1a;
+        }
+
+        body.light-mode nav a:hover {
+            color: #FF6B35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        body.light-mode .page-header h1 {
+            color: #1a1a1a;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .page-header p {
+            color: #444;
+        }
+
+        body.light-mode .pool-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .pool-card:hover {
+            border-color: #FF6B35;
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        body.light-mode .token-input {
+            background: #f8f8f8;
+            border-color: #e0e0e0;
+        }
+
+        body.light-mode .pool-icon {
+            background: #f0f0f0;
+            border-color: #ffffff;
+        }
+
+        body.light-mode footer {
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .pools-container {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .pool-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="dark">
+    <header>
+        <div class="logo">
+            <a href="/index.html" class="logo-link">
+                <img src="./images/logo.png" alt="BIGFOOT Logo" />
+                <span class="logo-name">BIGFOOT Connect</span>
+            </a>
+        </div>
+        <nav id="userNav">
+            <!-- Será preenchido pelo JS -->
+        </nav>
+        <select id="languageSwitcher" aria-label="Selecionar idioma">
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+        </select>
+        <button id="themeToggle" aria-label="Alternar tema">🌙</button>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1 id="pageTitle">💧 Pools de Liquidez</h1>
+            <p id="pageDescription">Adicione liquidez aos pools e ganhe recompensas por ajudar a sustentar o ecossistema BIGFOOT Connect</p>
+        </div>
+
+        <div id="walletSection" class="wallet-connect">
+            <h2 id="walletTitle">🔐 Conecte sua Carteira</h2>
+            <p id="walletDescription">Para adicionar ou remover liquidez, você precisa conectar sua carteira Solana</p>
+            <button class="connect-wallet-btn" id="connectWalletBtn">
+                <span id="connectBtnText">Conectar Carteira</span>
+            </button>
+        </div>
+
+        <div id="poolsSection" style="display: none; width: 100%;">
+            <div class="info-box">
+                <h3 id="infoTitle">💡 Como Funciona</h3>
+                <p id="infoDescription">Ao adicionar liquidez, você recebe tokens LP que representam sua participação no pool. Você ganha uma porcentagem das taxas de transação proporcionais à sua contribuição.</p>
+            </div>
+
+            <div class="pools-container">
+                <div class="pool-card">
+                    <div class="pool-header">
+                        <div class="pool-icons">
+                            <div class="pool-icon" style="background: linear-gradient(135deg, #FF6B35 0%, #e55a2b 100%);">B</div>
+                            <div class="pool-icon" style="background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);">S</div>
+                        </div>
+                        <div class="pool-title">
+                            <h3>BIG / SOL</h3>
+                            <p id="poolSubtitle">Pool Principal</p>
+                        </div>
+                    </div>
+
+                    <div class="pool-stats">
+                        <div class="stat-item">
+                            <div class="stat-label" id="tvlLabel">TVL</div>
+                            <div class="stat-value">$3.73</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" id="aprLabel">APR</div>
+                            <div class="stat-value">100%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" id="volumeLabel">Volume 24h</div>
+                            <div class="stat-value">$0.00</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" id="feesLabel">Taxas 24h</div>
+                            <div class="stat-value">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bigAmount" id="bigLabel">Quantidade de BIG</label>
+                        <div class="token-input">
+                            <input type="number" id="bigAmount" placeholder="0.0" step="0.01" min="0" />
+                            <button class="max-button" id="maxBigBtn">MAX</button>
+                            <span class="token-label">BIG</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="solAmount" id="solLabel">Quantidade de SOL</label>
+                        <div class="token-input">
+                            <input type="number" id="solAmount" placeholder="0.0" step="0.01" min="0" />
+                            <button class="max-button" id="maxSolBtn">MAX</button>
+                            <span class="token-label">SOL</span>
+                        </div>
+                    </div>
+
+                    <div class="pool-actions">
+                        <button class="pool-action-btn btn-add" id="addLiquidityBtn">
+                            <span id="addBtnText">➕ Adicionar Liquidez</span>
+                        </button>
+                        <button class="pool-action-btn btn-remove" id="removeLiquidityBtn">
+                            <span id="removeBtnText">➖ Remover</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <span id="footerText">© 2025 BIGFOOT Connect. Todos os direitos reservados.</span>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
+            authDomain: "bigfoot-connect.firebaseapp.com",
+            projectId: "bigfoot-connect",
+            storageBucket: "bigfoot-connect.appspot.com",
+            messagingSenderId: "177999879162",
+            appId: "1:177999879162:web:a1ea739930cac97475e243",
+            measurementId: "G-WEY300P1S7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script>
+        const translations = {
+            en: {
+                pageTitle: "💧 Liquidity Pools",
+                pageDescription: "Add liquidity to pools and earn rewards for helping sustain the BIGFOOT Connect ecosystem",
+                walletTitle: "🔐 Connect Your Wallet",
+                walletDescription: "To add or remove liquidity, you need to connect your Solana wallet",
+                connectBtnText: "Connect Wallet",
+                infoTitle: "💡 How It Works",
+                infoDescription: "When you add liquidity, you receive LP tokens that represent your share in the pool. You earn a percentage of transaction fees proportional to your contribution.",
+                poolSubtitle: "Main Pool",
+                tvlLabel: "TVL",
+                aprLabel: "APR",
+                volumeLabel: "24h Volume",
+                feesLabel: "24h Fees",
+                bigLabel: "BIG Amount",
+                solLabel: "SOL Amount",
+                addBtnText: "➕ Add Liquidity",
+                removeBtnText: "➖ Remove",
+                footerText: "© 2025 BIGFOOT Connect. All rights reserved.",
+                login: "Login",
+                register: "Register",
+                dashboard: "Dashboard",
+                logout: "Logout",
+                hello: "Hello"
+            },
+            pt: {
+                pageTitle: "💧 Pools de Liquidez",
+                pageDescription: "Adicione liquidez aos pools e ganhe recompensas por ajudar a sustentar o ecossistema BIGFOOT Connect",
+                walletTitle: "🔐 Conecte sua Carteira",
+                walletDescription: "Para adicionar ou remover liquidez, você precisa conectar sua carteira Solana",
+                connectBtnText: "Conectar Carteira",
+                infoTitle: "💡 Como Funciona",
+                infoDescription: "Ao adicionar liquidez, você recebe tokens LP que representam sua participação no pool. Você ganha uma porcentagem das taxas de transação proporcionais à sua contribuição.",
+                poolSubtitle: "Pool Principal",
+                tvlLabel: "TVL",
+                aprLabel: "APR",
+                volumeLabel: "Volume 24h",
+                feesLabel: "Taxas 24h",
+                bigLabel: "Quantidade de BIG",
+                solLabel: "Quantidade de SOL",
+                addBtnText: "➕ Adicionar Liquidez",
+                removeBtnText: "➖ Remover",
+                footerText: "© 2025 BIGFOOT Connect. Todos os direitos reservados.",
+                login: "Login",
+                register: "Criar conta",
+                dashboard: "Dashboard",
+                logout: "Sair",
+                hello: "Olá"
+            }
+        };
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+
+            document.getElementById("pageTitle").textContent = t.pageTitle;
+            document.getElementById("pageDescription").textContent = t.pageDescription;
+            document.getElementById("walletTitle").textContent = t.walletTitle;
+            document.getElementById("walletDescription").textContent = t.walletDescription;
+            document.getElementById("connectBtnText").textContent = t.connectBtnText;
+            document.getElementById("infoTitle").textContent = t.infoTitle;
+            document.getElementById("infoDescription").textContent = t.infoDescription;
+            document.getElementById("poolSubtitle").textContent = t.poolSubtitle;
+            document.getElementById("tvlLabel").textContent = t.tvlLabel;
+            document.getElementById("aprLabel").textContent = t.aprLabel;
+            document.getElementById("volumeLabel").textContent = t.volumeLabel;
+            document.getElementById("feesLabel").textContent = t.feesLabel;
+            document.getElementById("bigLabel").textContent = t.bigLabel;
+            document.getElementById("solLabel").textContent = t.solLabel;
+            document.getElementById("addBtnText").textContent = t.addBtnText;
+            document.getElementById("removeBtnText").textContent = t.removeBtnText;
+            document.getElementById("footerText").textContent = t.footerText;
+
+            firebase.auth().onAuthStateChanged((user) => {
+                const nav = document.getElementById("userNav");
+
+                if (user) {
+                    const username = user.email;
+                    nav.innerHTML = `
+                        <span>${t.hello}, ${username}</span>
+                        <a href="dashboard.html">${t.dashboard}</a>
+                        <a href="#" id="logout">${t.logout}</a>
+                    `;
+
+                    document.getElementById("logout").addEventListener("click", (e) => {
+                        e.preventDefault();
+                        firebase.auth().signOut().then(() => {
+                            localStorage.clear();
+                            window.location.href = "index.html";
+                        });
+                    });
+                } else {
+                    nav.innerHTML = `
+                        <a href="login.html">${t.login}</a>
+                        <a href="register.html">${t.register}</a>
+                    `;
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const languageSwitcher = document.getElementById("languageSwitcher");
+            const savedLang = localStorage.getItem("lang") || "pt";
+            languageSwitcher.value = savedLang;
+            applyTranslations(savedLang);
+
+            languageSwitcher.addEventListener("change", (e) => {
+                const lang = e.target.value;
+                localStorage.setItem("lang", lang);
+                applyTranslations(lang);
+            });
+
+            const themeToggle = document.getElementById("themeToggle");
+            const currentTheme = localStorage.getItem("theme") || "dark";
+
+            if (currentTheme === "light") {
+                document.body.classList.add("light-mode");
+                document.body.setAttribute("data-theme", "light");
+                themeToggle.textContent = "🌞";
+            } else {
+                document.body.setAttribute("data-theme", "dark");
+                themeToggle.textContent = "🌙";
+            }
+
+            themeToggle.addEventListener("click", () => {
+                document.body.classList.toggle("light-mode");
+                const isLight = document.body.classList.contains("light-mode");
+
+                if (isLight) {
+                    document.body.setAttribute("data-theme", "light");
+                    localStorage.setItem("theme", "light");
+                    themeToggle.textContent = "🌞";
+                } else {
+                    document.body.setAttribute("data-theme", "dark");
+                    localStorage.setItem("theme", "dark");
+                    themeToggle.textContent = "🌙";
+                }
+            });
+
+            // Wallet Connection Logic
+            const connectWalletBtn = document.getElementById("connectWalletBtn");
+            const walletSection = document.getElementById("walletSection");
+            const poolsSection = document.getElementById("poolsSection");
+
+            let walletConnected = false;
+
+            connectWalletBtn.addEventListener("click", async () => {
+                try {
+                    alert("Em breve será possível conectar via Phantom, Solflare ou outras carteiras Solana!");
+                    
+                    // Simulação de conexão
+                    walletConnected = true;
+                    walletSection.style.display = "none";
+                    poolsSection.style.display = "block";
+                } catch (error) {
+                    console.error("Erro ao conectar carteira:", error);
+                    alert("Erro ao conectar carteira. Tente novamente.");
+                }
+            });
+
+            // Pool Actions
+            document.getElementById("addLiquidityBtn").addEventListener("click", () => {
+                const bigAmount = document.getElementById("bigAmount").value;
+                const solAmount = document.getElementById("solAmount").value;
+
+                if (!bigAmount || !solAmount || bigAmount <= 0 || solAmount <= 0) {
+                    alert("Por favor, insira valores válidos para BIG e SOL.");
+                    return;
+                }
+
+                alert(`Adicionando ${bigAmount} BIG e ${solAmount} SOL ao pool. Em breve esta funcionalidade estará totalmente integrada com a Orca!`);
+            });
+
+            document.getElementById("removeLiquidityBtn").addEventListener("click", () => {
+                alert("Funcionalidade de remoção de liquidez em breve! Você poderá remover seus tokens LP e receber seus ativos de volta.");
+            });
+
+            // MAX buttons
+            document.getElementById("maxBigBtn").addEventListener("click", () => {
+                // Simulação - em produção, pegaria do saldo real da carteira
+                document.getElementById("bigAmount").value = "118800";
+            });
+
+            document.getElementById("maxSolBtn").addEventListener("click", () => {
+                // Simulação - em produção, pegaria do saldo real da carteira
+                document.getElementById("solAmount").value = "0.5";
+            });
+
+            // Auto-calculate proportional amounts
+            document.getElementById("bigAmount").addEventListener("input", (e) => {
+                const bigAmount = parseFloat(e.target.value);
+                if (bigAmount && !isNaN(bigAmount)) {
+                    // Proporção aproximada baseada no pool atual (pode ser ajustada)
+                    const solAmount = (bigAmount / 118800 * 0.5).toFixed(6);
+                    document.getElementById("solAmount").value = solAmount;
+                }
+            });
+
+            document.getElementById("solAmount").addEventListener("input", (e) => {
+                const solAmount = parseFloat(e.target.value);
+                if (solAmount && !isNaN(solAmount)) {
+                    // Proporção aproximada baseada no pool atual (pode ser ajustada)
+                    const bigAmount = (solAmount / 0.5 * 118800).toFixed(2);
+                    document.getElementById("bigAmount").value = bigAmount;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
