@@ -1,1 +1,65 @@
-
+{
+  "name": "bigfoot-connect-nextjs",
+  "version": "2.0.0",
+  "description": "BIGFOOT Connect - Plataforma de compartilhamento de recursos computacionais com recompensas em tokens BIG",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export",
+    "analyze": "ANALYZE=true next build"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "firebase": "^10.12.2",
+    "chart.js": "^4.4.2",
+    "react-chartjs-2": "^5.2.0",
+    "papaparse": "^5.4.1",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "bigfoot",
+    "blockchain",
+    "solana",
+    "crypto",
+    "rewards",
+    "decentralized",
+    "computing",
+    "nextjs",
+    "react",
+    "firebase"
+  ],
+  "author": {
+    "name": "BIGFOOT Connect Team",
+    "email": "contact@bigfootconnect.tech",
+    "url": "https://bigfootconnect.tech"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabricioricard/BIGFOOT-Connect"
+  },
+  "bugs": {
+    "url": "https://github.com/fabricioricard/BIGFOOT-Connect/issues",
+    "email": "contact@bigfootconnect.tech"
+  },
+  "homepage": "https://bigfootconnect.tech"
+}
