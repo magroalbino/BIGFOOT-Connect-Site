@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Função auxiliar para verificar autenticação
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Função para verificar se é o próprio usuário
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Regras para a coleção users
+    match /users/{userId} {
+      allow read: if isAuthenticated() && isUser(userId);
+      allow write: if isAuthenticated() && isUser(userId);
+      
+      // Subcoleção bigpoints_earnings
+      match /bigpoints_earnings/{docId} {
+        allow read: if isAuthenticated() && isUser(userId);
+        allow write: if isAuthenticated() && isUser(userId);
+      }
+    }
+  }
+}

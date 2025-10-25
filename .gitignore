@@ -1,0 +1,26 @@
+﻿node_modules/
+.next/
+out/
+dist/
+coverage/
+
+# Env files
+.env
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+
+# Editor directories
+.vscode/
+
+# Local build artifacts
+build/
+
+# Optional: ignore uploaded images or large binary assets if you keep them locally
+#public/images/*.png
