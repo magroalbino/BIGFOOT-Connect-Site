@@ -9,7 +9,7 @@ import { useTranslation } from '../utils/translations';
 export default function Header() {
   const router = useRouter();
   const { t, language, setLanguage } = useTranslation();
-  
+
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState('dark');
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ export default function Header() {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
-    
+
     if (newTheme === 'light') {
       document.body.classList.add('light-mode');
     } else {
@@ -62,7 +62,11 @@ export default function Header() {
 
   // Trocar idioma
   const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
+    const newLang = e.target.value;
+    console.log('🌐 Mudando idioma para:', newLang);
+
+    // Salvar no localStorage e atualizar o estado via Provider
+    setLanguage(newLang);
   };
 
   return (
@@ -92,7 +96,7 @@ export default function Header() {
               BIGFOOT Connect
             </span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {!loading && (
@@ -100,40 +104,40 @@ export default function Header() {
                 {user ? (
                   <>
                     <span className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-500/5 border-orange-500/20'} border px-3 py-1.5 rounded-lg font-medium text-sm`}>
-                      {t.hello || 'Olá'}, {user.email}
+                      {t('hello')}, {user.email}
                     </span>
-                    <Link 
+                    <Link
                       href="/dashboard"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.dashboard || 'Dashboard'}
+                      {t('dashboard')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.logout || 'Sair'}
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link 
+                    <Link
                       href="/login"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.login || 'Login'}
+                      {t('login')}
                     </Link>
-                    <Link 
+                    <Link
                       href="/register"
                       className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                     >
-                      {t.register || 'Criar conta'}
+                      {t('register')}
                     </Link>
                   </>
                 )}
               </>
             )}
-            
+
             {/* Language Switcher */}
             <select
               value={language}
@@ -143,7 +147,7 @@ export default function Header() {
               <option value="en">English</option>
               <option value="pt">Português</option>
             </select>
-            
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -178,40 +182,40 @@ export default function Header() {
                 {user ? (
                   <>
                     <div className={`${theme === 'dark' ? 'bg-orange-500/10' : 'bg-orange-500/5'} px-3 py-2 rounded-lg text-sm`}>
-                      {t.hello || 'Olá'}, {user.email}
+                      {t('hello')}, {user.email}
                     </div>
-                    <Link 
+                    <Link
                       href="/dashboard"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.dashboard || 'Dashboard'}
+                      {t('dashboard')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.logout || 'Sair'}
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link 
+                    <Link
                       href="/login"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.login || 'Login'}
+                      {t('login')}
                     </Link>
-                    <Link 
+                    <Link
                       href="/register"
                       className="block text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold"
                     >
-                      {t.register || 'Criar conta'}
+                      {t('register')}
                     </Link>
                   </>
                 )}
               </>
             )}
-            
+
             <div className="flex items-center gap-3 pt-3 border-t border-gray-700">
               <select
                 value={language}
@@ -221,7 +225,7 @@ export default function Header() {
                 <option value="en">English</option>
                 <option value="pt">Português</option>
               </select>
-              
+
               <button
                 onClick={toggleTheme}
                 className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg px-4 py-2 text-xl`}

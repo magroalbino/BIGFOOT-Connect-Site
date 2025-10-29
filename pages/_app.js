@@ -57,13 +57,13 @@ function MyApp({ Component, pageProps }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log('🔐 Usuário autenticado:', user.email);
-        
+
         // Salvar no localStorage
         localStorage.setItem('userId', user.uid);
         localStorage.setItem('userEmail', user.email);
       } else {
         console.log('🔐 Nenhum usuário autenticado');
-        
+
         // Limpar localStorage
         localStorage.removeItem('userId');
         localStorage.removeItem('userEmail');
@@ -131,7 +131,7 @@ function MyApp({ Component, pageProps }) {
       )}
 
       {/* Translation Provider */}
-      <TranslationProvider>
+      <TranslationProvider key={router.asPath}>
         {/* Loading Bar */}
         {loading && (
           <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 animate-pulse z-[9999]">
@@ -258,12 +258,12 @@ function BackToTopButton() {
       className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-300 hover:scale-110 animate-fade-in-up"
       aria-label="Voltar ao topo"
     >
-      <svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
         className="w-6 h-6"
       >
-        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
       </svg>
     </button>
   );
