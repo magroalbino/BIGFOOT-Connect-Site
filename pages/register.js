@@ -158,12 +158,12 @@ export default function Register() {
     e.preventDefault();
 
     if (!email || !password) {
-      showMessage(t.fillRequired || 'Preencha todos os campos obrigatórios.', 'error');
+      showMessage(t('fillRequired'), 'error');
       return;
     }
 
     if (password.length < 6) {
-      showMessage(t.weakPassword || 'A senha deve ter pelo menos 6 caracteres.', 'error');
+      showMessage(t('weakPassword'), 'error');
       return;
     }
 
@@ -187,7 +187,7 @@ export default function Register() {
         console.log('✅ Documento do usuário salvo no Firestore com sucesso');
       } catch (firestoreError) {
         console.error('❌ Erro crítico ao salvar no Firestore:', firestoreError);
-        showMessage(t.firestoreError || 'Conta criada mas houve erro ao salvar dados. Tente fazer login.', 'error');
+        showMessage(t('firestoreError'), 'error');
         
         setTimeout(() => {
           router.push('/login');
@@ -205,7 +205,7 @@ export default function Register() {
       
       // 5. Sucesso total - mostrar mensagem e redirecionar
       console.log('✅ Registro completo realizado com sucesso!');
-      showMessage(t.success || 'Conta criada com sucesso! Redirecionando...', 'success');
+      showMessage(t('success'), 'success');
 
       setTimeout(() => {
         router.push('/login');
@@ -214,15 +214,15 @@ export default function Register() {
     } catch (error) {
       console.error('❌ Erro no processo de registro:', error);
       
-      let errorMessage = `${t.error || 'Erro ao criar conta:'} ${error.message}`;
+      let errorMessage = `${t('error')} ${error.message}`;
       
       // Personalizar mensagens de erro
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = t.emailInUse || 'Este e-mail já está em uso.';
+        errorMessage = t('emailInUse');
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = t.invalidEmail || 'E-mail inválido.';
+        errorMessage = t('invalidEmail');
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = t.weakPasswordFirebase || 'Senha muito fraca.';
+        errorMessage = t('weakPasswordFirebase');
       }
       
       showMessage(errorMessage, 'error');
@@ -234,7 +234,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>{t.title || 'Criar Conta'} - BIGFOOT Connect</title>
+        <title>{t('title')} - BIGFOOT Connect</title>
         <meta name="description" content="Crie sua conta no BIGFOOT Connect" />
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
@@ -297,7 +297,7 @@ export default function Register() {
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-teal-600 to-green-500"></div>
 
             <h2 className="text-3xl font-bold text-center mb-8">
-              {t.title || 'Criar Conta'}
+              {t('title')}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -316,7 +316,7 @@ export default function Register() {
                   htmlFor="email"
                   className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
                 >
-                  {t.email || 'E-mail'}
+                  {t('email')}
                 </label>
               </div>
 
@@ -335,13 +335,13 @@ export default function Register() {
                   htmlFor="password"
                   className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
                 >
-                  {t.password || 'Senha'}
+                  {t('password')}
                 </label>
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 hover:bg-orange-500/10 p-2 rounded-lg transition-all duration-300 hover:scale-110"
-                  aria-label={showPassword ? (t.hidePassword || 'Ocultar senha') : (t.showPassword || 'Mostrar senha')}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 >
                   {showPassword ? '🙈' : '👁️'}
                 </button>
@@ -373,7 +373,7 @@ export default function Register() {
                     {language === 'pt' ? 'Criando...' : 'Creating...'}
                   </span>
                 ) : (
-                  t.register || 'Registrar'
+                  t('register')
                 )}
               </button>
 
@@ -394,7 +394,7 @@ export default function Register() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className={`${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} px-4 text-gray-500 font-medium`}>
-                    {t.dividerText || 'ou'}
+                    {t('dividerText')}
                   </span>
                 </div>
               </div>
@@ -402,7 +402,7 @@ export default function Register() {
               {/* Login link */}
               <div className="text-center text-sm">
                 <Link href="/login" className="text-teal-600 hover:text-teal-500 font-semibold transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-teal-600 after:to-green-500 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0">
-                  {t.loginLink || 'Já tem conta? Entrar'}
+                  {t('loginLink')}
                 </Link>
               </div>
             </form>
@@ -412,7 +412,7 @@ export default function Register() {
           <div className="mt-8 text-center">
             <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 hover:-translate-x-1 px-4 py-2 rounded-lg hover:bg-orange-500/10">
               <span>←</span>
-              <span>{t.backHome || 'Voltar para a Home'}</span>
+              <span>{t('backHome')}</span>
             </Link>
           </div>
         </div>
