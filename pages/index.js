@@ -193,12 +193,9 @@ export default function Home() {
             {t('heroTitle')}
           </h1>
           
-          <p 
-            className={`max-w-3xl text-xl md:text-2xl leading-relaxed mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}
-            dangerouslySetInnerHTML={{ 
-              __html: t('heroText')
-            }}
-          />
+          <p className={`max-w-3xl text-xl md:text-2xl leading-relaxed mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+            {t('heroText')}
+          </p>
 
           {/* CTA Buttons */}
           <div className="flex gap-4 flex-wrap justify-center mb-6">
