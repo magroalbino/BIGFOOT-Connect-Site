@@ -105,8 +105,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>BIGFOOT Connect - Conecte. Contribua. Ganhe.</title>
-        <meta name="description" content="Compartilhe seu poder computacional, ajude a descentralizar a rede e receba recompensas em BIG" />
+        <title>BIGFOOT Connect - {t('heroTitle')}</title>
+        <meta name="description" content={t('heroText').replace(/<[^>]*>/g, '')} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
@@ -133,19 +133,19 @@ export default function Home() {
                 {user ? (
                   <>
                     <span className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-500/5 border-orange-500/20'} border px-3 py-1.5 rounded-lg font-medium`}>
-                      {t.hello || 'Olá'}, {user.email}
+                      {t('hello')}, {user.email}
                     </span>
                     <Link 
                       href="/dashboard"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.dashboard || 'Dashboard'}
+                      {t('dashboard')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.logout || 'Sair'}
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
@@ -154,13 +154,13 @@ export default function Home() {
                       href="/login"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.login || 'Login'}
+                      {t('login')}
                     </Link>
                     <Link 
                       href="/register"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.register || 'Criar conta'}
+                      {t('register')}
                     </Link>
                   </>
                 )}
@@ -206,15 +206,15 @@ export default function Home() {
               href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.1.8/BIGFOOT-Connect-Setup-1.1.8.exe"
               className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
-              {t.downloadWindows || 'Windows'}
+              {t('downloadWindows')}
             </a>
           </div>
 
           {/* Installer Warning */}
           <div 
-            className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-orange-500' : 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500'} border-l-4 rounded-lg p-4 max-w-3xl text-left mb-8 shadow-lg`}
+            className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-orange-500 text-gray-100' : 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500 text-gray-900'} border-l-4 rounded-lg p-4 max-w-3xl text-left mb-8 shadow-lg`}
             dangerouslySetInnerHTML={{ 
-              __html: t.installerWarning || '🛡️ <strong>Aviso:</strong> O Windows pode exibir "O Windows protegeu seu computador" ao instalar o BIGFOOT Connect...' 
+              __html: t('installerWarning')
             }}
           />
 
@@ -236,17 +236,17 @@ export default function Home() {
           {/* Whitepaper Section */}
           <section className="text-center py-8 max-w-3xl">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              {t.whitepaperTitle || '📄 Whitepaper do Projeto'}
+              {t('whitepaperTitle')}
             </h2>
             <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-lg mb-6`}>
-              {t.whitepaperText || 'Quer saber como o BIGFOOT Connect funciona, quais as tecnologias por trás e como você é recompensado? Confira nosso whitepaper completo.'}
+              {t('whitepaperText')}
             </p>
             <a
               href="/docs/whitepaper.pdf"
               target="_blank"
               className="inline-block bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              {t.whitepaperBtn || 'Visualizar / Baixar Whitepaper'}
+              {t('whitepaperBtn')}
             </a>
           </section>
 
@@ -256,17 +256,17 @@ export default function Home() {
           {/* Token Section */}
           <section className="text-center py-8 max-w-3xl">
             <h2 className="text-4xl font-bold mb-4 text-white">
-              {t.tokenTitle || '💰 Token BIG (BIG)'}
+              {t('tokenTitle')}
             </h2>
             <p 
               className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-lg mb-4`}
               dangerouslySetInnerHTML={{ 
-                __html: t.tokenDesc || 'O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a descentralização da rede.' 
+                __html: t('tokenDesc')
               }}
             />
             <p className="text-sm break-all">
               <span className={`${theme === 'dark' ? 'bg-orange-500/20 border-orange-500/30' : 'bg-orange-500/10 border-orange-500/20'} border px-3 py-1 rounded-lg font-semibold mr-2`}>
-                {t.contractLabel || 'Contrato:'}
+                {t('contractLabel')}
               </span>
               <a
                 href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
@@ -286,7 +286,7 @@ export default function Home() {
           <section className="w-full max-w-3xl py-8">
             <h2 className="text-4xl font-bold text-center mb-8">
               <span className={`${theme === 'dark' ? 'bg-orange-500/20 border-orange-500/30' : 'bg-orange-500/10 border-orange-500/20'} border px-4 py-2 rounded-lg inline-block`}>
-                {t.roadmapTitle || '🗺️ Roadmap do Projeto'}
+                {t('roadmapTitle')}
               </span>
             </h2>
             <ul className="space-y-6">
@@ -312,10 +312,10 @@ export default function Home() {
           {/* Contact Section */}
           <section className={`w-full max-w-3xl ${theme === 'dark' ? 'bg-orange-500/5 border-orange-500/20' : 'bg-orange-500/3 border-orange-500/15'} border rounded-3xl p-12 shadow-2xl`}>
             <h2 className="text-4xl font-bold mb-4 text-white">
-              {t.contactTitle || '📧 Entre em Contato'}
+              {t('contactTitle')}
             </h2>
             <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-lg mb-8`}>
-              {t.contactDescription || 'Tem dúvidas, sugestões ou quer fazer uma parceria? Entre em contato conosco!'}
+              {t('contactDescription')}
             </p>
             
             <a
@@ -325,18 +325,18 @@ export default function Home() {
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>
-              <span>{t.contactEmailText || 'contact@bigfootconnect.tech'}</span>
+              <span>{t('contactEmailText')}</span>
             </a>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <div className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20' : 'bg-orange-500/8 border-orange-500/15'} border rounded-xl p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-500/20 hover:border-orange-500/30`}>
-                {t.purposePartnerships || '💼 Parcerias'}
+                {t('purposePartnerships')}
               </div>
               <div className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20' : 'bg-orange-500/8 border-orange-500/15'} border rounded-xl p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-500/20 hover:border-orange-500/30`}>
-                {t.purposeSupport || '🛠️ Suporte'}
+                {t('purposeSupport')}
               </div>
               <div className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20' : 'bg-orange-500/8 border-orange-500/15'} border rounded-xl p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-500/20 hover:border-orange-500/30`}>
-                {t.purposeQuestions || '❓ Dúvidas'}
+                {t('purposeQuestions')}
               </div>
             </div>
           </section>
@@ -344,7 +344,7 @@ export default function Home() {
           {/* Social Links */}
           <div className="flex gap-10 justify-center py-12">
             <SocialLink href="https://discord.gg/mkfmncN5Sa" label="Discord">
-              <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.233 18.233 0 0 0-5.487 0 12.66 12.66 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C.533 9.045-.32 13.579.099 18.057a.086.086 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.057.076.076 0 0 0 .084-.027c.461-.63.873-1.295 1.226-1.993a.076.076 0 0 0-.041-.105 13.181 13.181 0 0 1-1.872-.896.076.076 0 0 1-.008-.127c.126-.094.252-.191.371-.291a.074.074 0 0 1 .077-.01c3.927 1.794 8.18 1.794 12.061 0a.074.074 0 0 1 .078.01c.12.1.245.197.371.291a.076.076 0 0 1-.006.127 12.316 12.316 0 0 1-1.874.896.076.076 0 0 0-.041.105c.36.698.772 1.362 1.226 1.993a.076.076 0 0 0 .084.027 19.888 19.888 0 0 0 6.001-3.057.076.076 0 0 0 .03-.057c.5-5.177-.838-9.664-3.568-13.661a.06.06 0 0 0-.032-.027ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.955 2.418-2.157 2.418Zm7.956 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.947 2.418-2.157 2.418Z" />
+              <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.444.864-.608 1.249a18.233 18.233 0 0 0-5.487 0 12.66 12.66 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C.533 9.045-.32 13.579.099 18.057a.086.086 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.057.076.076 0 0 0 .084-.027c.461-.63.873-1.295 1.226-1.993a.076.076 0 0 0-.041-.105 13.181 13.181 0 0 1-1.872-.896.076.076 0 0 1-.008-.127c.126-.094.252-.191.371-.291a.074.074 0 0 1 .077-.01c3.927 1.794 8.18 1.794 12.061 0 a.074.074 0 0 1 .078.01c.12.1.245.197.371.291a.076.076 0 0 1-.006.127 12.316 12.316 0 0 1-1.874.896.076.076 0 0 0-.041.105c.36.698.772 1.362 1.226 1.993a.076.076 0 0 0 .084.027 19.888 19.888 0 0 0 6.001-3.057.076.076 0 0 0 .03-.057c.5-5.177-.838-9.664-3.568-13.661a.06.06 0 0 0-.032-.027ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.955 2.418-2.157 2.418Zm7.956 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.175 1.094 2.157 2.42 0 1.334-.947 2.418-2.157 2.418Z" />
             </SocialLink>
 
             <SocialLink href="https://t.me/+qrkA9s2VTxVhMzcx" label="Telegram">
@@ -364,7 +364,7 @@ export default function Home() {
         {/* Footer */}
         <footer className={`text-center py-6 ${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-gradient-to-r from-gray-50 to-white border-gray-200'} border-t-2`}>
           <p className="text-gray-500 text-sm">
-            {t.footerText || '© 2025 BIGFOOT Connect. Todos os direitos reservados.'}
+            {t('footerText')}
           </p>
         </footer>
 
