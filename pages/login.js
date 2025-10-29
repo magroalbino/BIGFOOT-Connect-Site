@@ -16,6 +16,17 @@ export default function Login() {
   const router = useRouter();
   const { t, language, setLanguage } = useTranslation();
   
+  // Debug - verificar idioma
+  useEffect(() => {
+    console.log('=== DEBUG LOGIN ===');
+    console.log('🌐 Idioma atual:', language);
+    console.log('📝 t("formTitle"):', t('formTitle'));
+    console.log('📝 t("email"):', t('email'));
+    console.log('📝 t("password"):', t('password'));
+    console.log('📝 t("loginBtn"):', t('loginBtn'));
+    console.log('==================');
+  }, [language, t]);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -273,7 +284,7 @@ export default function Login() {
 
             <h2 className="text-3xl font-bold text-center mb-8 relative">
               {t('formTitle')}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-teal-600 to-green-500 rounded-full mt-2"></div>
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-teal-600 to-green-500 rounded-full"></div>
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
