@@ -190,13 +190,13 @@ export default function Home() {
         <main className="flex-1 flex flex-col items-center text-center px-4 sm:px-6 lg:px-8 py-16">
           {/* Hero Section */}
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-            {t.heroTitle || 'Conecte. Contribua. Ganhe.'}
+            {t('heroTitle')}
           </h1>
           
           <p 
             className={`max-w-3xl text-xl md:text-2xl leading-relaxed mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}
             dangerouslySetInnerHTML={{ 
-              __html: t.heroText || 'Com o <strong>BIGFOOT Connect</strong>, você compartilha seu poder computacional, ajuda a descentralizar a rede e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!' 
+              __html: t('heroText')
             }}
           />
 
