@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Configurações experimentais removidas para compatibilidade com Next.js 13.5.6
+  experimental: {
+    optimizeCss: true
+  },
 
   // Configuração de imagens
   images: {
@@ -140,66 +144,10 @@ const nextConfig = {
   // Desabilitar powered-by header
   poweredByHeader: false,
 
-  // Configuração do Turbopack
-  turbopack: {},
-
-  // Configuração de webpack (legacy)
-  webpack: (config, { dev, isServer }) => {
-    // Configuração adicional do webpack se necessário
-    
-    // Otimização de bundle
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            commons: {
-              name: 'commons',
-              chunks: 'all',
-              minChunks: 2,
-            },
-            firebase: {
-              test: /[\\/]node_modules[\\/](firebase)[\\/]/,
-              name: 'firebase',
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-            chartjs: {
-              test: /[\\/]node_modules[\\/](chart\.js|react-chartjs-2)[\\/]/,
-              name: 'chartjs',
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-            react: {
-              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-              name: 'react',
-              priority: 20,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      };
-    }
-
-    return config;
-  },
-
-  // Configuração experimental
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'chart.js'],
-  },
+  // Turbopack removido - usando configuração padrão do Next.js 13.5.6
 
   // Output standalone para Docker
   output: 'standalone',
-
-  // TypeScript
-  typescript: {
-    ignoreBuildErrors: false,
-  },
 };
 
 module.exports = nextConfig;
