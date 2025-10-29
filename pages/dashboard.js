@@ -301,7 +301,7 @@ export default function Dashboard() {
     setChartData({
       labels: labels,
       datasets: [{
-        label: t.chartLabel || 'BIG Points Ganhos',
+        label: t('chartLabel'),
         data: values,
         borderColor: '#FF6B35',
         backgroundColor: 'rgba(255,107,53,0.2)',
@@ -474,19 +474,19 @@ export default function Dashboard() {
 
   // Meses disponíveis
   const availableMonths = [
-    { value: 'all', label: t.allData || 'Todos os dados' },
-    { value: '2025-01', label: t.jan2025 || 'Janeiro 2025' },
-    { value: '2025-02', label: t.feb2025 || 'Fevereiro 2025' },
-    { value: '2025-03', label: t.mar2025 || 'Março 2025' },
-    { value: '2025-04', label: t.apr2025 || 'Abril 2025' },
-    { value: '2025-05', label: t.may2025 || 'Maio 2025' },
-    { value: '2025-06', label: t.jun2025 || 'Junho 2025' },
-    { value: '2025-07', label: t.jul2025 || 'Julho 2025' },
-    { value: '2025-08', label: t.aug2025 || 'Agosto 2025' },
-    { value: '2025-09', label: t.sep2025 || 'Setembro 2025' },
-    { value: '2025-10', label: t.oct2025 || 'Outubro 2025' },
-    { value: '2025-11', label: t.nov2025 || 'Novembro 2025' },
-    { value: '2025-12', label: t.dec2025 || 'Dezembro 2025' },
+    { value: 'all', label: t('allData') },
+    { value: '2025-01', label: t('jan2025') },
+    { value: '2025-02', label: t('feb2025') },
+    { value: '2025-03', label: t('mar2025') },
+    { value: '2025-04', label: t('apr2025') },
+    { value: '2025-05', label: t('may2025') },
+    { value: '2025-06', label: t('jun2025') },
+    { value: '2025-07', label: t('jul2025') },
+    { value: '2025-08', label: t('aug2025') },
+    { value: '2025-09', label: t('sep2025') },
+    { value: '2025-10', label: t('oct2025') },
+    { value: '2025-11', label: t('nov2025') },
+    { value: '2025-12', label: t('dec2025') },
   ];
 
   if (loading) {
@@ -500,7 +500,7 @@ export default function Dashboard() {
   return (
     <ProtectedRoute>
       <Head>
-        <title>{t.heading || 'Dashboard'} - BIGFOOT Connect</title>
+        <title>{t('heading')} - BIGFOOT Connect</title>
         <meta name="description" content="Painel do usuário BIGFOOT Connect" />
       </Head>
 
@@ -519,7 +519,7 @@ export default function Dashboard() {
                   onClick={handleLogout}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                 >
-                  {t.logout || 'Sair'}
+                  {t('logout')}
                 </button>
                 
                 <select
@@ -546,15 +546,15 @@ export default function Dashboard() {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-center mb-8 text-white">
-            {t.heading || 'Bem-vindo ao seu Painel'}
+            {t('heading')}
           </h1>
 
-          {/* Progress Card - Full Width */}
+          {/* Progress Card */}
           <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-white to-gray-50'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/30'} mb-8 relative overflow-hidden`}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
             
             <h2 className="text-2xl font-bold text-center text-white mb-6">
-              {t.progress || '📊 Seu Progresso'}
+              {t('progress')}
             </h2>
 
             {/* Stats Top */}
@@ -564,7 +564,7 @@ export default function Dashboard() {
                   {totalBigPoints.toFixed(2)} BIG
                 </div>
                 <div className="text-sm text-gray-400 uppercase tracking-wider">
-                  {t.shared || 'Total de BIG Points'}
+                  {t('shared')}
                 </div>
               </div>
               <div className="text-center">
@@ -572,7 +572,7 @@ export default function Dashboard() {
                   {daysActive}
                 </div>
                 <div className="text-sm text-gray-400 uppercase tracking-wider">
-                  {t.daysActive || 'Dias Ativos'}
+                  {t('daysActive')}
                 </div>
               </div>
             </div>
@@ -580,7 +580,7 @@ export default function Dashboard() {
             {/* Month Selector */}
             <div className="text-center mb-6">
               <label className="text-orange-500 font-semibold mr-4">
-                {t.selectMonth || 'Selecionar Mês:'}
+                {t('selectMonth')}
               </label>
               <select
                 value={selectedMonth}
@@ -605,7 +605,7 @@ export default function Dashboard() {
                       {monthlyData.totalPoints.toFixed(2)} BIG
                     </div>
                     <div className="text-xs text-gray-400 uppercase tracking-wider">
-                      {t.sharedThisMonth || 'BIG Points no Mês'}
+                      {t('sharedThisMonth')}
                     </div>
                   </div>
                   <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
@@ -613,7 +613,7 @@ export default function Dashboard() {
                       {monthlyData.activeDays}
                     </div>
                     <div className="text-xs text-gray-400 uppercase tracking-wider">
-                      {t.activeDaysMonth || 'Dias Ativos'}
+                      {t('activeDaysMonth')}
                     </div>
                   </div>
                   <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
@@ -621,7 +621,7 @@ export default function Dashboard() {
                       {monthlyData.avgDaily.toFixed(2)} BIG
                     </div>
                     <div className="text-xs text-gray-400 uppercase tracking-wider">
-                      {t.dailyAverage || 'Média Diária'}
+                      {t('dailyAverage')}
                     </div>
                   </div>
                 </div>
@@ -631,12 +631,12 @@ export default function Dashboard() {
             {/* Chart */}
             <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl p-6">
               <h3 className="text-center text-orange-500 font-semibold text-lg mb-4 pb-2 border-b-2 border-orange-500/20">
-                {t.chartTitle || 'Histórico de BIG Points'}
+                {t('chartTitle')}
               </h3>
               <div className={`${theme === 'dark' ? 'bg-gray-900/80' : 'bg-gray-50/80'} rounded-xl p-4 border ${theme === 'dark' ? 'border-orange-500/10' : 'border-orange-500/15'}`} style={{ height: '350px' }}>
                 {chartLoading ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-orange-500">{t.loading || 'Carregando dados do gráfico'}...</div>
+                    <div className="text-orange-500">{t('loading')}...</div>
                   </div>
                 ) : chartData ? (
                   <Line data={chartData} options={chartOptions} />
@@ -656,17 +656,17 @@ export default function Dashboard() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               
               <h2 className="text-2xl font-bold text-center text-white mb-4">
-                {t.walletTitle || '💰 Carteira Solana'}
+                {t('walletTitle')}
               </h2>
               <p className={`text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-6 text-lg`}>
-                {t.walletDesc || 'Configure seu endereço Solana para receber as recompensas em tokens BIG.'}
+                {t('walletDesc')}
               </p>
               
               <input
                 type="text"
                 value={walletAddress}
                 onChange={(e) => setWalletAddress(e.target.value)}
-                placeholder={t.placeholder || 'Digite seu endereço Solana'}
+                placeholder={t('placeholder')}
                 className={`w-full px-4 py-3 rounded-lg border-2 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'} transition-all duration-300 focus:border-orange-500 focus:outline-none mb-4`}
               />
               
@@ -674,7 +674,7 @@ export default function Dashboard() {
                 onClick={handleSaveWallet}
                 className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
-                {t.saveWallet || '💾 Salvar Endereço'}
+                {t('saveWallet')}
               </button>
               
               {statusMessage.show && (
@@ -693,11 +693,11 @@ export default function Dashboard() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               
               <h2 className="text-2xl font-bold text-center text-white mb-4">
-                {t.referralTitle || '👥 Sistema de Referência'}
+                {t('referralTitle')}
               </h2>
-              <p className={`text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-6 text-lg`} dangerouslySetInnerHTML={{ 
-                __html: t.referralDesc || 'Convide amigos e ganhe <strong>10% extra</strong> em BIG para cada pessoa que você indicar!' 
-              }} />
+              <p className={`text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-6 text-lg`}>
+                {t('referralDesc')}
+              </p>
               
               <input
                 type="text"
@@ -711,7 +711,7 @@ export default function Dashboard() {
                 onClick={handleCopyReferralLink}
                 className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl mb-6"
               >
-                {t.copyBtn || '📋 Copiar Link de Referência'}
+                {t('copyBtn')}
               </button>
               
               {/* Referral Stats */}
@@ -721,7 +721,7 @@ export default function Dashboard() {
                     {referralCount}
                   </div>
                   <div className="text-xs text-gray-400 uppercase tracking-wider">
-                    {t.referrals || 'Indicações'}
+                    {t('referrals')}
                   </div>
                 </div>
                 <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
@@ -729,7 +729,7 @@ export default function Dashboard() {
                     {referralEarnings.toFixed(3)} BIG
                   </div>
                   <div className="text-xs text-gray-400 uppercase tracking-wider">
-                    {t.referralEarnings || 'Ganhos por Ref.'}
+                    {t('referralEarnings')}
                   </div>
                 </div>
               </div>
@@ -740,7 +740,7 @@ export default function Dashboard() {
         {/* Footer */}
         <footer className={`text-center py-6 mt-12 ${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-gradient-to-r from-white to-gray-50 border-gray-200'} border-t-2`}>
           <p className="text-gray-400 text-sm">
-            {t.footer || '© 2025 BIGFOOT Connect. Todos os direitos reservados.'}
+            {t('footerText')}
           </p>
         </footer>
 
@@ -755,7 +755,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Admin Button (only for admin) */}
+        {/* Admin Button */}
         {user?.email === ADMIN_EMAIL && (
           <button
             onClick={() => router.push('/admin')}
