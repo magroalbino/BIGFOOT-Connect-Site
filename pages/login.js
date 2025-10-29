@@ -131,13 +131,13 @@ export default function Login() {
 
   // Google login (placeholder)
   const handleGoogleLogin = () => {
-    showMessage(t.googleDevelopment || 'Funcionalidade do Google em desenvolvimento', 'info');
+    showMessage(t('googleDevelopment'), 'info');
   };
 
   // Forgot password (placeholder)
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    showMessage(t.forgotPasswordDevelopment || 'Funcionalidade de recuperação de senha em desenvolvimento', 'info');
+    showMessage(t('forgotPasswordDevelopment'), 'info');
   };
 
   // Submit do formulário
@@ -145,7 +145,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !password) {
-      showMessage(t.fillAll || 'Preencha todos os campos.', 'error');
+      showMessage(t('fillAll'), 'error');
       return;
     }
 
@@ -158,36 +158,36 @@ export default function Login() {
       localStorage.setItem('userId', user.uid);
       localStorage.setItem('userEmail', user.email);
 
-      showMessage(t.success || 'Login realizado com sucesso!', 'success');
+      showMessage(t('success'), 'success');
 
       setTimeout(() => {
         router.push('/dashboard');
       }, 1500);
     } catch (error) {
-      let errorMessage = t.error + ' ' + error.message;
+      let errorMessage = t('error') + ' ' + error.message;
       
       // Mensagens de erro customizadas
       switch (error.code) {
         case 'auth/user-not-found':
-          errorMessage = t.userNotFound || 'Usuário não encontrado.';
+          errorMessage = t('userNotFound');
           break;
         case 'auth/wrong-password':
-          errorMessage = t.wrongPassword || 'Senha incorreta.';
+          errorMessage = t('wrongPassword');
           break;
         case 'auth/invalid-email':
-          errorMessage = t.invalidCredentials || 'E-mail ou senha inválidos.';
+          errorMessage = t('invalidCredentials');
           break;
         case 'auth/user-disabled':
           errorMessage = 'Conta desabilitada. Entre em contato com o suporte.';
           break;
         case 'auth/too-many-requests':
-          errorMessage = t.tooManyRequests || 'Muitas tentativas. Tente novamente mais tarde.';
+          errorMessage = t('tooManyRequests');
           break;
         case 'auth/invalid-credential':
-          errorMessage = t.invalidCredentials || 'E-mail ou senha inválidos.';
+          errorMessage = t('invalidCredentials');
           break;
         default:
-          errorMessage = t.invalidCredentials || 'E-mail ou senha inválidos.';
+          errorMessage = t('invalidCredentials');
       }
       
       showMessage(errorMessage, 'error');
@@ -200,7 +200,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>{t.formTitle || 'Login'} - BIGFOOT Connect</title>
+        <title>{t('formTitle')} - BIGFOOT Connect</title>
         <meta name="description" content="Faça login no BIGFOOT Connect" />
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
@@ -272,7 +272,7 @@ export default function Login() {
             }}></div>
 
             <h2 className="text-3xl font-bold text-center mb-8 relative">
-              {t.formTitle || 'Entrar'}
+              {t('formTitle')}
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-teal-600 to-green-500 rounded-full mt-2"></div>
             </h2>
 
@@ -293,7 +293,7 @@ export default function Login() {
                   htmlFor="email"
                   className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
                 >
-                  {t.email || 'E-mail'}
+                  {t('email')}
                 </label>
               </div>
 
@@ -313,13 +313,13 @@ export default function Login() {
                   htmlFor="password"
                   className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
                 >
-                  {t.password || 'Senha'}
+                  {t('password')}
                 </label>
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 hover:bg-orange-500/10 p-2 rounded-lg transition-all duration-300 hover:scale-110"
-                  aria-label={showPassword ? (t.hidePassword || 'Ocultar senha') : (t.showPassword || 'Mostrar senha')}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 >
                   {showPassword ? '🙈' : '👁️'}
                 </button>
@@ -332,7 +332,7 @@ export default function Login() {
                   onClick={handleForgotPassword}
                   className="text-teal-600 hover:text-teal-500 text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-teal-600 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0"
                 >
-                  {t.forgotPassword || 'Esqueceu a senha?'}
+                  {t('forgotPassword')}
                 </a>
               </div>
 
@@ -346,10 +346,10 @@ export default function Login() {
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    {t.loggingIn || 'Entrando...'}
+                    {t('loggingIn')}
                   </span>
                 ) : (
-                  t.loginBtn || 'Entrar'
+                  t('loginBtn')
                 )}
               </button>
 
@@ -371,7 +371,7 @@ export default function Login() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className={`${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} px-4 text-gray-500 font-medium`}>
-                    {t.dividerText || 'ou'}
+                    {t('dividerText')}
                   </span>
                 </div>
               </div>
@@ -388,13 +388,13 @@ export default function Login() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                <span>{t.googleBtn || 'Entrar com Google'}</span>
+                <span>{t('googleBtn')}</span>
               </button>
 
               {/* Register link */}
               <div className="text-center text-sm">
                 <Link href="/register" className="text-teal-600 hover:text-teal-500 font-semibold transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-teal-600 after:to-green-500 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0">
-                  {t.registerLink || 'Não tem conta? Registre-se'}
+                  {t('registerLink')}
                 </Link>
               </div>
             </form>
@@ -404,7 +404,7 @@ export default function Login() {
           <div className="mt-10 text-center">
             <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 hover:-translate-x-1 px-4 py-2 rounded-lg hover:bg-orange-500/10">
               <span>←</span>
-              <span>{t.backHome || 'Voltar para a Home'}</span>
+              <span>{t('backHome')}</span>
             </Link>
           </div>
         </div>
