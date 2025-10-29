@@ -92,19 +92,19 @@ export default function Header() {
                 {user ? (
                   <>
                     <span className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-500/5 border-orange-500/20'} border px-3 py-1.5 rounded-lg font-medium text-sm`}>
-                      {t.hello || 'Olá'}, {user.email}
+                      {t('hello')}, {user.email}
                     </span>
                     <Link 
                       href="/dashboard"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.dashboard || 'Dashboard'}
+                      {t('dashboard')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.logout || 'Sair'}
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
@@ -113,13 +113,13 @@ export default function Header() {
                       href="/login"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t.login || 'Login'}
+                      {t('login')}
                     </Link>
                     <Link 
                       href="/register"
                       className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                     >
-                      {t.register || 'Criar conta'}
+                      {t('register')}
                     </Link>
                   </>
                 )}
@@ -170,19 +170,19 @@ export default function Header() {
                 {user ? (
                   <>
                     <div className={`${theme === 'dark' ? 'bg-orange-500/10' : 'bg-orange-500/5'} px-3 py-2 rounded-lg text-sm`}>
-                      {t.hello || 'Olá'}, {user.email}
+                      {t('hello')}, {user.email}
                     </div>
                     <Link 
                       href="/dashboard"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.dashboard || 'Dashboard'}
+                      {t('dashboard')}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.logout || 'Sair'}
+                      {t('logout')}
                     </button>
                   </>
                 ) : (
@@ -191,13 +191,13 @@ export default function Header() {
                       href="/login"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t.login || 'Login'}
+                      {t('login')}
                     </Link>
                     <Link 
                       href="/register"
                       className="block text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold"
                     >
-                      {t.register || 'Criar conta'}
+                      {t('register')}
                     </Link>
                   </>
                 )}
