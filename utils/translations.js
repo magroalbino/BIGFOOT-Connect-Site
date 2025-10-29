@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
+// Log para depuração de traduções
+const DEBUG = true;
+const log = (...args) => DEBUG && console.log(...args);
+
 // Dicionário de traduções
 const translations = {
   pt: {
@@ -288,127 +292,99 @@ const TranslationContext = createContext();
 
 // Provider
 export function TranslationProvider({ children }) {
-  // Inicializar com o valor do localStorage ou padrão
-  const initialLanguage = typeof window !== 'undefined' ?
-    localStorage.getItem('lang') || 'pt' : 'pt';
+  const [lang, setLang] = useState(() => {
+    if (typeof window === 'undefined') return 'pt';
+    return localStorage.getItem('lang') || 'pt';
+  });
 
-  const [language, setLanguageState] = useState(initialLanguage);
-  const [mounted, setMounted] = useState(false);
-
-  // Inicialização do idioma
   useEffect(() => {
-    const savedLang = localStorage.getItem('lang');
-    if (savedLang && savedLang !== language) {
-      setLanguageState(savedLang);
-      document.documentElement.lang = savedLang === 'pt' ? 'pt-BR' : 'en-US';
-    }
-    document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
-    setMounted(true);
-  }, []);
+    log('🌐 Idioma atual:', lang);
 
-  // Salvar mudança de idioma
-  const setLanguage = (lang) => {
-    if (typeof window !== 'undefined' && lang !== language) {
-      try {
-        // Salvar no localStorage
-        localStorage.setItem('lang', lang);
+    if (typeof window !== 'undefined') {
+      // Atualizar localStorage
+      localStorage.setItem('lang', lang);
 
-        // Atualizar estado
-        setLanguageState(lang);
+      // Atualizar lang do HTML
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en-US';
 
-        // Atualizar atributo HTML lang
-        document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en-US';
-
-        // Forçar recarregamento completo da página
-        window.location.href = window.location.pathname;
-
-        console.log(`🌐 Idioma alterado para: ${lang}`);
-      } catch (error) {
-        console.error('Erro ao mudar idioma:', error);
+      // Forçar reload apenas se houver mudança de idioma
+      const currentLang = localStorage.getItem('lang');
+      if (currentLang && currentLang !== lang) {
+        log('🔄 Recarregando página para atualizar idioma');
+        window.location.reload();
       }
     }
-  };
+  }, [lang]);
 
-  // Função de tradução
-  const t = (key) => {
-    const translation = translations[language]?.[key];
-    if (translation) return translation;
+  const translate = (key) => {
+    log(`🔍 Buscando tradução para "${key}" em "${lang}"`);
 
+    // Tentar obter tradução no idioma atual
+    const translation = translations[lang]?.[key];
+    if (translation) {
+      log('✅ Tradução encontrada:', translation);
+      return translation;
+    }
+
+    // Fallback para português
     const fallback = translations['pt']?.[key];
     if (fallback) {
-      console.warn(`🌐 Tradução não encontrada para '${key}' em '${language}', usando fallback em PT`);
+      log('⚠️ Usando fallback em PT:', fallback);
       return fallback;
     }
 
-    console.error(`🌐 Chave de tradução não encontrada: '${key}'`);
+    // Se não encontrou tradução
+    log('❌ Tradução não encontrada');
     return key;
   };
 
-  // Não renderizar até estar montado (SSR safe)
-  if (!mounted) {
-    return null;
-  }
+  const contextValue = {
+    language: lang,
+    setLanguage: setLang,
+    t: translate
+  };
 
   return (
-    <TranslationContext.Provider value={{ language, setLanguage, t }}>
+    <TranslationContext.Provider value={contextValue}>
       {children}
     </TranslationContext.Provider>
   );
 }
 
-// Hook customizado
+// Hook para usar as traduções
 export function useTranslation() {
   const context = useContext(TranslationContext);
 
   if (!context) {
-    throw new Error('useTranslation must be used within a TranslationProvider');
+    throw new Error('useTranslation deve ser usado dentro de um TranslationProvider');
   }
 
   return context;
 }
 
-// Função helper para tradução direta (sem hook)
-export function translate(key, lang = 'pt') {
+// Função para obter uma tradução diretamente
+export function getTranslation(key, lang = 'pt') {
+  log(`🔍 Obtendo tradução direta para "${key}" em "${lang}"`);
   return translations[lang]?.[key] || translations['pt']?.[key] || key;
-}
-
-// Exportar traduções completas (para debug)
-export { translations };
-
-// HOC para componentes que precisam de tradução
-export function withTranslation(Component) {
-  return function TranslatedComponent(props) {
-    const { language, setLanguage, t } = useTranslation();
-    return <Component {...props} language={language} setLanguage={setLanguage} t={t} />;
-  };
 }
 
 // Detectar idioma do navegador
 export function detectBrowserLanguage() {
   if (typeof window === 'undefined') return 'pt';
 
-  const browserLang = navigator.language || navigator.userLanguage;
+  try {
+    const navLang = navigator.language?.toLowerCase();
+    log('🌐 Idioma do navegador:', navLang);
 
-  if (browserLang.startsWith('pt')) return 'pt';
-  if (browserLang.startsWith('en')) return 'en';
+    if (navLang?.startsWith('pt')) return 'pt';
+    if (navLang?.startsWith('en')) return 'en';
 
-  return 'pt'; // Padrão
-}
-
-// Auto-detectar e definir idioma
-export function initializeLanguage() {
-  if (typeof window === 'undefined') return 'pt';
-
-  const savedLang = localStorage.getItem('lang');
-
-  if (savedLang) {
-    console.log('🌐 Idioma salvo encontrado:', savedLang);
-    return savedLang;
+    return 'pt';
+  } catch (error) {
+    log('❌ Erro ao detectar idioma:', error);
+    return 'pt';
   }
-
-  const browserLang = detectBrowserLanguage();
-  console.log('🌐 Idioma detectado do navegador:', browserLang);
-  localStorage.setItem('lang', browserLang);
-
-  return browserLang;
 }
+
+// Exportar traduções para debug
+export { translations };

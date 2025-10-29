@@ -131,7 +131,7 @@ function MyApp({ Component, pageProps }) {
       )}
 
       {/* Translation Provider */}
-      <TranslationProvider key={router.asPath}>
+      <TranslationProvider>
         {/* Loading Bar */}
         {loading && (
           <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 animate-pulse z-[9999]">
@@ -140,10 +140,10 @@ function MyApp({ Component, pageProps }) {
         )}
 
         {/* Main Component */}
-        <Component {...pageProps} />
+        {mounted && <Component {...pageProps} />}
 
         {/* Back to Top Button (Global) */}
-        <BackToTopButton />
+        {mounted && <BackToTopButton />}
       </TranslationProvider>
 
       {/* Global Styles */}

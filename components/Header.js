@@ -62,14 +62,26 @@ export default function Header() {
 
   // Trocar idioma
   const handleLanguageChange = (e) => {
+    e.preventDefault();
     const newLang = e.target.value;
-    console.log('🌐 Mudando idioma para:', newLang);
 
-    // Salvar no localStorage e atualizar o estado via Provider
+    console.log('🔄 Iniciando mudança de idioma:', {
+      atual: language,
+      novo: newLang
+    });
+
+    // Primeiro atualizar no Provider para garantir que o estado é atualizado
     setLanguage(newLang);
-  };
 
-  return (
+    // Então salvar no localStorage
+    localStorage.setItem('lang', newLang);
+
+    // Aguardar um tick para garantir que as mudanças foram aplicadas
+    setTimeout(() => {
+      // Forçar recarregamento da página
+      window.location.reload();
+    }, 0);
+  }; return (
     <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-gradient-to-r from-white to-gray-50 border-gray-200'} border-b-2 shadow-lg sticky top-0 z-50 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
