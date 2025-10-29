@@ -311,12 +311,21 @@ export function TranslationProvider({ children }) {
     setLanguageState(lang);
   };
 
-  // Sincronizar com HTML lang
+  // Sincronizar com HTML lang E forçar re-render
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
       console.log(`✅ Idioma sincronizado: ${language}`);
       console.log(`✅ Teste de tradução - formTitle:`, translations[language]?.formTitle);
+      console.log(`✅ Teste de tradução - email:`, translations[language]?.email);
+      console.log(`✅ Teste de tradução - loginBtn:`, translations[language]?.loginBtn);
+      
+      // Forçar update do localStorage se estiver diferente
+      const saved = localStorage.getItem('lang');
+      if (saved !== language) {
+        console.log(`⚠️ Corrigindo localStorage de ${saved} para ${language}`);
+        localStorage.setItem('lang', language);
+      }
     }
   }, [language]);
 
