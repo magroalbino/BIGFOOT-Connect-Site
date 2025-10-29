@@ -9,7 +9,7 @@ import { useTranslation } from '../utils/translations';
 export default function Header() {
   const router = useRouter();
   const { t, language, setLanguage } = useTranslation();
-
+  
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState('dark');
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ export default function Header() {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.body.setAttribute('data-theme', newTheme);
-
+    
     if (newTheme === 'light') {
       document.body.classList.add('light-mode');
     } else {
@@ -62,53 +62,29 @@ export default function Header() {
 
   // Trocar idioma
   const handleLanguageChange = (e) => {
-    e.preventDefault();
     const newLang = e.target.value;
-
-    console.log('🔄 Iniciando mudança de idioma:', {
-      atual: language,
-      novo: newLang
-    });
-
-    // Primeiro atualizar no Provider para garantir que o estado é atualizado
+    console.log('🌐 Mudando idioma para:', newLang);
     setLanguage(newLang);
+  };
 
-    // Então salvar no localStorage
-    localStorage.setItem('lang', newLang);
-
-    // Aguardar um tick para garantir que as mudanças foram aplicadas
-    setTimeout(() => {
-      // Forçar recarregamento da página
-      window.location.reload();
-    }, 0);
-  }; return (
+  return (
     <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-gradient-to-r from-white to-gray-50 border-gray-200'} border-b-2 shadow-lg sticky top-0 z-50 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative w-10 h-10">
-              <Image
-                src="/images/logo.png"
-                alt="BIGFOOT Logo"
-                width={40}
-                height={40}
-                className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.innerHTML = `
-                    <div class="w-10 h-10 flex items-center justify-center bg-orange-500 rounded-lg">
-                      <span class="text-white font-bold text-lg">B</span>
-                    </div>
-                  `;
-                }}
-              />
-            </div>
+            <Image 
+              src="/images/logo.png" 
+              alt="BIGFOOT Logo" 
+              width={40} 
+              height={40} 
+              className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
+            />
             <span className="text-xl font-bold text-orange-500 transition-all duration-300 group-hover:text-orange-400 hidden sm:inline">
               BIGFOOT Connect
             </span>
           </Link>
-
+          
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {!loading && (
@@ -116,40 +92,40 @@ export default function Header() {
                 {user ? (
                   <>
                     <span className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-500/5 border-orange-500/20'} border px-3 py-1.5 rounded-lg font-medium text-sm`}>
-                      {t('hello')}, {user.email}
+                      {t.hello || 'Olá'}, {user.email}
                     </span>
-                    <Link
+                    <Link 
                       href="/dashboard"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t('dashboard')}
+                      {t.dashboard || 'Dashboard'}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t('logout')}
+                      {t.logout || 'Sair'}
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link
+                    <Link 
                       href="/login"
                       className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      {t('login')}
+                      {t.login || 'Login'}
                     </Link>
-                    <Link
+                    <Link 
                       href="/register"
                       className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                     >
-                      {t('register')}
+                      {t.register || 'Criar conta'}
                     </Link>
                   </>
                 )}
               </>
             )}
-
+            
             {/* Language Switcher */}
             <select
               value={language}
@@ -159,7 +135,7 @@ export default function Header() {
               <option value="en">English</option>
               <option value="pt">Português</option>
             </select>
-
+            
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -194,40 +170,40 @@ export default function Header() {
                 {user ? (
                   <>
                     <div className={`${theme === 'dark' ? 'bg-orange-500/10' : 'bg-orange-500/5'} px-3 py-2 rounded-lg text-sm`}>
-                      {t('hello')}, {user.email}
+                      {t.hello || 'Olá'}, {user.email}
                     </div>
-                    <Link
+                    <Link 
                       href="/dashboard"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t('dashboard')}
+                      {t.dashboard || 'Dashboard'}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t('logout')}
+                      {t.logout || 'Sair'}
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link
+                    <Link 
                       href="/login"
                       className="block text-orange-500 hover:text-orange-400 font-medium px-3 py-2 rounded-lg hover:bg-orange-500/10 transition-all"
                     >
-                      {t('login')}
+                      {t.login || 'Login'}
                     </Link>
-                    <Link
+                    <Link 
                       href="/register"
                       className="block text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold"
                     >
-                      {t('register')}
+                      {t.register || 'Criar conta'}
                     </Link>
                   </>
                 )}
               </>
             )}
-
+            
             <div className="flex items-center gap-3 pt-3 border-t border-gray-700">
               <select
                 value={language}
@@ -237,7 +213,7 @@ export default function Header() {
                 <option value="en">English</option>
                 <option value="pt">Português</option>
               </select>
-
+              
               <button
                 onClick={toggleTheme}
                 className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg px-4 py-2 text-xl`}
