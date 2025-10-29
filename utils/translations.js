@@ -28,9 +28,9 @@ const translations = {
     
     // Homepage
     heroTitle: 'Conecte. Contribua. Ganhe.',
-    heroText: 'Com o <strong>BIGFOOT Connect</strong>, você compartilha seu poder computacional, ajuda a descentralizar a rede e ainda recebe recompensas em <strong>BIG</strong>. Baixe o app, conecte e comece agora mesmo!',
+    heroText: 'Com o BIGFOOT Connect, você compartilha seu poder computacional, ajuda a descentralizar a rede e ainda recebe recompensas em BIG. Baixe o app, conecte e comece agora mesmo!',
     downloadWindows: 'Windows',
-    installerWarning: '🛡️ <strong>Aviso:</strong> O Windows pode exibir "O Windows protegeu seu computador" ao instalar o BIGFOOT Connect. Isso ocorre porque o instalador ainda não é assinado digitalmente. Para prosseguir, clique em <strong>"Mais informações"</strong> e depois <strong>"Executar assim mesmo"</strong>. Nosso programa é totalmente seguro e <strong>não contém nada que possa prejudicar o computador do usuário</strong>.',
+    installerWarning: '🛡️ Aviso: O Windows pode exibir "O Windows protegeu seu computador" ao instalar o BIGFOOT Connect. Isso ocorre porque o instalador ainda não é assinado digitalmente. Para prosseguir, clique em "Mais informações" e depois "Executar assim mesmo". Nosso programa é totalmente seguro e não contém nada que possa prejudicar o computador do usuário.',
     
     // Whitepaper
     whitepaperTitle: '📄 Whitepaper do Projeto',
@@ -39,7 +39,7 @@ const translations = {
     
     // Token
     tokenTitle: '💰 Token BIG (BIG)',
-    tokenDesc: 'O <strong>BIG</strong> é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a descentralização da rede.',
+    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a descentralização da rede.',
     contractLabel: 'Contrato:',
     
     // Roadmap
@@ -133,7 +133,7 @@ const translations = {
     
     // Referral
     referralTitle: '👥 Sistema de Referência',
-    referralDesc: 'Convide amigos e ganhe <strong>10% extra</strong> em BIG para cada pessoa que você indicar!',
+    referralDesc: 'Convide amigos e ganhe 10% extra em BIG para cada pessoa que você indicar!',
     copyBtn: '📋 Copiar Link de Referência',
     referrals: 'Indicações',
     referralEarnings: 'Ganhos por Ref.',
@@ -168,9 +168,9 @@ const translations = {
     
     // Homepage
     heroTitle: 'Connect. Contribute. Earn.',
-    heroText: 'With <strong>BIGFOOT Connect</strong>, you share your computing power, help decentralize the network, and get rewarded in <strong>BIG</strong>. Download the app, connect, and get started now!',
+    heroText: 'With BIGFOOT Connect, you share your computing power, help decentralize the network, and get rewarded in BIG. Download the app, connect, and get started now!',
     downloadWindows: 'Windows',
-    installerWarning: '🛡️ <strong>Notice:</strong> When installing BIGFOOT Connect, Windows might display "Windows protected your PC" because the installer is not digitally signed yet. To continue, click <strong>"More info"</strong> and then <strong>"Run anyway"</strong>. Rest assured, our application is completely safe and <strong>does not contain anything that could harm your computer</strong>.',
+    installerWarning: '🛡️ Notice: When installing BIGFOOT Connect, Windows might display "Windows protected your PC" because the installer is not digitally signed yet. To continue, click "More info" and then "Run anyway". Rest assured, our application is completely safe and does not contain anything that could harm your computer.',
     
     // Whitepaper
     whitepaperTitle: '📄 Project Whitepaper',
@@ -179,7 +179,7 @@ const translations = {
     
     // Token
     tokenTitle: '💰 BIG Token (BIG)',
-    tokenDesc: 'The <strong>BIG</strong> token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing computing power and contributing to network decentralization.',
+    tokenDesc: 'The BIG token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing computing power and contributing to network decentralization.',
     contractLabel: 'Contract:',
     
     // Roadmap
@@ -273,7 +273,7 @@ const translations = {
     
     // Referral
     referralTitle: '👥 Referral System',
-    referralDesc: 'Invite friends and earn <strong>10% extra</strong> BIG for each person you refer!',
+    referralDesc: 'Invite friends and earn 10% extra BIG for each person you refer!',
     copyBtn: '📋 Copy Referral Link',
     referrals: 'Referrals',
     referralEarnings: 'Ref. Earnings',
