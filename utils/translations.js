@@ -290,7 +290,9 @@ const TranslationContext = createContext();
 export function TranslationProvider({ children }) {
   const [language, setLanguageState] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('lang') || 'pt';
+      const savedLang = localStorage.getItem('lang');
+      console.log('🌐 Idioma salvo no localStorage:', savedLang);
+      return savedLang || 'pt';
     }
     return 'pt';
   });
@@ -314,6 +316,7 @@ export function TranslationProvider({ children }) {
     if (typeof window !== 'undefined') {
       document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
       console.log(`✅ Idioma sincronizado: ${language}`);
+      console.log(`✅ Teste de tradução - formTitle:`, translations[language]?.formTitle);
     }
   }, [language]);
 
