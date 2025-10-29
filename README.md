@@ -1,7 +1,5 @@
 # 🦶 BIGFOOT Connect - Next.js
 
-![BIGFOOT Connect](public/images/logo.png)
-
 > Compartilhe seu poder computacional, ajude a descentralizar a rede e ganhe recompensas em tokens BIG
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
