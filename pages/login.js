@@ -9,7 +9,8 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
