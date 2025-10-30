@@ -12,6 +12,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider
 } from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { useTranslation } from '../utils/translations';
 
 export default function Login() {
@@ -159,6 +160,27 @@ export default function Login() {
       
       console.log('✅ Login com Google realizado:', user.email);
       
+      // Verificar se o usuário já tem documento no Firestore
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      // Se não existir, criar documento
+      if (!userDoc.exists()) {
+        console.log('📝 Criando documento para usuário do Google...');
+        await setDoc(userDocRef, {
+          email: user.email,
+          displayName: user.displayName || '',
+          photoURL: user.photoURL || '',
+          uid: user.uid,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          walletAddress: '',
+          referralEarnings: 0,
+          referredBy: ''
+        });
+        console.log('✅ Documento criado com sucesso');
+      }
+      
       // Salvar no localStorage
       localStorage.setItem('userId', user.uid);
       localStorage.setItem('userEmail', user.email);
@@ -171,7 +193,9 @@ export default function Login() {
       }, 1500);
       
     } catch (error) {
-      console.error('Erro ao fazer login com Google:', error);
+      console.error('❌ Erro ao fazer login com Google:', error);
+      console.error('Código do erro:', error.code);
+      console.error('Mensagem:', error.message);
       
       let errorMessage = 'Erro ao fazer login com Google.';
       
@@ -181,6 +205,14 @@ export default function Login() {
         errorMessage = 'Pop-up bloqueado pelo navegador. Permita pop-ups para este site.';
       } else if (error.code === 'auth/cancelled-popup-request') {
         errorMessage = 'Login cancelado.';
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = 'Já existe uma conta com este e-mail usando outro método de login.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        errorMessage = 'Login com Google não está habilitado no Firebase Console. Configure em Authentication → Sign-in method.';
+      } else if (error.code === 'auth/unauthorized-domain') {
+        errorMessage = 'Domínio não autorizado. Adicione bigfootconnect.tech nos domínios autorizados do Firebase.';
+      } else {
+        errorMessage = `Erro: ${error.message}`;
       }
       
       showMessage(errorMessage, 'error');
