@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { 
   signInWithEmailAndPassword, 
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { useTranslation } from '../utils/translations';
 
@@ -140,9 +142,51 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  // Google login (placeholder)
-  const handleGoogleLogin = () => {
-    showMessage(t('googleDevelopment'), 'info');
+  // Google login
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      
+      // Configurar o provider
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
+      // Fazer login com popup
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      console.log('✅ Login com Google realizado:', user.email);
+      
+      // Salvar no localStorage
+      localStorage.setItem('userId', user.uid);
+      localStorage.setItem('userEmail', user.email);
+      
+      showMessage(t('success'), 'success');
+      
+      // Redirecionar para dashboard
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Erro ao fazer login com Google:', error);
+      
+      let errorMessage = 'Erro ao fazer login com Google.';
+      
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Login cancelado.';
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = 'Pop-up bloqueado pelo navegador. Permita pop-ups para este site.';
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        errorMessage = 'Login cancelado.';
+      }
+      
+      showMessage(errorMessage, 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Forgot password (placeholder)
@@ -413,8 +457,7 @@ export default function Login() {
 
           {/* Back to home */}
           <div className="mt-10 text-center">
-            <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 hover:-translate-x-1 px-4 py-2 rounded-lg hover:bg-orange-500/10">
-              <span>←</span>
+            <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 px-4 py-2 rounded-lg hover:bg-orange-500/10">
               <span>{t('backHome')}</span>
             </Link>
           </div>
