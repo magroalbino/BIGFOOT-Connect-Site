@@ -9,8 +9,7 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,  // ✅ CORREÇÃO AQUI
   GoogleAuthProvider
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
@@ -144,16 +143,22 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  // Google login
+  // Google login - COM LOGS DE DEBUG
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Iniciando login com Google...');
+      console.log('🌐 Domínio atual:', window.location.hostname);
+      console.log('🔗 URL completa:', window.location.href);
+      
       const provider = new GoogleAuthProvider();
       
       // Configurar o provider
       provider.setCustomParameters({
         prompt: 'select_account'
       });
+      
+      console.log('📱 Abrindo popup de autenticação...');
       
       // Fazer login com popup
       const result = await signInWithPopup(auth, provider);
@@ -195,8 +200,9 @@ export default function Login() {
       
     } catch (error) {
       console.error('❌ Erro ao fazer login com Google:', error);
-      console.error('Código do erro:', error.code);
-      console.error('Mensagem:', error.message);
+      console.error('📋 Código do erro:', error.code);
+      console.error('💬 Mensagem:', error.message);
+      console.error('📦 Stack:', error.stack);
       
       let errorMessage = 'Erro ao fazer login com Google.';
       
@@ -211,7 +217,7 @@ export default function Login() {
       } else if (error.code === 'auth/operation-not-allowed') {
         errorMessage = 'Login com Google não está habilitado no Firebase Console. Configure em Authentication → Sign-in method.';
       } else if (error.code === 'auth/unauthorized-domain') {
-        errorMessage = 'Domínio não autorizado. Adicione bigfootconnect.tech nos domínios autorizados do Firebase.';
+        errorMessage = 'Domínio não autorizado. Adicione ' + window.location.hostname + ' nos domínios autorizados do Firebase.';
       } else {
         errorMessage = `Erro: ${error.message}`;
       }
@@ -468,7 +474,8 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className={`w-full ${theme === 'dark' ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-3 font-medium`}
+                disabled={loading}
+                className={`w-full ${theme === 'dark' ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-3 font-medium disabled:opacity-60 disabled:cursor-not-allowed`}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-blue-500">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
