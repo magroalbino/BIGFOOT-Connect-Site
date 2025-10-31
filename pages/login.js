@@ -228,10 +228,10 @@ export default function Login() {
     }
   };
 
-  // Forgot password (placeholder)
+  // Forgot password - agora redireciona para a página dedicada
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    showMessage(t('forgotPasswordDevelopment'), 'info');
+    router.push('/forgot-password');
   };
 
   // Submit do formulário
