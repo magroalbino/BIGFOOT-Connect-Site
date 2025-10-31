@@ -454,12 +454,15 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Login link */}
-              <div className="text-center text-sm">
-                <Link href="/login" className="text-teal-600 hover:text-teal-500 font-semibold transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-teal-600 after:to-green-500 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0">
+              {/* Login button */}
+              <Link href="/login" className="block">
+                <button
+                  type="button"
+                  className={`w-full ${theme === 'dark' ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg font-medium`}
+                >
                   {t('loginLink')}
-                </Link>
-              </div>
+                </button>
+              </Link>
             </form>
           </div>
 
