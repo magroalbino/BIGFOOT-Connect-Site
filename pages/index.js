@@ -12,6 +12,7 @@ export default function Home() {
   const { t, language, setLanguage } = useTranslation();
   
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de loading
   const [theme, setTheme] = useState('dark');
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -366,20 +367,17 @@ export default function Home() {
         </footer>
 
         {/* Back to Top Button */}
-        <button
-          onClick={scrollToTop}
-          style={{
-            opacity: showBackToTop ? 1 : 0,
-            transform: showBackToTop ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.8)',
-            visibility: showBackToTop ? 'visible' : 'hidden'
-          }}
-          className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 z-50 transition-all duration-500 ease-out"
-          aria-label="Voltar ao topo"
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-          </svg>
-        </button>
+        {showBackToTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 z-50 transition-transform duration-200"
+            aria-label="Voltar ao topo"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+          </button>
+        )}
       </div>
 
       <style jsx global>{`
