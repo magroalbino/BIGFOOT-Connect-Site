@@ -39,7 +39,7 @@ const translations = {
     
     // Token
     tokenTitle: '💰 Token BIG (BIG)',
-    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a descentralização da rede.',
+    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a construção da rede.',
     contractLabel: 'Contrato:',
     
     // Roadmap
@@ -180,7 +180,7 @@ const translations = {
     
     // Token
     tokenTitle: '💰 BIG Token (BIG)',
-    tokenDesc: 'The BIG token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing computing power and contributing to network decentralization.',
+    tokenDesc: 'The BIG token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing computing power and contributing to building the network.',
     contractLabel: 'Contract:',
     
     // Roadmap
