@@ -50,6 +50,7 @@ export default function Home() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false); // Desativa loading após verificar
     });
 
     return () => unsubscribe();
@@ -131,7 +132,13 @@ export default function Home() {
               </Link>
               
               <nav className="flex items-center gap-6">
-                {user ? (
+                {loading ? (
+                  // Skeleton loader enquanto verifica autenticação
+                  <div className="flex items-center gap-6">
+                    <div className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} h-8 w-32 rounded-lg animate-pulse`}></div>
+                    <div className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} h-8 w-24 rounded-lg animate-pulse`}></div>
+                  </div>
+                ) : user ? (
                   <>
                     <span className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-500/5 border-orange-500/20'} border px-3 py-1.5 rounded-lg font-medium`}>
                       {t('hello')}, {user.email}
