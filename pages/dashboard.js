@@ -442,7 +442,7 @@ export default function Dashboard() {
         borderColor: '#FF6B35',
         borderWidth: 1,
         callbacks: {
-          label: (ctx) => `${ctx.parsed.y} BIG Points`
+          label: (ctx) => `${ctx.parsed.y} BIG`
         }
       }
     },
