@@ -191,7 +191,7 @@ export default function AdminDashboard() {
   // Obter total de BIG Points do mês
   const getMonthlyBigPointsTotal = async (monthKey) => {
     if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
-      monthKey = '2025-09';
+      monthKey = '2025-11';
     }
 
     let totalBP = 0;
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
   // Carregar dados mensais
   const loadMonthlyData = async (monthKey) => {
     if (!monthKey || typeof monthKey !== 'string') {
-      monthKey = '2025-09';
+      monthKey = '2025-11';
     }
 
     setMonthlyLoading(true);
@@ -456,8 +456,6 @@ export default function AdminDashboard() {
     { key: '2025-11', label: 'Novembro 2025' },
     { key: '2025-10', label: 'Outubro 2025' },
     { key: '2025-09', label: 'Setembro 2025' },
-    { key: '2025-08', label: 'Agosto 2025' },
-    { key: '2025-07', label: 'Julho 2025' },
   ];
 
   // Opções do gráfico
