@@ -18,20 +18,20 @@ export default function Home() {
   // Roadmap data
   const roadmapItems = {
     pt: [
-      { title: "Q1 2025 – Lançamento ✅", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
-      { title: "Q2 2025 – Criação da BIGchain", desc: "Nossa própria blockchain." },
-      { title: "Q3 2025 – Integração com Extensão", desc: "Suporte para pareamento com extensão de navegador e melhorias de UX." },
-      { title: "Q4 2025 – Plataforma Multiplataforma", desc: "Apps para Android e iOS, além de melhorias na estabilidade e segurança." },
-      { title: "Q1 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
-      { title: "Q2 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, analytics e suporte a novos protocolos." },
+      { title: "Fase 1 2025 – Lançamento ✅", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
+      { title: "Fase 2 2026 – Criação da BIGchain", desc: "Nossa própria blockchain." },
+      { title: "Fase 3 2026 – Integração com Extensão", desc: "Suporte para extensão de navegador." },
+      { title: "Fase 4 2026 – Multiplataforma", desc: "Apps para Android e iOS." },
+      { title: "Fase 5 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
+      { title: "Fase 6 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, análises e suporte a novos protocolos." },
     ],
     en: [
-      { title: "Q1 2025 – Launch ✅", desc: "Initial version with basic sharing features and rewards." },
-      { title: "Q2 2025 – BIGchain Creation", desc: "Our own blockchain." },
-      { title: "Q3 2025 – Extension Integration", desc: "Support for pairing with browser extension and UX improvements." },
-      { title: "Q4 2025 – Multiplatform Platform", desc: "Apps for Android and iOS, plus improvements in stability and security." },
-      { title: "Q1 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
-      { title: "Q2 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
+      { title: "Phase 1 2025 – Launch ✅", desc: "Initial version with basic sharing features and rewards." },
+      { title: "Phase 2 2026 – BIGchain Creation", desc: "Our own blockchain." },
+      { title: "Phase 3 2026 – Extension Integration", desc: "Support for browser extension." },
+      { title: "Phase 4 2026 – Multiplatform Platform", desc: "Apps for Android and iOS." },
+      { title: "Phase 5 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
+      { title: "Phase 6 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
     ]
   };
 
