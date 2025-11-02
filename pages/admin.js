@@ -16,12 +16,21 @@ import {
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import ProtectedRoute from '../components/ProtectedRoute';
 
-// Importar Chart.js dinamicamente (apenas no cliente)
-const Chart = dynamic(() => import('react-chartjs-2').then(mod => {
-  const { Chart: ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } = require('chart.js');
-  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-  return mod.Bar;
-}), { ssr: false });
+// Importar Chart.js dinamicamente (CORRIGIDO)
+const Bar = dynamic(
+  () => import('chart.js').then((ChartJS) => {
+    ChartJS.Chart.register(
+      ChartJS.CategoryScale,
+      ChartJS.LinearScale,
+      ChartJS.BarElement,
+      ChartJS.Title,
+      ChartJS.Tooltip,
+      ChartJS.Legend
+    );
+    return import('react-chartjs-2').then((mod) => mod.Bar);
+  }),
+  { ssr: false }
+);
 
 // Lista de emails de administradores
 const ADMIN_EMAILS = [
@@ -678,7 +687,7 @@ export default function AdminDashboard() {
                   Evolução Diária de BIG Points - {availableMonths.find(m => m.key === selectedMonth)?.label}
                 </h3>
                 <div className="bg-gray-800/50 rounded-xl p-6 border border-orange-500/10" style={{ height: '400px' }}>
-                  <Chart data={chartData} options={chartOptions} />
+                  <Bar data={chartData} options={chartOptions} />
                 </div>
               </div>
             )}
