@@ -19,7 +19,7 @@ const translations = {
     
     // Navegação
     home: 'Início',
-    dashboard: 'Dashboard',
+    dashboard: 'Painel',
     login: 'Login',
     logout: 'Sair',
     register: 'Criar conta',
