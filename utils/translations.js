@@ -105,9 +105,9 @@ const translations = {
     // Dashboard
     heading: 'Bem-vindo ao seu Painel',
     progress: '📊 Seu Progresso',
-    shared: 'Total de BIG Points',
+    shared: 'Total de BIG',
     daysActive: 'Dias Ativos',
-    chartTitle: 'Histórico de BIG Points',
+    chartTitle: 'Histórico de BIG',
     selectMonth: 'Selecionar Mês:',
     allData: 'Todos os dados',
     jan2025: 'Janeiro 2025',
@@ -122,7 +122,7 @@ const translations = {
     oct2025: 'Outubro 2025',
     nov2025: 'Novembro 2025',
     dec2025: 'Dezembro 2025',
-    sharedThisMonth: 'BIG Points no Mês',
+    sharedThisMonth: 'BIG no Mês',
     activeDaysMonth: 'Dias Ativos',
     dailyAverage: 'Média Diária',
     
@@ -140,7 +140,7 @@ const translations = {
     referralEarnings: 'Ganhos por Ref.',
     
     // Chart
-    chartLabel: 'BIG Points Ganhos',
+    chartLabel: 'BIG Ganhos',
   },
   
   en: {
@@ -246,9 +246,9 @@ const translations = {
     // Dashboard
     heading: 'Welcome to your Dashboard',
     progress: '📊 Your Progress',
-    shared: 'Total BIG Points',
+    shared: 'Total BIG',
     daysActive: 'Active Days',
-    chartTitle: 'BIG Points History',
+    chartTitle: 'BIG History',
     selectMonth: 'Select Month:',
     allData: 'All data',
     jan2025: 'January 2025',
@@ -263,7 +263,7 @@ const translations = {
     oct2025: 'October 2025',
     nov2025: 'November 2025',
     dec2025: 'December 2025',
-    sharedThisMonth: 'BIG Points this Month',
+    sharedThisMonth: 'BIG this Month',
     activeDaysMonth: 'Active Days',
     dailyAverage: 'Daily Average',
     
@@ -281,7 +281,7 @@ const translations = {
     referralEarnings: 'Ref. Earnings',
     
     // Chart
-    chartLabel: 'BIG Points Earned',
+    chartLabel: 'BIG Earned',
   }
 };
 
