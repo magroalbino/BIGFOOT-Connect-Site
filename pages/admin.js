@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   const [avgPerUser, setAvgPerUser] = useState(0);
   
   // Estados da tabela mensal
-  const [selectedMonth, setSelectedMonth] = useState('2025-09');
+  const [selectedMonth, setSelectedMonth] = useState('2025-11');
   const [monthlyUserData, setMonthlyUserData] = useState([]);
   const [monthlyTotal, setMonthlyTotal] = useState(0);
   const [monthlyLoading, setMonthlyLoading] = useState(false);
