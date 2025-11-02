@@ -12,9 +12,8 @@ export default function Home() {
   const { t, language, setLanguage } = useTranslation();
   
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Estado de loading
+  const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState('dark');
-  const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Roadmap data
   const roadmapItems = {
@@ -50,20 +49,10 @@ export default function Home() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false); // Desativa loading após verificar
+      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, []);
-
-  // Scroll handler para botão "Voltar ao topo"
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Logout
@@ -96,14 +85,6 @@ export default function Home() {
     setLanguage(e.target.value);
   };
 
-  // Scroll to top
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
   return (
     <>
       <Head>
@@ -133,7 +114,6 @@ export default function Home() {
               
               <nav className="flex items-center gap-6">
                 {loading ? (
-                  // Skeleton loader enquanto verifica autenticação
                   <div className="flex items-center gap-6">
                     <div className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} h-8 w-32 rounded-lg animate-pulse`}></div>
                     <div className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} h-8 w-24 rounded-lg animate-pulse`}></div>
@@ -372,19 +352,6 @@ export default function Home() {
             {t('footerText')}
           </p>
         </footer>
-
-        {/* Back to Top Button */}
-        {showBackToTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 z-50 transition-transform duration-200"
-            aria-label="Voltar ao topo"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-            </svg>
-          </button>
-        )}
       </div>
 
       <style jsx global>{`
