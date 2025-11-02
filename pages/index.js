@@ -14,6 +14,7 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState('dark');
+  const [emailCopied, setEmailCopied] = useState(false);
 
   // Roadmap data
   const roadmapItems = {
@@ -83,6 +84,17 @@ export default function Home() {
   // Trocar idioma
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
+  };
+
+  // Copiar email
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText('contact@bigfootconnect.tech');
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (error) {
+      console.error('Erro ao copiar email:', error);
+    }
   };
 
   return (
@@ -269,10 +281,8 @@ export default function Home() {
 
           {/* Roadmap Section */}
           <section className="w-full max-w-3xl py-8">
-            <h2 className="text-4xl font-bold text-center mb-8">
-              <span className={`${theme === 'dark' ? 'bg-orange-500/20 border-orange-500/30 text-white' : 'bg-orange-500/10 border-orange-500/20 text-gray-900'} border px-4 py-2 rounded-lg inline-block`}>
-                {t('roadmapTitle')}
-              </span>
+            <h2 className={`text-4xl font-bold text-center mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              🗺️ {t('roadmapTitle')}
             </h2>
             <ul className="space-y-6">
               {roadmapItems[language]?.map((item, index) => (
@@ -303,15 +313,15 @@ export default function Home() {
               {t('contactDescription')}
             </p>
             
-            <a
-              href="mailto:contact@bigfootconnect.tech"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-2xl border-2 border-white/10 hover:border-white/20"
+            <button
+              onClick={handleCopyEmail}
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-2xl border-2 border-white/10 hover:border-white/20 relative"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
               </svg>
-              <span>{t('contactEmailText')}</span>
-            </a>
+              <span>{emailCopied ? '✓ Copiado!' : t('contactEmailText')}</span>
+            </button>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <div className={`${theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20 text-gray-200' : 'bg-orange-500/8 border-orange-500/15 text-gray-800'} border rounded-xl p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-500/20 hover:border-orange-500/30`}>
@@ -352,6 +362,13 @@ export default function Home() {
             {t('footerText')}
           </p>
         </footer>
+
+        {/* Notification Toast */}
+        {emailCopied && (
+          <div className="fixed top-5 right-5 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg shadow-2xl font-semibold animate-fade-in">
+            ✓ Email copiado!
+          </div>
+        )}
       </div>
 
       <style jsx global>{`
@@ -366,8 +383,23 @@ export default function Home() {
           }
         }
 
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         .animate-pulse-slow {
           animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
         }
 
         body.light-mode {
