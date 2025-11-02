@@ -43,7 +43,7 @@ const translations = {
     contractLabel: 'Contrato:',
     
     // Roadmap
-    roadmapTitle: '🗺️ Roadmap do Projeto',
+    roadmapTitle: '🗺️ Roteiro do Projeto',
     
     // Contato
     contactTitle: '📧 Entre em Contato',
