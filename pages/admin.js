@@ -100,7 +100,7 @@ export default function AdminDashboard() {
         // Log de acesso
         try {
           await addDoc(collection(db, 'adminLogs'), {
-            type: 'admin_access_bigpoints',
+            type: 'admin_access_big',
             email: currentUser.email,
             timestamp: new Date(),
             userAgent: navigator.userAgent
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
       
       const totalUsersCount = usersSnapshot.length;
       
-      // Calcular total geral de BIG Points
+      // Calcular total geral de BIG
       let totalBP = 0;
       for (const userDoc of usersSnapshot) {
         try {
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Obter total de BIG Points do mês
+  // Obter total de BIG do mês
   const getMonthlyBigPointsTotal = async (monthKey) => {
     if (!monthKey || typeof monthKey !== 'string' || !monthKey.includes('-')) {
       monthKey = '2025-11';
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
         }
       }
       
-      // Ordenar por total de BIG Points
+      // Ordenar por total de BIG
       userData.sort((a, b) => b.totalBigPoints - a.totalBigPoints);
       
       setMonthlyUserData(userData);
@@ -321,9 +321,9 @@ export default function AdminDashboard() {
       await generateChartData(monthKey);
       
       if (monthTotal > 0) {
-        showMessage(`Dados carregados: ${monthTotal.toLocaleString()} BIG Points de ${userData.filter(u => u.totalBigPoints > 0).length} usuários ativos`);
+        showMessage(`Dados carregados: ${monthTotal.toLocaleString()} BIG de ${userData.filter(u => u.totalBigPoints > 0).length} usuários ativos`);
       } else {
-        showMessage('Nenhum BIG Point registrado neste período.', true);
+        showMessage('Nenhum BIG registrado neste período.', true);
       }
       
     } catch (error) {
@@ -359,7 +359,7 @@ export default function AdminDashboard() {
       setChartData({
         labels: labels,
         datasets: [{
-          label: 'BIG Points Diários',
+          label: 'BIG Diários',
           data: values,
           backgroundColor: 'rgba(243, 156, 18, 0.7)',
           borderColor: '#f39c12',
@@ -446,7 +446,7 @@ export default function AdminDashboard() {
 
   // Refresh
   const handleRefresh = async () => {
-    showMessage('Atualizando dados de BIG Points...');
+    showMessage('Atualizando dados de BIG...');
     await loadAdminData();
   };
 
@@ -478,7 +478,7 @@ export default function AdminDashboard() {
         borderWidth: 2,
         cornerRadius: 10,
         callbacks: {
-          label: (ctx) => `${ctx.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} BIG Points`
+          label: (ctx) => `${ctx.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} BIG`
         }
       }
     },
@@ -525,7 +525,7 @@ export default function AdminDashboard() {
     <ProtectedRoute adminOnly>
       <Head>
         <title>Admin Dashboard - BIGFOOT Connect</title>
-        <meta name="description" content="Painel administrativo de BIG Points" />
+        <meta name="description" content="Painel administrativo de BIG" />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
@@ -574,9 +574,9 @@ export default function AdminDashboard() {
           {/* Page Title */}
           <div className="text-center mb-12">
             <h1 className="text-5xl font-extrabold bg-gradient-to-r from-white via-orange-500 to-orange-400 bg-clip-text text-transparent mb-2">
-              Painel Administrativo - BIG Points
+              Painel Administrativo - BIG
             </h1>
-            <p className="text-gray-400 text-lg">Gerenciamento completo dos BIG Points da rede BIGFOOT Connect</p>
+            <p className="text-gray-400 text-lg">Gerenciamento completo dos BIG da rede BIGFOOT Connect</p>
           </div>
 
           {/* Summary Cards */}
@@ -587,7 +587,7 @@ export default function AdminDashboard() {
             />
             <SummaryCard
               value={totalBigPoints.toLocaleString()}
-              label="Total BIG Points"
+              label="Total BIG"
             />
             <SummaryCard
               value={monthlyBigPoints.toLocaleString()}
@@ -612,7 +612,7 @@ export default function AdminDashboard() {
           {/* Monthly Data Section */}
           <div className="bg-gray-800/80 backdrop-blur-xl border border-orange-500/20 rounded-3xl p-8 shadow-2xl">
             <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-white to-orange-500 bg-clip-text text-transparent mb-8">
-              Análise Mensal de BIG Points
+              Análise Mensal de BIG
             </h2>
 
             {/* Month Selector */}
@@ -635,7 +635,7 @@ export default function AdminDashboard() {
             {/* Loading */}
             {monthlyLoading && (
               <div className="text-center text-orange-500 text-xl font-semibold py-12">
-                Carregando análise mensal de BIG Points...
+                Carregando análise mensal de BIG...
               </div>
             )}
 
@@ -646,7 +646,7 @@ export default function AdminDashboard() {
                   <thead>
                     <tr className="bg-gradient-to-r from-orange-500 to-orange-600">
                       <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">E-mail</th>
-                      <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">BIG Points no Mês</th>
+                      <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">BIG no Mês</th>
                       <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">Dias Ativos</th>
                       <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">Média Diária</th>
                       <th className="px-4 py-4 text-left text-white font-bold uppercase tracking-wider">Endereço da Carteira</th>
@@ -682,7 +682,7 @@ export default function AdminDashboard() {
             {!monthlyLoading && chartData && (
               <div className="bg-gray-900/80 rounded-2xl p-6 border border-orange-500/20">
                 <h3 className="text-center text-orange-500 text-2xl font-bold mb-6">
-                  Evolução Diária de BIG Points - {availableMonths.find(m => m.key === selectedMonth)?.label}
+                  Evolução Diária de BIG - {availableMonths.find(m => m.key === selectedMonth)?.label}
                 </h3>
                 <div className="bg-gray-800/50 rounded-xl p-6 border border-orange-500/10" style={{ height: '400px' }}>
                   <Bar data={chartData} options={chartOptions} />
@@ -693,7 +693,7 @@ export default function AdminDashboard() {
             {/* No Data Message */}
             {!monthlyLoading && chartData === null && monthlyUserData.length === 0 && (
               <div className="text-center text-gray-400 text-lg py-12">
-                Nenhum dado de BIG Points para exibir neste mês
+                Nenhum dado de BIG para exibir neste mês
               </div>
             )}
           </div>
@@ -707,7 +707,7 @@ export default function AdminDashboard() {
 function SummaryCard({ value, label }) {
   return (
     <div className="bg-gray-800/80 backdrop-blur-xl border border-orange-500/20 rounded-2xl p-8 text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-orange-500/40 group">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 bg-[length:200%_100%] animate-[gradientShift_3s_ease-in-out_infinite]"></div>
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500"></div>
       <div className="absolute top-1/2 left-1/2 w-0 h-0 bg-orange-500/10 rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-500 group-hover:w-[300px] group-hover:h-[300px]"></div>
       <div className="relative z-10">
         <div className="text-5xl font-black bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent mb-4">
