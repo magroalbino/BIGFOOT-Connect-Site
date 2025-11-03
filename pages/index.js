@@ -366,7 +366,7 @@ export default function Home() {
         {/* Notification Toast */}
         {emailCopied && (
           <div className="fixed top-5 right-5 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg shadow-2xl font-semibold animate-fade-in">
-            ✓ Email copiado!
+            {language === 'pt' ? '✓ Email copiado!' : '✓ Email copied!'}
           </div>
         )}
       </div>
