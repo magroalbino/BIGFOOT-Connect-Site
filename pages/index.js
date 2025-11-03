@@ -241,7 +241,7 @@ export default function Home() {
             <a
               href="/docs/whitepaper.pdf"
               target="_blank"
-              className="inline-block bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="inline-block bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-500/50"
             >
               {t('whitepaperBtn')}
             </a>
