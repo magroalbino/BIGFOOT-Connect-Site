@@ -269,7 +269,7 @@ export default function Home() {
                 href="https://explorer.solana.com/address/39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8?cluster=mainnet"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-teal-400 hover:text-teal-300 underline font-mono"
+                className="text-teal-400 hover:text-teal-300 font-mono no-underline"
               >
                 39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8 🔗
               </a>
