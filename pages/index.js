@@ -19,20 +19,20 @@ export default function Home() {
   // Roadmap data
   const roadmapItems = {
     pt: [
-      { title: "Fase 1 (2025) – Lançamento ✅", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
-      { title: "Fase 2 (2026) – Criação da BIGchain", desc: "Nossa própria blockchain." },
-      { title: "Fase 3 (2026) – Integração com Extensão", desc: "Suporte para extensão de navegador." },
-      { title: "Fase 4 (2026) – Multiplataforma", desc: "Apps para Android e iOS." },
-      { title: "Fase 5 (2026) – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
-      { title: "Fase 6 (2026) – Recursos Avançados", desc: "Novos modelos de recompensas, análises e suporte a novos protocolos." },
+      { title: "Fase 1 2025 – Lançamento ✅", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas." },
+      { title: "Fase 2 2026 – Criação da BIGchain", desc: "Nossa própria blockchain." },
+      { title: "Fase 3 2026 – Integração com Extensão", desc: "Suporte para extensão de navegador." },
+      { title: "Fase 4 2026 – Multiplataforma", desc: "Apps para Android e iOS." },
+      { title: "Fase 5 2026 – Expansão da Rede", desc: "Parcerias estratégicas e expansão da base de usuários." },
+      { title: "Fase 6 2026 – Recursos Avançados", desc: "Novos modelos de recompensas, análises e suporte a novos protocolos." },
     ],
     en: [
-      { title: "Phase 1 (2025) – Launch ✅", desc: "Initial version with basic sharing features and rewards." },
-      { title: "Phase 2 (2026) – BIGchain Creation", desc: "Our own blockchain." },
-      { title: "Phase 3 (2026) – Extension Integration", desc: "Support for browser extension." },
-      { title: "Phase 4 (2026) – Multiplatform Platform", desc: "Apps for Android and iOS." },
-      { title: "Phase 5 (2026) – Network Expansion", desc: "Strategic partnerships and user base growth." },
-      { title: "Phase 6 (2026) – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
+      { title: "Phase 1 2025 – Launch ✅", desc: "Initial version with basic sharing features and rewards." },
+      { title: "Phase 2 2026 – BIGchain Creation", desc: "Our own blockchain." },
+      { title: "Phase 3 2026 – Extension Integration", desc: "Support for browser extension." },
+      { title: "Phase 4 2026 – Multiplatform Platform", desc: "Apps for Android and iOS." },
+      { title: "Phase 5 2026 – Network Expansion", desc: "Strategic partnerships and user base growth." },
+      { title: "Phase 6 2026 – Advanced Features", desc: "New reward models, analytics, and support for new protocols." },
     ]
   };
 
@@ -282,7 +282,7 @@ export default function Home() {
           {/* Roadmap Section */}
           <section className="w-full max-w-3xl py-8">
             <h2 className={`text-4xl font-bold text-center mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              🗺️ {t('roadmapTitle')}
+              {t('roadmapTitle')}
             </h2>
             <ul className="space-y-6">
               {roadmapItems[language]?.map((item, index) => (
@@ -366,7 +366,7 @@ export default function Home() {
         {/* Notification Toast */}
         {emailCopied && (
           <div className="fixed top-5 right-5 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg shadow-2xl font-semibold animate-fade-in">
-            ✓ Email copied!
+            ✓ Email copiado!
           </div>
         )}
       </div>
