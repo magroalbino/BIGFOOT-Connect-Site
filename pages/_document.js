@@ -14,12 +14,14 @@ export default function Document() {
         <link rel="dns-prefetch" href="https://api.bigfootconnect.tech" />
         <link rel="dns-prefetch" href="https://explorer.solana.com" />
         
-        {/* Favicon e App Icons */}
+        {/* Favicon e App Icons - MELHORADO */}
         <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/images/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/images/android-chrome-512x512.png" />
         
         {/* Manifest para PWA */}
         <link rel="manifest" href="/manifest.json" />
@@ -36,17 +38,20 @@ export default function Document() {
         <meta name="theme-color" content="#1F948C" media="(prefers-color-scheme: dark)" />
         <meta name="theme-color" content="#FF6B35" media="(prefers-color-scheme: light)" />
         <meta name="msapplication-TileColor" content="#1F948C" />
+        <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
         
         {/* Open Graph Default */}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="BIGFOOT Connect" />
         <meta property="og:locale" content="pt_BR" />
         <meta property="og:locale:alternate" content="en_US" />
+        <meta property="og:image" content="https://bigfootconnect.tech/images/logo.png" />
         
         {/* Twitter Card Default */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@BIGFOOT_Connect" />
         <meta name="twitter:creator" content="@BIGFOOT_Connect" />
+        <meta name="twitter:image" content="https://bigfootconnect.tech/images/logo.png" />
         
         {/* Preload critical assets */}
         <link
