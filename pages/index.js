@@ -200,7 +200,7 @@ export default function Home() {
           {/* CTA Buttons */}
           <div className="flex gap-4 flex-wrap justify-center mb-6">
             <a
-              href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.1.8/BIGFOOT-Connect-Setup-1.1.8.exe"
+              href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.1.9/BIGFOOT-Connect-Setup-1.1.9.exe"
               className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
               {t('downloadWindows')}
