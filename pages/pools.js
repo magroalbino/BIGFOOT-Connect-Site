@@ -150,6 +150,7 @@ const PoolsPage = () => {
       
       await initializeWhirlpoolClient(wallet);
       await loadBalances(response.publicKey);
+      await loadPoolData();
     } catch (err) {
       console.error('Error connecting to Phantom:', err);
       alert('Error connecting to wallet');
@@ -180,6 +181,7 @@ const PoolsPage = () => {
       
       await initializeWhirlpoolClient(wallet);
       await loadBalances(solflare.publicKey);
+      await loadPoolData();
     } catch (err) {
       console.error('Error connecting to Solflare:', err);
       alert('Error connecting to wallet');
@@ -238,37 +240,48 @@ const PoolsPage = () => {
   // Load Pool Data
   const loadPoolData = async () => {
     try {
-      // Fetch from Orca API
-      const response = await fetch('https://api.orca.so/v1/whirlpool/list');
-      const pools = await response.json();
-      
-      const bigSolPool = pools.whirlpools?.find(pool => 
-        (pool.tokenA.mint === BIG_TOKEN_MINT && pool.tokenB.mint === SOL_MINT) ||
-        (pool.tokenB.mint === BIG_TOKEN_MINT && pool.tokenA.mint === SOL_MINT)
-      );
+      // Set default values first
+      setPoolData({ tvl: 3.73, volume: 0, fees: 0, price: 0 });
 
-      if (bigSolPool) {
-        setPoolData({
-          tvl: bigSolPool.tvl || 3.73,
-          volume: bigSolPool.volume?.day || 0,
-          fees: bigSolPool.volumeFees?.day || 0,
-          price: bigSolPool.price || 0
-        });
+      // Try to fetch from Orca API
+      try {
+        const response = await fetch('https://api.orca.so/v1/whirlpool/list');
+        const pools = await response.json();
+        
+        const bigSolPool = pools.whirlpools?.find(pool => 
+          (pool.tokenA.mint === BIG_TOKEN_MINT && pool.tokenB.mint === SOL_MINT) ||
+          (pool.tokenB.mint === BIG_TOKEN_MINT && pool.tokenA.mint === SOL_MINT)
+        );
+
+        if (bigSolPool) {
+          setPoolData({
+            tvl: bigSolPool.tvl || 3.73,
+            volume: bigSolPool.volume?.day || 0,
+            fees: bigSolPool.volumeFees?.day || 0,
+            price: bigSolPool.price || 0
+          });
+        }
+      } catch (apiErr) {
+        console.log('Orca API not available, using defaults');
       }
 
-      // Also get data from whirlpool if available
+      // Get data from whirlpool if available
       if (whirlpool) {
-        const data = whirlpool.getData();
-        const price = PriceMath.sqrtPriceX64ToPrice(
-          data.sqrtPrice,
-          6, // BIG decimals
-          9  // SOL decimals
-        );
-        
-        setPoolData(prev => ({
-          ...prev,
-          price: price.toNumber()
-        }));
+        try {
+          const data = whirlpool.getData();
+          const price = PriceMath.sqrtPriceX64ToPrice(
+            data.sqrtPrice,
+            6, // BIG decimals
+            9  // SOL decimals
+          );
+          
+          setPoolData(prev => ({
+            ...prev,
+            price: price.toNumber()
+          }));
+        } catch (priceErr) {
+          console.log('Could not calculate price from whirlpool');
+        }
       }
     } catch (err) {
       console.error('Error loading pool data:', err);
@@ -704,143 +717,13 @@ const PoolsPage = () => {
               )}
 
               {!whirlpool && walletConnected && (
-                <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-xl text-center">
-                  <div className="text-yellow-400">⏳ {t.loadingPool}</div>
+                <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl text-center">
+                  <div className="text-blue-400">⏳ {t.loadingPool}</div>
                 </div>
               )}
             </div>
           </>
         )}
-
-        {/* Installation Instructions */}
-        <div className="mt-12 bg-gradient-to-r from-gray-800/50 to-gray-900/50 border border-gray-700 rounded-2xl p-8">
-          <h3 className="text-2xl font-bold mb-4 text-center">
-            📦 {lang === 'pt' ? 'Instruções de Instalação' : 'Installation Instructions'}
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h4 className="font-bold mb-2 text-orange-400">
-                {lang === 'pt' ? '1. Criar Projeto Next.js' : '1. Create Next.js Project'}
-              </h4>
-              <code className="block bg-black p-3 rounded text-sm text-green-400 overflow-x-auto">
-                npx create-next-app@latest bigfoot-pools<br/>
-                cd bigfoot-pools
-              </code>
-            </div>
-
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h4 className="font-bold mb-2 text-orange-400">
-                {lang === 'pt' ? '2. Instalar Dependências' : '2. Install Dependencies'}
-              </h4>
-              <code className="block bg-black p-3 rounded text-sm text-green-400 overflow-x-auto">
-                npm install @solana/web3.js @solana/spl-token<br/>
-                npm install @orca-so/whirlpools-sdk @orca-so/common-sdk<br/>
-                npm install @coral-xyz/anchor<br/>
-                npm install decimal.js
-              </code>
-            </div>
-
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h4 className="font-bold mb-2 text-orange-400">
-                {lang === 'pt' ? '3. Criar Página' : '3. Create Page'}
-              </h4>
-              <code className="block bg-black p-3 rounded text-sm text-green-400">
-                {lang === 'pt' 
-                  ? 'Copie este componente para: pages/pools.js ou app/pools/page.js'
-                  : 'Copy this component to: pages/pools.js or app/pools/page.js'}
-              </code>
-            </div>
-
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h4 className="font-bold mb-2 text-orange-400">
-                {lang === 'pt' ? '4. Configurar Tailwind CSS' : '4. Configure Tailwind CSS'}
-              </h4>
-              <code className="block bg-black p-3 rounded text-sm text-green-400 overflow-x-auto">
-                npm install -D tailwindcss postcss autoprefixer<br/>
-                npx tailwindcss init -p
-              </code>
-            </div>
-
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h4 className="font-bold mb-2 text-orange-400">
-                {lang === 'pt' ? '5. Executar Projeto' : '5. Run Project'}
-              </h4>
-              <code className="block bg-black p-3 rounded text-sm text-green-400">
-                npm run dev
-              </code>
-            </div>
-          </div>
-
-          <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl">
-            <h4 className="font-bold mb-2 text-blue-400">
-              ⚙️ {lang === 'pt' ? 'Configuração do tailwind.config.js' : 'tailwind.config.js Configuration'}
-            </h4>
-            <code className="block bg-black p-3 rounded text-xs text-gray-300 overflow-x-auto">
-              {`module.exports = {
-  content: [
-    "./pages/**/*.{js,jsx}",
-    "./components/**/*.{js,jsx}",
-    "./app/**/*.{js,jsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}`}
-            </code>
-          </div>
-
-          <div className="mt-6 p-4 bg-green-900/20 border border-green-500/30 rounded-xl">
-            <h4 className="font-bold mb-2 text-green-400">
-              ✅ {lang === 'pt' ? 'Funcionalidades Implementadas' : 'Implemented Features'}
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>✅ {lang === 'pt' ? 'Conexão com Phantom e Solflare' : 'Phantom and Solflare connection'}</li>
-              <li>✅ {lang === 'pt' ? 'Integração completa com Orca Whirlpool SDK' : 'Full Orca Whirlpool SDK integration'}</li>
-              <li>✅ {lang === 'pt' ? 'Adicionar liquidez com Position NFT' : 'Add liquidity with Position NFT'}</li>
-              <li>✅ {lang === 'pt' ? 'Remover liquidez e coletar taxas' : 'Remove liquidity and collect fees'}</li>
-              <li>✅ {lang === 'pt' ? 'Detecção automática de posições do usuário' : 'Automatic user position detection'}</li>
-              <li>✅ {lang === 'pt' ? 'Cálculo de preço e liquidez em tempo real' : 'Real-time price and liquidity calculations'}</li>
-              <li>✅ {lang === 'pt' ? 'Slippage protection (1%)' : 'Slippage protection (1%)'}</li>
-              <li>✅ {lang === 'pt' ? 'Multi-idioma (PT/EN)' : 'Multi-language (PT/EN)'}</li>
-              <li>✅ {lang === 'pt' ? 'Design responsivo com Tailwind' : 'Responsive design with Tailwind'}</li>
-            </ul>
-          </div>
-
-          <div className="mt-6 p-4 bg-orange-900/20 border border-orange-500/30 rounded-xl">
-            <h4 className="font-bold mb-2 text-orange-400">
-              ⚠️ {lang === 'pt' ? 'Notas Importantes' : 'Important Notes'}
-            </h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li>
-                🔹 {lang === 'pt' 
-                  ? 'As transações são executadas na mainnet-beta da Solana'
-                  : 'Transactions are executed on Solana mainnet-beta'}
-              </li>
-              <li>
-                🔹 {lang === 'pt'
-                  ? 'Certifique-se de ter SOL suficiente para taxas de transação (~0.01 SOL)'
-                  : 'Make sure you have enough SOL for transaction fees (~0.01 SOL)'}
-              </li>
-              <li>
-                🔹 {lang === 'pt'
-                  ? 'A liquidez é adicionada em full range (min-max ticks)'
-                  : 'Liquidity is added in full range (min-max ticks)'}
-              </li>
-              <li>
-                🔹 {lang === 'pt'
-                  ? 'Position NFTs são criados automaticamente ao adicionar liquidez'
-                  : 'Position NFTs are automatically created when adding liquidity'}
-              </li>
-              <li>
-                🔹 {lang === 'pt'
-                  ? 'Ao remover liquidez, taxas acumuladas são coletadas automaticamente'
-                  : 'When removing liquidity, accumulated fees are automatically collected'}
-              </li>
-            </ul>
-          </div>
-        </div>
 
         {/* Footer */}
         <div className="mt-8 text-center text-gray-500 text-sm">
