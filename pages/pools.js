@@ -36,7 +36,16 @@ const PoolsPage = () => {
   const ORCA_POOL_ADDRESS = 'aUJ4se8F91gBvHz2rixHRiJXygnm2YdPi34b7Sry9tS';
   const WHIRLPOOL_PROGRAM_ID = 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc';
 
-  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+  // Use Helius RPC (free tier with better limits)
+  const RPC_ENDPOINTS = [
+    'https://mainnet.helius-rpc.com/?api-key=public',
+    'https://solana-api.projectserum.com',
+    'https://rpc.ankr.com/solana',
+    'https://solana-mainnet.rpc.extrnode.com'
+  ];
+  
+  const [currentRpcIndex, setCurrentRpcIndex] = useState(0);
+  const connection = new Connection(RPC_ENDPOINTS[currentRpcIndex], 'confirmed');
 
   const translations = {
     en: {
@@ -65,7 +74,14 @@ const PoolsPage = () => {
       selectPosition: 'Select a position to remove:',
       confirmRemove: 'Confirm removal of liquidity?',
       loadingPool: 'Loading pool data...',
-      price: 'Current Price'
+      price: 'Current Price',
+      priceRange: 'Price Range',
+      fullRange: 'Full Range',
+      narrowRange: 'Narrow Range (±50%)',
+      customRange: 'Custom Range',
+      minPrice: 'Min Price',
+      maxPrice: 'Max Price',
+      concentratedInfo: 'Concentrated liquidity allows you to earn more fees by focusing your capital on a specific price range.'
     },
     pt: {
       title: '💧 Pools de Liquidez',
@@ -93,14 +109,21 @@ const PoolsPage = () => {
       selectPosition: 'Selecione uma posição para remover:',
       confirmRemove: 'Confirmar remoção de liquidez?',
       loadingPool: 'Carregando dados do pool...',
-      price: 'Preço Atual'
+      price: 'Preço Atual',
+      priceRange: 'Faixa de Preço',
+      fullRange: 'Faixa Completa',
+      narrowRange: 'Faixa Estreita (±50%)',
+      customRange: 'Faixa Personalizada',
+      minPrice: 'Preço Mínimo',
+      maxPrice: 'Preço Máximo',
+      concentratedInfo: 'Liquidez concentrada permite ganhar mais taxas ao focar seu capital em uma faixa de preço específica.'
     }
   };
 
   const t = translations[lang];
 
-  // Initialize Whirlpool Client
-  const initializeWhirlpoolClient = async (wallet) => {
+  // Initialize Whirlpool Client with retry logic
+  const initializeWhirlpoolClient = async (wallet, retryCount = 0) => {
     try {
       const anchorProvider = new AnchorProvider(
         connection,
@@ -122,9 +145,20 @@ const PoolsPage = () => {
       const whirlpoolData = await client.getPool(whirlpoolPubkey);
       setWhirlpool(whirlpoolData);
 
+      console.log('✅ Whirlpool client initialized successfully');
       return { client, whirlpool: whirlpoolData };
     } catch (err) {
       console.error('Error initializing Whirlpool client:', err);
+      
+      // Try next RPC endpoint if available
+      if (retryCount < RPC_ENDPOINTS.length - 1 && err.message.includes('403')) {
+        console.log(`🔄 Trying next RPC endpoint (${retryCount + 1}/${RPC_ENDPOINTS.length - 1})...`);
+        setCurrentRpcIndex(retryCount + 1);
+        // Wait a bit before retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return initializeWhirlpoolClient(wallet, retryCount + 1);
+      }
+      
       return null;
     }
   };
@@ -205,8 +239,8 @@ const PoolsPage = () => {
     setWhirlpool(null);
   };
 
-  // Load Balances
-  const loadBalances = async (pubKey) => {
+  // Load Balances with retry logic
+  const loadBalances = async (pubKey, retryCount = 0) => {
     if (!pubKey) return;
 
     try {
@@ -230,6 +264,8 @@ const PoolsPage = () => {
         sol: solBalanceFormatted
       });
 
+      console.log('✅ Balances loaded:', { big: bigBalance, sol: solBalanceFormatted });
+
       // Load pool data
       await loadPoolData();
       
@@ -237,6 +273,17 @@ const PoolsPage = () => {
       await loadUserPositions(pubKey);
     } catch (err) {
       console.error('Error loading balances:', err);
+      
+      // Try next RPC endpoint if 403 error
+      if (retryCount < RPC_ENDPOINTS.length - 1 && err.message.includes('403')) {
+        console.log(`🔄 Trying next RPC for balances (${retryCount + 1}/${RPC_ENDPOINTS.length - 1})...`);
+        setCurrentRpcIndex(retryCount + 1);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return loadBalances(pubKey, retryCount + 1);
+      }
+      
+      // Set default values on error
+      setBalances({ big: 0, sol: 0 });
     }
   };
 
@@ -340,14 +387,41 @@ const PoolsPage = () => {
 
     try {
       const poolData = whirlpool.getData();
+      const currentPrice = PriceMath.sqrtPriceX64ToPrice(
+        poolData.sqrtPrice,
+        6, // BIG decimals
+        9  // SOL decimals
+      ).toNumber();
       
       // Convert amounts to token units
-      const bigAmountBN = DecimalUtil.toBN(new Decimal(bigAmt), 6); // BIG has 6 decimals
-      const solAmountBN = DecimalUtil.toBN(new Decimal(solAmt), 9); // SOL has 9 decimals
+      const bigAmountBN = DecimalUtil.toBN(new Decimal(bigAmt), 6);
+      const solAmountBN = DecimalUtil.toBN(new Decimal(solAmt), 9);
 
-      // Define tick range (Full range: min to max)
-      const tickLower = -443636; // Min tick
-      const tickUpper = 443636;  // Max tick
+      // Calculate tick range based on user selection
+      let tickLower, tickUpper;
+      
+      if (priceRange === 'full') {
+        tickLower = -443636; // Min tick
+        tickUpper = 443636;  // Max tick
+      } else if (priceRange === 'narrow') {
+        // ±50% from current price
+        const lowerPrice = currentPrice * 0.5;
+        const upperPrice = currentPrice * 1.5;
+        tickLower = PriceMath.priceToTickIndex(new Decimal(lowerPrice), 6, 9);
+        tickUpper = PriceMath.priceToTickIndex(new Decimal(upperPrice), 6, 9);
+      } else if (priceRange === 'custom') {
+        const minPriceVal = parseFloat(minPrice);
+        const maxPriceVal = parseFloat(maxPrice);
+        
+        if (!minPriceVal || !maxPriceVal || minPriceVal >= maxPriceVal) {
+          alert(lang === 'pt' ? 'Por favor, insira preços válidos' : 'Please enter valid prices');
+          setLoading(false);
+          return;
+        }
+        
+        tickLower = PriceMath.priceToTickIndex(new Decimal(minPriceVal), 6, 9);
+        tickUpper = PriceMath.priceToTickIndex(new Decimal(maxPriceVal), 6, 9);
+      }
 
       // Get liquidity quote
       const quote = increaseLiquidityQuoteByInputTokenWithParams({
@@ -368,13 +442,6 @@ const PoolsPage = () => {
         tickUpper,
         quote
       );
-
-      // Sign and send transaction
-      const wallet = {
-        publicKey,
-        signTransaction: provider.signTransaction.bind(provider),
-        signAllTransactions: provider.signAllTransactions.bind(provider)
-      };
 
       const signature = await tx.buildAndExecute();
       
@@ -573,8 +640,8 @@ const PoolsPage = () => {
           <>
             {/* Info Box */}
             <div className="bg-gradient-to-r from-orange-900/30 to-yellow-900/30 border-l-4 border-orange-500 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold mb-2">💡 {lang === 'pt' ? 'Como Funciona' : 'How It Works'}</h3>
-              <p className="text-gray-300">{t.info}</p>
+              <h3 className="text-xl font-bold mb-2">💡 {lang === 'pt' ? 'Liquidez Concentrada' : 'Concentrated Liquidity'}</h3>
+              <p className="text-gray-300">{t.concentratedInfo}</p>
             </div>
 
             {/* Pool Card */}
@@ -635,6 +702,70 @@ const PoolsPage = () => {
                   </div>
                 </div>
               )}
+
+              {/* Price Range Selection */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold mb-3">{t.priceRange}</label>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <button
+                    onClick={() => setPriceRange('full')}
+                    className={`py-3 px-4 rounded-xl font-semibold transition ${
+                      priceRange === 'full'
+                        ? 'bg-orange-600 border-2 border-orange-400'
+                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
+                    }`}
+                  >
+                    {t.fullRange}
+                  </button>
+                  <button
+                    onClick={() => setPriceRange('narrow')}
+                    className={`py-3 px-4 rounded-xl font-semibold transition ${
+                      priceRange === 'narrow'
+                        ? 'bg-orange-600 border-2 border-orange-400'
+                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
+                    }`}
+                  >
+                    {t.narrowRange}
+                  </button>
+                  <button
+                    onClick={() => setPriceRange('custom')}
+                    className={`py-3 px-4 rounded-xl font-semibold transition ${
+                      priceRange === 'custom'
+                        ? 'bg-orange-600 border-2 border-orange-400'
+                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
+                    }`}
+                  >
+                    {t.customRange}
+                  </button>
+                </div>
+
+                {priceRange === 'custom' && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">{t.minPrice}</label>
+                      <input
+                        type="number"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        placeholder="0.0"
+                        step="0.00000001"
+                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">{t.maxPrice}</label>
+                      <input
+                        type="number"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        placeholder="0.0"
+                        step="0.00000001"
+                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Input Fields */}
               <div className="space-y-4 mb-6">
@@ -721,7 +852,14 @@ const PoolsPage = () => {
 
               {!whirlpool && walletConnected && (
                 <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl text-center">
-                  <div className="text-blue-400">⏳ {t.loadingPool}</div>
+                  <div className="text-blue-400">
+                    ⏳ {t.loadingPool}
+                    {currentRpcIndex > 0 && (
+                      <div className="text-xs mt-2 text-gray-400">
+                        {lang === 'pt' ? `Tentando RPC alternativo (${currentRpcIndex + 1}/${RPC_ENDPOINTS.length})...` : `Trying alternative RPC (${currentRpcIndex + 1}/${RPC_ENDPOINTS.length})...`}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -733,6 +871,9 @@ const PoolsPage = () => {
           <p>© 2025 BIGFOOT Connect. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
           <p className="mt-2">
             🔗 Pool: <code className="bg-gray-800 px-2 py-1 rounded text-xs">{ORCA_POOL_ADDRESS}</code>
+          </p>
+          <p className="mt-1 text-xs">
+            🌐 RPC: <code className="bg-gray-800 px-2 py-1 rounded">{RPC_ENDPOINTS[currentRpcIndex].split('?')[0].replace('https://', '')}</code>
           </p>
         </div>
       </div>
