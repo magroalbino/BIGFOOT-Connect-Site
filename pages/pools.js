@@ -26,6 +26,9 @@ const PoolsPage = () => {
   const [whirlpoolClient, setWhirlpoolClient] = useState(null);
   const [whirlpool, setWhirlpool] = useState(null);
   const [lang, setLang] = useState('pt');
+  const [priceRange, setPriceRange] = useState('full'); // 'full', 'narrow', 'custom'
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
 
   // Constants
   const BIG_TOKEN_MINT = '39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
