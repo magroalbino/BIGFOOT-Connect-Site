@@ -1,879 +1,309 @@
-import React, { useState, useEffect } from 'react';
-import { Connection, PublicKey, Keypair } from '@solana/web3.js';
-import { AnchorProvider, Wallet } from '@coral-xyz/anchor';
-import { 
-  WhirlpoolContext, 
-  buildWhirlpoolClient,
-  PDAUtil,
-  PoolUtil,
-  PriceMath,
-  increaseLiquidityQuoteByInputTokenWithParams,
-  decreaseLiquidityQuoteByLiquidityWithParams
-} from '@orca-so/whirlpools-sdk';
-import { DecimalUtil, Percentage } from '@orca-so/common-sdk';
-import Decimal from 'decimal.js';
+import React, { useState } from 'react';
+import { ExternalLink, Droplets, TrendingUp, Shield, Zap, Award, ArrowRight } from 'lucide-react';
 
 const PoolsPage = () => {
-  const [walletConnected, setWalletConnected] = useState(false);
-  const [publicKey, setPublicKey] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [balances, setBalances] = useState({ big: 0, sol: 0 });
-  const [userPositions, setUserPositions] = useState([]);
-  const [bigAmount, setBigAmount] = useState('');
-  const [solAmount, setSolAmount] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [poolData, setPoolData] = useState({ tvl: 0, volume: 0, fees: 0, price: 0 });
-  const [whirlpoolClient, setWhirlpoolClient] = useState(null);
-  const [whirlpool, setWhirlpool] = useState(null);
   const [lang, setLang] = useState('pt');
-  const [priceRange, setPriceRange] = useState('full'); // 'full', 'narrow', 'custom'
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
 
   // Constants
   const BIG_TOKEN_MINT = '39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
-  const SOL_MINT = 'So11111111111111111111111111111111111111112';
-  const ORCA_POOL_ADDRESS = 'aUJ4se8F91gBvHz2rixHRiJXygnm2YdPi34b7Sry9tS';
-  const WHIRLPOOL_PROGRAM_ID = 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc';
-
-  // Use Helius RPC (free tier with better limits)
-  const RPC_ENDPOINTS = [
-    'https://mainnet.helius-rpc.com/?api-key=public',
-    'https://solana-api.projectserum.com',
-    'https://rpc.ankr.com/solana',
-    'https://solana-mainnet.rpc.extrnode.com'
-  ];
-  
-  const [currentRpcIndex, setCurrentRpcIndex] = useState(0);
-  const connection = new Connection(RPC_ENDPOINTS[currentRpcIndex], 'confirmed');
+  const ORCA_POOL_URL = 'https://www.orca.so/pools?tokens=39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
+  const ORCA_PORTFOLIO_URL = 'https://www.orca.so/portfolio';
 
   const translations = {
     en: {
-      title: '💧 Liquidity Pools',
-      description: 'Add liquidity to pools and earn rewards',
-      connectWallet: 'Connect Wallet',
-      disconnect: 'Disconnect',
-      connected: 'Connected',
-      bigBalance: 'BIG Balance:',
-      solBalance: 'SOL Balance:',
-      tvl: 'TVL',
-      volume: '24h Volume',
-      fees: '24h Fees',
-      apr: 'APR',
-      bigAmount: 'BIG Amount',
-      solAmount: 'SOL Amount',
-      addLiquidity: '➕ Add Liquidity',
-      removeLiquidity: '➖ Remove',
-      processing: 'Processing...',
-      insufficientBalance: 'Insufficient balance',
-      invalidAmount: 'Please enter valid amounts',
-      transactionSuccess: 'Transaction successful!',
-      transactionError: 'Transaction error',
-      noPositions: 'No liquidity positions found',
-      info: 'When you add liquidity, you receive an NFT position token representing your pool share and concentrated liquidity range.',
-      selectPosition: 'Select a position to remove:',
-      confirmRemove: 'Confirm removal of liquidity?',
-      loadingPool: 'Loading pool data...',
-      price: 'Current Price',
-      priceRange: 'Price Range',
-      fullRange: 'Full Range',
-      narrowRange: 'Narrow Range (±50%)',
-      customRange: 'Custom Range',
-      minPrice: 'Min Price',
-      maxPrice: 'Max Price',
-      concentratedInfo: 'Concentrated liquidity allows you to earn more fees by focusing your capital on a specific price range.'
+      title: '💧 BIG/SOL Liquidity Pool',
+      subtitle: 'Earn rewards by providing liquidity',
+      whyAddLiquidity: 'Why Add Liquidity?',
+      benefit1Title: 'Earn Trading Fees',
+      benefit1Desc: 'Receive 0.3% of all trades in the pool',
+      benefit2Title: 'Increase BIG Value',
+      benefit2Desc: 'More liquidity = higher token value',
+      benefit3Title: 'Position NFT',
+      benefit3Desc: 'Get a unique NFT representing your position',
+      howItWorks: 'How It Works',
+      step1: 'Connect your wallet (Phantom, Solflare, etc)',
+      step2: 'Deposit BIG and SOL tokens',
+      step3: 'Receive a Position NFT',
+      step4: 'Start earning fees from every trade',
+      step5: 'Withdraw anytime with your accumulated fees',
+      goToOrca: 'Go to Orca Pool',
+      managePositions: 'Manage My Positions',
+      poolInfo: 'Pool Information',
+      tokenAddress: 'BIG Token Address',
+      poolAddress: 'Pool Address',
+      platform: 'Platform',
+      fee: 'Trading Fee',
+      protocol: 'Protocol',
+      security: 'Security & Trust',
+      securityDesc: 'Orca is one of the most trusted DEXs on Solana, with millions in TVL and audited smart contracts.',
+      whyOrca: 'Why Orca?',
+      whyOrcaDesc: 'Orca offers the best liquidity experience on Solana with concentrated liquidity (Whirlpools), low fees, and a user-friendly interface.',
+      copyAddress: 'Copy Address',
+      copied: 'Copied!',
+      learnMore: 'Learn More',
+      statsTitle: 'Current Pool Stats',
+      tvl: 'Total Value Locked',
+      apr: 'Estimated APR',
+      volume24h: '24h Volume',
+      fees24h: '24h Fees',
     },
     pt: {
-      title: '💧 Pools de Liquidez',
-      description: 'Adicione liquidez aos pools e ganhe recompensas',
-      connectWallet: 'Conectar Carteira',
-      disconnect: 'Desconectar',
-      connected: 'Conectado',
-      bigBalance: 'Saldo BIG:',
-      solBalance: 'Saldo SOL:',
-      tvl: 'TVL',
-      volume: 'Volume 24h',
-      fees: 'Taxas 24h',
-      apr: 'APR',
-      bigAmount: 'Quantidade de BIG',
-      solAmount: 'Quantidade de SOL',
-      addLiquidity: '➕ Adicionar Liquidez',
-      removeLiquidity: '➖ Remover',
-      processing: 'Processando...',
-      insufficientBalance: 'Saldo insuficiente',
-      invalidAmount: 'Por favor, insira valores válidos',
-      transactionSuccess: 'Transação realizada com sucesso!',
-      transactionError: 'Erro na transação',
-      noPositions: 'Nenhuma posição de liquidez encontrada',
-      info: 'Ao adicionar liquidez, você recebe um NFT de posição representando sua participação no pool e faixa de liquidez concentrada.',
-      selectPosition: 'Selecione uma posição para remover:',
-      confirmRemove: 'Confirmar remoção de liquidez?',
-      loadingPool: 'Carregando dados do pool...',
-      price: 'Preço Atual',
-      priceRange: 'Faixa de Preço',
-      fullRange: 'Faixa Completa',
-      narrowRange: 'Faixa Estreita (±50%)',
-      customRange: 'Faixa Personalizada',
-      minPrice: 'Preço Mínimo',
-      maxPrice: 'Preço Máximo',
-      concentratedInfo: 'Liquidez concentrada permite ganhar mais taxas ao focar seu capital em uma faixa de preço específica.'
+      title: '💧 Pool de Liquidez BIG/SOL',
+      subtitle: 'Ganhe recompensas fornecendo liquidez',
+      whyAddLiquidity: 'Por Que Adicionar Liquidez?',
+      benefit1Title: 'Ganhe Taxas de Trading',
+      benefit1Desc: 'Receba 0.3% de todas as negociações na pool',
+      benefit2Title: 'Aumente o Valor do BIG',
+      benefit2Desc: 'Mais liquidez = maior valor do token',
+      benefit3Title: 'NFT de Posição',
+      benefit3Desc: 'Receba um NFT único representando sua posição',
+      howItWorks: 'Como Funciona',
+      step1: 'Conecte sua carteira (Phantom, Solflare, etc)',
+      step2: 'Deposite tokens BIG e SOL',
+      step3: 'Receba um NFT de Posição',
+      step4: 'Comece a ganhar taxas de cada negociação',
+      step5: 'Retire quando quiser com suas taxas acumuladas',
+      goToOrca: 'Ir para Pool na Orca',
+      managePositions: 'Gerenciar Minhas Posições',
+      poolInfo: 'Informações da Pool',
+      tokenAddress: 'Endereço do Token BIG',
+      poolAddress: 'Endereço da Pool',
+      platform: 'Plataforma',
+      fee: 'Taxa de Trading',
+      protocol: 'Protocolo',
+      security: 'Segurança e Confiança',
+      securityDesc: 'Orca é uma das DEXs mais confiáveis da Solana, com milhões em TVL e contratos inteligentes auditados.',
+      whyOrca: 'Por Que Orca?',
+      whyOrcaDesc: 'Orca oferece a melhor experiência de liquidez na Solana com liquidez concentrada (Whirlpools), taxas baixas e interface amigável.',
+      copyAddress: 'Copiar Endereço',
+      copied: 'Copiado!',
+      learnMore: 'Saiba Mais',
+      statsTitle: 'Estatísticas Atuais da Pool',
+      tvl: 'Valor Total Bloqueado',
+      apr: 'APR Estimado',
+      volume24h: 'Volume 24h',
+      fees24h: 'Taxas 24h',
     }
   };
 
   const t = translations[lang];
 
-  // Initialize Whirlpool Client with retry logic
-  const initializeWhirlpoolClient = async (wallet, retryCount = 0) => {
-    try {
-      const anchorProvider = new AnchorProvider(
-        connection,
-        wallet,
-        AnchorProvider.defaultOptions()
-      );
+  const [copiedAddress, setCopiedAddress] = useState('');
 
-      const ctx = WhirlpoolContext.from(
-        connection,
-        wallet,
-        new PublicKey(WHIRLPOOL_PROGRAM_ID)
-      );
-
-      const client = buildWhirlpoolClient(ctx);
-      setWhirlpoolClient(client);
-
-      // Fetch whirlpool
-      const whirlpoolPubkey = new PublicKey(ORCA_POOL_ADDRESS);
-      const whirlpoolData = await client.getPool(whirlpoolPubkey);
-      setWhirlpool(whirlpoolData);
-
-      console.log('✅ Whirlpool client initialized successfully');
-      return { client, whirlpool: whirlpoolData };
-    } catch (err) {
-      console.error('Error initializing Whirlpool client:', err);
-      
-      // Try next RPC endpoint if available
-      if (retryCount < RPC_ENDPOINTS.length - 1 && err.message.includes('403')) {
-        console.log(`🔄 Trying next RPC endpoint (${retryCount + 1}/${RPC_ENDPOINTS.length - 1})...`);
-        setCurrentRpcIndex(retryCount + 1);
-        // Wait a bit before retry
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return initializeWhirlpoolClient(wallet, retryCount + 1);
-      }
-      
-      return null;
-    }
+  const copyToClipboard = (text, label) => {
+    navigator.clipboard.writeText(text);
+    setCopiedAddress(label);
+    setTimeout(() => setCopiedAddress(''), 2000);
   };
 
-  // Connect Phantom Wallet
-  const connectPhantom = async () => {
-    try {
-      const { solana } = window;
-      
-      if (!solana || !solana.isPhantom) {
-        alert('Please install Phantom Wallet: https://phantom.app/');
-        window.open('https://phantom.app/', '_blank');
-        return;
-      }
-
-      const response = await solana.connect();
-      const wallet = {
-        publicKey: response.publicKey,
-        signTransaction: solana.signTransaction.bind(solana),
-        signAllTransactions: solana.signAllTransactions.bind(solana)
-      };
-
-      setProvider(solana);
-      setPublicKey(response.publicKey);
-      setWalletConnected(true);
-      
-      await initializeWhirlpoolClient(wallet);
-      await loadBalances(response.publicKey);
-      await loadPoolData();
-    } catch (err) {
-      console.error('Error connecting to Phantom:', err);
-      alert('Error connecting to wallet');
-    }
+  const openOrcaPool = () => {
+    window.open(ORCA_POOL_URL, '_blank', 'noopener,noreferrer');
   };
 
-  // Connect Solflare Wallet
-  const connectSolflare = async () => {
-    try {
-      const { solflare } = window;
-      
-      if (!solflare) {
-        alert('Please install Solflare: https://solflare.com/');
-        window.open('https://solflare.com/', '_blank');
-        return;
-      }
-
-      await solflare.connect();
-      const wallet = {
-        publicKey: solflare.publicKey,
-        signTransaction: solflare.signTransaction.bind(solflare),
-        signAllTransactions: solflare.signAllTransactions.bind(solflare)
-      };
-
-      setProvider(solflare);
-      setPublicKey(solflare.publicKey);
-      setWalletConnected(true);
-      
-      await initializeWhirlpoolClient(wallet);
-      await loadBalances(solflare.publicKey);
-      await loadPoolData();
-    } catch (err) {
-      console.error('Error connecting to Solflare:', err);
-      alert('Error connecting to wallet');
-    }
-  };
-
-  // Disconnect Wallet
-  const disconnectWallet = () => {
-    if (provider && provider.disconnect) {
-      provider.disconnect();
-    }
-    setWalletConnected(false);
-    setProvider(null);
-    setPublicKey(null);
-    setBalances({ big: 0, sol: 0 });
-    setUserPositions([]);
-    setWhirlpoolClient(null);
-    setWhirlpool(null);
-  };
-
-  // Load Balances with retry logic
-  const loadBalances = async (pubKey, retryCount = 0) => {
-    if (!pubKey) return;
-
-    try {
-      // Get SOL balance
-      const solBalance = await connection.getBalance(pubKey);
-      const solBalanceFormatted = (solBalance / 1e9).toFixed(4);
-
-      // Get BIG token balance
-      const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-        pubKey,
-        { mint: new PublicKey(BIG_TOKEN_MINT) }
-      );
-
-      let bigBalance = 0;
-      if (tokenAccounts.value.length > 0) {
-        bigBalance = tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-      }
-
-      setBalances({
-        big: bigBalance.toFixed(2),
-        sol: solBalanceFormatted
-      });
-
-      console.log('✅ Balances loaded:', { big: bigBalance, sol: solBalanceFormatted });
-
-      // Load pool data
-      await loadPoolData();
-      
-      // Load user positions
-      await loadUserPositions(pubKey);
-    } catch (err) {
-      console.error('Error loading balances:', err);
-      
-      // Try next RPC endpoint if 403 error
-      if (retryCount < RPC_ENDPOINTS.length - 1 && err.message.includes('403')) {
-        console.log(`🔄 Trying next RPC for balances (${retryCount + 1}/${RPC_ENDPOINTS.length - 1})...`);
-        setCurrentRpcIndex(retryCount + 1);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return loadBalances(pubKey, retryCount + 1);
-      }
-      
-      // Set default values on error
-      setBalances({ big: 0, sol: 0 });
-    }
-  };
-
-  // Load Pool Data
-  const loadPoolData = async () => {
-    try {
-      // Set default values first
-      setPoolData({ tvl: 3.73, volume: 0, fees: 0, price: 0 });
-
-      // Try to fetch from Orca API
-      try {
-        const response = await fetch('https://api.orca.so/v1/whirlpool/list');
-        const pools = await response.json();
-        
-        const bigSolPool = pools.whirlpools?.find(pool => 
-          (pool.tokenA.mint === BIG_TOKEN_MINT && pool.tokenB.mint === SOL_MINT) ||
-          (pool.tokenB.mint === BIG_TOKEN_MINT && pool.tokenA.mint === SOL_MINT)
-        );
-
-        if (bigSolPool) {
-          setPoolData({
-            tvl: bigSolPool.tvl || 3.73,
-            volume: bigSolPool.volume?.day || 0,
-            fees: bigSolPool.volumeFees?.day || 0,
-            price: bigSolPool.price || 0
-          });
-        }
-      } catch (apiErr) {
-        console.log('Orca API not available, using defaults');
-      }
-
-      // Get data from whirlpool if available
-      if (whirlpool) {
-        try {
-          const data = whirlpool.getData();
-          const price = PriceMath.sqrtPriceX64ToPrice(
-            data.sqrtPrice,
-            6, // BIG decimals
-            9  // SOL decimals
-          );
-          
-          setPoolData(prev => ({
-            ...prev,
-            price: price.toNumber()
-          }));
-        } catch (priceErr) {
-          console.log('Could not calculate price from whirlpool');
-        }
-      }
-    } catch (err) {
-      console.error('Error loading pool data:', err);
-      setPoolData({ tvl: 3.73, volume: 0, fees: 0, price: 0 });
-    }
-  };
-
-  // Load User Positions
-  const loadUserPositions = async (pubKey) => {
-    if (!whirlpoolClient) return;
-
-    try {
-      const positions = await whirlpoolClient.getUserPositions(pubKey);
-      
-      // Filter positions for our BIG/SOL pool
-      const poolPositions = positions.filter(pos => 
-        pos.whirlpool.toString() === ORCA_POOL_ADDRESS
-      );
-
-      setUserPositions(poolPositions);
-    } catch (err) {
-      console.error('Error loading positions:', err);
-      setUserPositions([]);
-    }
-  };
-
-  // Add Liquidity
-  const handleAddLiquidity = async () => {
-    if (!walletConnected || !whirlpoolClient || !whirlpool) {
-      alert('Please connect your wallet first');
-      return;
-    }
-
-    const bigAmt = parseFloat(bigAmount);
-    const solAmt = parseFloat(solAmount);
-
-    if (!bigAmt || !solAmt || bigAmt <= 0 || solAmt <= 0) {
-      alert(t.invalidAmount);
-      return;
-    }
-
-    if (bigAmt > parseFloat(balances.big)) {
-      alert(t.insufficientBalance + ' BIG');
-      return;
-    }
-
-    if (solAmt > (parseFloat(balances.sol) - 0.01)) {
-      alert(t.insufficientBalance + ' SOL');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const poolData = whirlpool.getData();
-      const currentPrice = PriceMath.sqrtPriceX64ToPrice(
-        poolData.sqrtPrice,
-        6, // BIG decimals
-        9  // SOL decimals
-      ).toNumber();
-      
-      // Convert amounts to token units
-      const bigAmountBN = DecimalUtil.toBN(new Decimal(bigAmt), 6);
-      const solAmountBN = DecimalUtil.toBN(new Decimal(solAmt), 9);
-
-      // Calculate tick range based on user selection
-      let tickLower, tickUpper;
-      
-      if (priceRange === 'full') {
-        tickLower = -443636; // Min tick
-        tickUpper = 443636;  // Max tick
-      } else if (priceRange === 'narrow') {
-        // ±50% from current price
-        const lowerPrice = currentPrice * 0.5;
-        const upperPrice = currentPrice * 1.5;
-        tickLower = PriceMath.priceToTickIndex(new Decimal(lowerPrice), 6, 9);
-        tickUpper = PriceMath.priceToTickIndex(new Decimal(upperPrice), 6, 9);
-      } else if (priceRange === 'custom') {
-        const minPriceVal = parseFloat(minPrice);
-        const maxPriceVal = parseFloat(maxPrice);
-        
-        if (!minPriceVal || !maxPriceVal || minPriceVal >= maxPriceVal) {
-          alert(lang === 'pt' ? 'Por favor, insira preços válidos' : 'Please enter valid prices');
-          setLoading(false);
-          return;
-        }
-        
-        tickLower = PriceMath.priceToTickIndex(new Decimal(minPriceVal), 6, 9);
-        tickUpper = PriceMath.priceToTickIndex(new Decimal(maxPriceVal), 6, 9);
-      }
-
-      // Get liquidity quote
-      const quote = increaseLiquidityQuoteByInputTokenWithParams({
-        tokenMintA: new PublicKey(BIG_TOKEN_MINT),
-        tokenMintB: new PublicKey(SOL_MINT),
-        sqrtPrice: poolData.sqrtPrice,
-        tickCurrentIndex: poolData.tickCurrentIndex,
-        tickLowerIndex: tickLower,
-        tickUpperIndex: tickUpper,
-        inputTokenMint: new PublicKey(BIG_TOKEN_MINT),
-        inputTokenAmount: bigAmountBN,
-        slippageTolerance: Percentage.fromFraction(10, 1000), // 1% slippage
-      });
-
-      // Open position and add liquidity
-      const { tx, positionMint } = await whirlpool.openPositionWithMetadata(
-        tickLower,
-        tickUpper,
-        quote
-      );
-
-      const signature = await tx.buildAndExecute();
-      
-      alert(`${t.transactionSuccess}\n\nSignature: ${signature}\nPosition NFT: ${positionMint.toString()}`);
-      
-      // Clear inputs and reload
-      setBigAmount('');
-      setSolAmount('');
-      await loadBalances(publicKey);
-    } catch (err) {
-      console.error('Error adding liquidity:', err);
-      alert(t.transactionError + ': ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Remove Liquidity
-  const handleRemoveLiquidity = async () => {
-    if (!walletConnected || !whirlpoolClient) {
-      alert('Please connect your wallet first');
-      return;
-    }
-
-    if (userPositions.length === 0) {
-      alert(t.noPositions);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // If multiple positions, let user select
-      let selectedPosition = userPositions[0];
-      
-      if (userPositions.length > 1) {
-        const positionList = userPositions.map((pos, idx) => 
-          `${idx + 1}. ${pos.positionAddress.toString().slice(0, 8)}...`
-        ).join('\n');
-        
-        const selection = prompt(`${t.selectPosition}\n\n${positionList}\n\nEnter number:`);
-        const idx = parseInt(selection) - 1;
-        
-        if (idx >= 0 && idx < userPositions.length) {
-          selectedPosition = userPositions[idx];
-        } else {
-          alert('Invalid selection');
-          setLoading(false);
-          return;
-        }
-      }
-
-      const confirmed = window.confirm(t.confirmRemove);
-      if (!confirmed) {
-        setLoading(false);
-        return;
-      }
-
-      // Get position data
-      const position = await whirlpoolClient.getPosition(selectedPosition.positionAddress);
-      const positionData = position.getData();
-
-      // Calculate quote for removing all liquidity
-      const quote = decreaseLiquidityQuoteByLiquidityWithParams({
-        sqrtPrice: whirlpool.getData().sqrtPrice,
-        tickCurrentIndex: whirlpool.getData().tickCurrentIndex,
-        tickLowerIndex: positionData.tickLowerIndex,
-        tickUpperIndex: positionData.tickUpperIndex,
-        liquidity: positionData.liquidity,
-        slippageTolerance: Percentage.fromFraction(10, 1000), // 1% slippage
-      });
-
-      // Decrease liquidity
-      const decreaseTx = await position.decreaseLiquidity(quote);
-      const decreaseSig = await decreaseTx.buildAndExecute();
-
-      // Collect fees and rewards
-      const collectTx = await position.collectFees(true, true);
-      const collectSig = await collectTx.buildAndExecute();
-
-      // Close position
-      const closeTx = await position.closePosition(publicKey);
-      const closeSig = await closeTx.buildAndExecute();
-
-      alert(`${t.transactionSuccess}\n\nDecrease: ${decreaseSig}\nCollect: ${collectSig}\nClose: ${closeSig}`);
-      
-      await loadBalances(publicKey);
-    } catch (err) {
-      console.error('Error removing liquidity:', err);
-      alert(t.transactionError + ': ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle MAX buttons
-  const handleMaxBig = () => {
-    setBigAmount(balances.big);
-    // Auto-calculate SOL based on pool price
-    if (poolData.price > 0) {
-      const solNeeded = parseFloat(balances.big) * poolData.price;
-      setSolAmount(solNeeded.toFixed(6));
-    }
-  };
-
-  const handleMaxSol = () => {
-    const maxSol = Math.max(0, parseFloat(balances.sol) - 0.01);
-    setSolAmount(maxSol.toFixed(4));
-    // Auto-calculate BIG based on pool price
-    if (poolData.price > 0) {
-      const bigNeeded = maxSol / poolData.price;
-      setBigAmount(bigNeeded.toFixed(2));
-    }
-  };
-
-  // Auto-calculate proportional amounts
-  const handleBigChange = (value) => {
-    setBigAmount(value);
-    if (poolData.price > 0 && value) {
-      const solNeeded = parseFloat(value) * poolData.price;
-      setSolAmount(solNeeded.toFixed(6));
-    }
-  };
-
-  const handleSolChange = (value) => {
-    setSolAmount(value);
-    if (poolData.price > 0 && value) {
-      const bigNeeded = parseFloat(value) / poolData.price;
-      setBigAmount(bigNeeded.toFixed(2));
-    }
+  const openOrcaPortfolio = () => {
+    window.open(ORCA_PORTFOLIO_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
             {t.title}
           </h1>
-          <p className="text-xl text-gray-300">{t.description}</p>
+          <p className="text-lg md:text-xl text-gray-300 mb-6">{t.subtitle}</p>
           
           {/* Language Switcher */}
-          <div className="mt-4">
-            <button
-              onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
-              className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
-            >
-              {lang === 'pt' ? '🇺🇸 English' : '🇧🇷 Português'}
-            </button>
+          <button
+            onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
+            className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+          >
+            {lang === 'pt' ? '🇺🇸 English' : '🇧🇷 Português'}
+          </button>
+        </div>
+
+        {/* Main CTA Buttons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+          <button
+            onClick={openOrcaPool}
+            className="group relative bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Droplets className="w-12 h-12" />
+              <ExternalLink className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">{t.goToOrca}</h3>
+            <p className="text-orange-100 text-sm">
+              {lang === 'pt' ? 'Adicione liquidez de forma segura' : 'Add liquidity securely'}
+            </p>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
+          </button>
+
+          <button
+            onClick={openOrcaPortfolio}
+            className="group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Award className="w-12 h-12" />
+              <ExternalLink className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">{t.managePositions}</h3>
+            <p className="text-blue-100 text-sm">
+              {lang === 'pt' ? 'Veja e gerencie suas posições' : 'View and manage your positions'}
+            </p>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
+          </button>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
+          <h2 className="text-3xl font-bold mb-6 text-center">{t.whyAddLiquidity}</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-6 hover:bg-green-900/30 transition">
+              <TrendingUp className="w-10 h-10 text-green-400 mb-4" />
+              <h3 className="text-xl font-bold text-green-400 mb-2">{t.benefit1Title}</h3>
+              <p className="text-gray-300 text-sm">{t.benefit1Desc}</p>
+            </div>
+
+            <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 hover:bg-blue-900/30 transition">
+              <Zap className="w-10 h-10 text-blue-400 mb-4" />
+              <h3 className="text-xl font-bold text-blue-400 mb-2">{t.benefit2Title}</h3>
+              <p className="text-gray-300 text-sm">{t.benefit2Desc}</p>
+            </div>
+
+            <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6 hover:bg-purple-900/30 transition">
+              <Award className="w-10 h-10 text-purple-400 mb-4" />
+              <h3 className="text-xl font-bold text-purple-400 mb-2">{t.benefit3Title}</h3>
+              <p className="text-gray-300 text-sm">{t.benefit3Desc}</p>
+            </div>
           </div>
         </div>
 
-        {/* Wallet Connection */}
-        {!walletConnected ? (
-          <div className="bg-gradient-to-r from-orange-900/20 to-red-900/20 border border-orange-500/30 rounded-2xl p-8 mb-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">🔐 {t.connectWallet}</h2>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <button
-                onClick={connectPhantom}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl hover:scale-105 transition font-semibold shadow-lg"
-              >
-                👻 Phantom
-              </button>
-              <button
-                onClick={connectSolflare}
-                className="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-800 rounded-xl hover:scale-105 transition font-semibold shadow-lg"
-              >
-                🔥 Solflare
-              </button>
+        {/* How It Works */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
+          <h2 className="text-3xl font-bold mb-6 text-center">{t.howItWorks}</h2>
+          
+          <div className="space-y-4">
+            {[t.step1, t.step2, t.step3, t.step4, t.step5].map((step, idx) => (
+              <div key={idx} className="flex items-start gap-4 bg-gray-800/50 rounded-xl p-4 hover:bg-gray-800/70 transition">
+                <div className="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center font-bold">
+                  {idx + 1}
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-200">{step}</p>
+                </div>
+                {idx < 4 && <ArrowRight className="w-5 h-5 text-orange-500 flex-shrink-0" />}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pool Stats */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
+          <h2 className="text-3xl font-bold mb-6 text-center">{t.statsTitle}</h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
+              <div className="text-sm text-gray-400 mb-1">{t.tvl}</div>
+              <div className="text-2xl font-bold text-orange-400">$21.95</div>
+            </div>
+            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
+              <div className="text-sm text-gray-400 mb-1">{t.apr}</div>
+              <div className="text-2xl font-bold text-green-400">~100%</div>
+            </div>
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
+              <div className="text-sm text-gray-400 mb-1">{t.volume24h}</div>
+              <div className="text-2xl font-bold text-blue-400">$0.00</div>
+            </div>
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
+              <div className="text-sm text-gray-400 mb-1">{t.fees24h}</div>
+              <div className="text-2xl font-bold text-purple-400">$0.00</div>
             </div>
           </div>
-        ) : (
-          <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/30 rounded-2xl p-6 mb-8 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-2xl">
-                ✓
-              </div>
-              <div>
-                <div className="text-sm text-gray-400">{t.connected}</div>
-                <div className="font-mono font-bold">
-                  {publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}
-                </div>
+        </div>
+
+        {/* Pool Info */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-6">{t.poolInfo}</h2>
+          
+          <div className="space-y-4">
+            <div className="bg-gray-800/50 rounded-xl p-4">
+              <div className="text-sm text-gray-400 mb-2">{t.tokenAddress}</div>
+              <div className="flex items-center justify-between gap-2">
+                <code className="text-xs md:text-sm text-orange-400 break-all">{BIG_TOKEN_MINT}</code>
+                <button
+                  onClick={() => copyToClipboard(BIG_TOKEN_MINT, 'token')}
+                  className="flex-shrink-0 px-3 py-1 bg-orange-600 hover:bg-orange-700 rounded-lg text-xs transition"
+                >
+                  {copiedAddress === 'token' ? t.copied : t.copyAddress}
+                </button>
               </div>
             </div>
-            <button
-              onClick={disconnectWallet}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition font-semibold"
-            >
-              {t.disconnect}
-            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gray-800/50 rounded-xl p-4">
+                <div className="text-sm text-gray-400 mb-2">{t.platform}</div>
+                <div className="font-bold text-lg">Orca</div>
+              </div>
+              <div className="bg-gray-800/50 rounded-xl p-4">
+                <div className="text-sm text-gray-400 mb-2">{t.fee}</div>
+                <div className="font-bold text-lg text-green-400">0.3%</div>
+              </div>
+              <div className="bg-gray-800/50 rounded-xl p-4">
+                <div className="text-sm text-gray-400 mb-2">{t.protocol}</div>
+                <div className="font-bold text-lg">Whirlpool</div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
 
-        {walletConnected && (
-          <>
-            {/* Info Box */}
-            <div className="bg-gradient-to-r from-orange-900/30 to-yellow-900/30 border-l-4 border-orange-500 rounded-xl p-6 mb-8">
-              <h3 className="text-xl font-bold mb-2">💡 {lang === 'pt' ? 'Liquidez Concentrada' : 'Concentrated Liquidity'}</h3>
-              <p className="text-gray-300">{t.concentratedInfo}</p>
+        {/* Why Orca Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-500/30 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="w-8 h-8 text-green-400" />
+              <h3 className="text-xl font-bold">{t.security}</h3>
             </div>
+            <p className="text-gray-300 text-sm">{t.securityDesc}</p>
+          </div>
 
-            {/* Pool Card */}
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-8 shadow-2xl">
-              {/* Pool Header */}
-              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-700">
-                <div className="flex items-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-2xl font-bold border-4 border-gray-800">
-                    B
-                  </div>
-                  <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold border-4 border-gray-800 -ml-4">
-                    S
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-3xl font-bold">BIG / SOL</h3>
-                  <p className="text-gray-400">{lang === 'pt' ? 'Pool Principal - Whirlpool' : 'Main Pool - Whirlpool'}</p>
-                </div>
-              </div>
-
-              {/* Balances */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
-                  <div className="text-sm text-gray-400">{t.bigBalance}</div>
-                  <div className="text-2xl font-bold text-green-400">{balances.big}</div>
-                </div>
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4">
-                  <div className="text-sm text-gray-400">{t.solBalance}</div>
-                  <div className="text-2xl font-bold text-green-400">{balances.sol}</div>
-                </div>
-              </div>
-
-              {/* Pool Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-                  <div className="text-sm text-gray-400">{t.tvl}</div>
-                  <div className="text-xl font-bold">${poolData.tvl.toFixed(2)}</div>
-                </div>
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-                  <div className="text-sm text-gray-400">{t.volume}</div>
-                  <div className="text-xl font-bold">${poolData.volume.toFixed(2)}</div>
-                </div>
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-                  <div className="text-sm text-gray-400">{t.fees}</div>
-                  <div className="text-xl font-bold">${poolData.fees.toFixed(2)}</div>
-                </div>
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-                  <div className="text-sm text-gray-400">{t.apr}</div>
-                  <div className="text-xl font-bold text-green-400">100%</div>
-                </div>
-              </div>
-
-              {poolData.price > 0 && (
-                <div className="mb-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl text-center">
-                  <div className="text-sm text-gray-400">{t.price}</div>
-                  <div className="text-2xl font-bold">
-                    1 BIG = {poolData.price.toFixed(8)} SOL
-                  </div>
-                </div>
-              )}
-
-              {/* Price Range Selection */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold mb-3">{t.priceRange}</label>
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <button
-                    onClick={() => setPriceRange('full')}
-                    className={`py-3 px-4 rounded-xl font-semibold transition ${
-                      priceRange === 'full'
-                        ? 'bg-orange-600 border-2 border-orange-400'
-                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
-                    }`}
-                  >
-                    {t.fullRange}
-                  </button>
-                  <button
-                    onClick={() => setPriceRange('narrow')}
-                    className={`py-3 px-4 rounded-xl font-semibold transition ${
-                      priceRange === 'narrow'
-                        ? 'bg-orange-600 border-2 border-orange-400'
-                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
-                    }`}
-                  >
-                    {t.narrowRange}
-                  </button>
-                  <button
-                    onClick={() => setPriceRange('custom')}
-                    className={`py-3 px-4 rounded-xl font-semibold transition ${
-                      priceRange === 'custom'
-                        ? 'bg-orange-600 border-2 border-orange-400'
-                        : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
-                    }`}
-                  >
-                    {t.customRange}
-                  </button>
-                </div>
-
-                {priceRange === 'custom' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1">{t.minPrice}</label>
-                      <input
-                        type="number"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
-                        placeholder="0.0"
-                        step="0.00000001"
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1">{t.maxPrice}</label>
-                      <input
-                        type="number"
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                        placeholder="0.0"
-                        step="0.00000001"
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:border-orange-500 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Input Fields */}
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">{t.bigAmount}</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={bigAmount}
-                      onChange={(e) => handleBigChange(e.target.value)}
-                      placeholder="0.0"
-                      className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-xl font-semibold focus:border-orange-500 focus:outline-none"
-                    />
-                    <button
-                      onClick={handleMaxBig}
-                      className="px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-xl font-bold transition"
-                    >
-                      MAX
-                    </button>
-                    <div className="px-4 py-3 bg-orange-500/20 border border-orange-500/50 rounded-xl font-bold">
-                      BIG
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2">{t.solAmount}</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={solAmount}
-                      onChange={(e) => handleSolChange(e.target.value)}
-                      placeholder="0.0"
-                      className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-xl font-semibold focus:border-orange-500 focus:outline-none"
-                    />
-                    <button
-                      onClick={handleMaxSol}
-                      className="px-6 py-3 bg-orange-600 hover:bg-orange-700 rounded-xl font-bold transition"
-                    >
-                      MAX
-                    </button>
-                    <div className="px-4 py-3 bg-orange-500/20 border border-orange-500/50 rounded-xl font-bold">
-                      SOL
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-4">
-                <button
-                  onClick={handleAddLiquidity}
-                  disabled={loading || !whirlpool}
-                  className="flex-1 py-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-xl font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? t.processing : t.addLiquidity}
-                </button>
-                <button
-                  onClick={handleRemoveLiquidity}
-                  disabled={loading || userPositions.length === 0}
-                  className="flex-1 py-4 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 rounded-xl font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? t.processing : t.removeLiquidity}
-                </button>
-              </div>
-
-              {/* Positions Info */}
-              {userPositions.length > 0 && (
-                <div className="mt-6 p-4 bg-green-900/20 border border-green-500/30 rounded-xl">
-                  <div className="text-sm text-gray-400 mb-3">
-                    {lang === 'pt' ? 'Posições Ativas:' : 'Active Positions:'} <span className="font-bold text-green-400">{userPositions.length}</span>
-                  </div>
-                  <div className="space-y-2">
-                    {userPositions.map((pos, idx) => (
-                      <div key={idx} className="bg-gray-800/50 rounded-lg p-3 text-sm">
-                        <div className="font-mono text-xs text-gray-400">
-                          {pos.positionAddress.toString().slice(0, 16)}...{pos.positionAddress.toString().slice(-8)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {!whirlpool && walletConnected && (
-                <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-xl text-center">
-                  <div className="text-blue-400">
-                    ⏳ {t.loadingPool}
-                    {currentRpcIndex > 0 && (
-                      <div className="text-xs mt-2 text-gray-400">
-                        {lang === 'pt' ? `Tentando RPC alternativo (${currentRpcIndex + 1}/${RPC_ENDPOINTS.length})...` : `Trying alternative RPC (${currentRpcIndex + 1}/${RPC_ENDPOINTS.length})...`}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+          <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Droplets className="w-8 h-8 text-blue-400" />
+              <h3 className="text-xl font-bold">{t.whyOrca}</h3>
             </div>
-          </>
-        )}
+            <p className="text-gray-300 text-sm">{t.whyOrcaDesc}</p>
+          </div>
+        </div>
+
+        {/* Final CTA */}
+        <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-8 text-center mb-8">
+          <h2 className="text-3xl font-bold mb-4">
+            {lang === 'pt' ? 'Pronto para começar?' : 'Ready to start?'}
+          </h2>
+          <p className="text-orange-100 mb-6">
+            {lang === 'pt' 
+              ? 'Comece a ganhar recompensas adicionando liquidez hoje mesmo!'
+              : 'Start earning rewards by adding liquidity today!'}
+          </p>
+          <button
+            onClick={openOrcaPool}
+            className="px-8 py-4 bg-white text-orange-600 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-lg inline-flex items-center gap-2"
+          >
+            {t.goToOrca}
+            <ExternalLink className="w-5 h-5" />
+          </button>
+        </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-gray-500 text-sm">
+        <div className="text-center text-gray-500 text-sm">
           <p>© 2025 BIGFOOT Connect. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
-          <p className="mt-2">
-            🔗 Pool: <code className="bg-gray-800 px-2 py-1 rounded text-xs">{ORCA_POOL_ADDRESS}</code>
-          </p>
-          <p className="mt-1 text-xs">
-            🌐 RPC: <code className="bg-gray-800 px-2 py-1 rounded">{RPC_ENDPOINTS[currentRpcIndex].split('?')[0].replace('https://', '')}</code>
+          <p className="mt-2 text-xs">
+            {lang === 'pt' 
+              ? '⚠️ Fornecer liquidez envolve riscos. Sempre faça sua própria pesquisa.'
+              : '⚠️ Providing liquidity involves risks. Always do your own research.'}
           </p>
         </div>
       </div>
