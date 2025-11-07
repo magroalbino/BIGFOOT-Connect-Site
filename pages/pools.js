@@ -46,6 +46,7 @@ const PoolsPage = () => {
       apr: 'Estimated APR',
       volume24h: '24h Volume',
       fees24h: '24h Fees',
+      backToHome: 'Back to Home',
     },
     pt: {
       title: '💧 Pool de Liquidez BIG/SOL',
@@ -83,6 +84,7 @@ const PoolsPage = () => {
       apr: 'APR Estimado',
       volume24h: 'Volume 24h',
       fees24h: 'Taxas 24h',
+      backToHome: 'Voltar ao Início',
     }
   };
 
@@ -104,11 +106,50 @@ const PoolsPage = () => {
     window.open(ORCA_PORTFOLIO_URL, '_blank', 'noopener,noreferrer');
   };
 
+  const goToHome = () => {
+    window.location.href = '/';
+  };
+
+  // Set page title
+  React.useEffect(() => {
+    document.title = 'BIG/SOL Liquidity Pools - BIGFOOT Connect';
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-gray-900 to-gray-800 border-b-2 border-gray-800 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <button onClick={goToHome} className="flex items-center gap-3 cursor-pointer group">
+              <img 
+                src="/images/logo.png" 
+                alt="BIGFOOT Logo" 
+                className="w-10 h-10 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
+              />
+              <span className="text-xl font-bold text-orange-500 transition-all duration-300 group-hover:text-orange-400">
+                BIGFOOT Connect
+              </span>
+            </button>
+            
+            <div className="flex items-center gap-4">
+              <select
+                value={lang}
+                onChange={(e) => setLang(e.target.value)}
+                className="bg-gray-800 text-gray-100 border border-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-all duration-300 hover:border-orange-500"
+              >
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
+        {/* Page Title */}
+        <div className="text-center mb-12 mt-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
             {t.title}
           </h1>
