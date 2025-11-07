@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, Droplets, TrendingUp, Shield, Zap, Award, ArrowRight } from 'lucide-react';
+import { ExternalLink, Droplets, TrendingUp, Shield, Zap, Award, ArrowRight, Home } from 'lucide-react';
 
 const PoolsPage = () => {
   const [lang, setLang] = useState('pt');
@@ -51,18 +51,18 @@ const PoolsPage = () => {
       title: '💧 Pool de Liquidez BIG/SOL',
       subtitle: 'Ganhe recompensas fornecendo liquidez',
       whyAddLiquidity: 'Por Que Adicionar Liquidez?',
-      benefit1Title: 'Ganhe Taxas de Trading',
-      benefit1Desc: 'Receba 0.3% de todas as negociações na pool',
-      benefit2Title: 'Aumente o Valor do BIG',
-      benefit2Desc: 'Mais liquidez = maior valor do token',
-      benefit3Title: 'NFT de Posição',
-      benefit3Desc: 'Receba um NFT único representando sua posição',
+      benefit1Title: 'Valorize o Token BIG',
+      benefit1Desc: 'Maior TVL = mais confiança e preço maior do token',
+      benefit2Title: 'Reduza o Slippage',
+      benefit2Desc: 'Mais liquidez significa melhores preços para todos',
+      benefit3Title: 'Ganhe Renda Passiva',
+      benefit3Desc: 'Bônus: ganhe 0.3% de taxas de cada negociação',
       howItWorks: 'Como Funciona',
       step1: 'Conecte sua carteira (Phantom, Solflare, etc)',
-      step2: 'Deposite tokens BIG e SOL',
-      step3: 'Receba um NFT de Posição',
-      step4: 'Comece a ganhar taxas de cada negociação',
-      step5: 'Retire quando quiser com suas taxas acumuladas',
+      step2: 'Deposite tokens BIG e SOL para aumentar o TVL da pool',
+      step3: 'Seu depósito fortalece o ecossistema do token BIG',
+      step4: 'Ganhe taxas automaticamente da atividade de trading',
+      step5: 'Veja o valor do token crescer conforme o TVL aumenta',
       goToOrca: 'Ir para Pool na Orca',
       managePositions: 'Gerenciar Minhas Posições',
       poolInfo: 'Informações da Pool',
@@ -112,7 +112,12 @@ const PoolsPage = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
             {t.title}
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 mb-6">{t.subtitle}</p>
+          <p className="text-lg md:text-xl text-gray-300 mb-2">{t.subtitle}</p>
+          <p className="text-md text-orange-400 font-semibold mb-6">
+            {lang === 'pt' 
+              ? '🚀 Ajude a aumentar o TVL e valorize o token BIG!' 
+              : '🚀 Help increase TVL and grow BIG token value!'}
+          </p>
           
           {/* Language Switcher */}
           <button
@@ -135,7 +140,7 @@ const PoolsPage = () => {
             </div>
             <h3 className="text-2xl font-bold mb-2">{t.goToOrca}</h3>
             <p className="text-orange-100 text-sm">
-              {lang === 'pt' ? 'Adicione liquidez de forma segura' : 'Add liquidity securely'}
+              {lang === 'pt' ? 'Deposite agora e aumente o TVL!' : 'Deposit now and increase TVL!'}
             </p>
             <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
           </button>
@@ -161,22 +166,31 @@ const PoolsPage = () => {
           <h2 className="text-3xl font-bold mb-6 text-center">{t.whyAddLiquidity}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-6 hover:bg-green-900/30 transition">
-              <TrendingUp className="w-10 h-10 text-green-400 mb-4" />
-              <h3 className="text-xl font-bold text-green-400 mb-2">{t.benefit1Title}</h3>
+            <div className="bg-orange-900/20 border border-orange-500/30 rounded-xl p-6 hover:bg-orange-900/30 transition">
+              <TrendingUp className="w-10 h-10 text-orange-400 mb-4" />
+              <h3 className="text-xl font-bold text-orange-400 mb-2">{t.benefit1Title}</h3>
               <p className="text-gray-300 text-sm">{t.benefit1Desc}</p>
+              <div className="mt-3 text-xs text-orange-300 font-semibold">
+                {lang === 'pt' ? '🎯 Objetivo Principal' : '🎯 Main Goal'}
+              </div>
             </div>
 
             <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 hover:bg-blue-900/30 transition">
-              <Zap className="w-10 h-10 text-blue-400 mb-4" />
+              <Shield className="w-10 h-10 text-blue-400 mb-4" />
               <h3 className="text-xl font-bold text-blue-400 mb-2">{t.benefit2Title}</h3>
               <p className="text-gray-300 text-sm">{t.benefit2Desc}</p>
+              <div className="mt-3 text-xs text-blue-300 font-semibold">
+                {lang === 'pt' ? '📊 Melhor para Traders' : '📊 Better for Traders'}
+              </div>
             </div>
 
-            <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6 hover:bg-purple-900/30 transition">
-              <Award className="w-10 h-10 text-purple-400 mb-4" />
-              <h3 className="text-xl font-bold text-purple-400 mb-2">{t.benefit3Title}</h3>
+            <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-6 hover:bg-green-900/30 transition">
+              <Award className="w-10 h-10 text-green-400 mb-4" />
+              <h3 className="text-xl font-bold text-green-400 mb-2">{t.benefit3Title}</h3>
               <p className="text-gray-300 text-sm">{t.benefit3Desc}</p>
+              <div className="mt-3 text-xs text-green-300 font-semibold">
+                {lang === 'pt' ? '💰 Recompensa Extra' : '💰 Extra Reward'}
+              </div>
             </div>
           </div>
         </div>
@@ -200,27 +214,54 @@ const PoolsPage = () => {
           </div>
         </div>
 
-        {/* Pool Stats */}
+        {/* Pool Stats with TVL Emphasis */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
-          <h2 className="text-3xl font-bold mb-6 text-center">{t.statsTitle}</h2>
+          <h2 className="text-3xl font-bold mb-2 text-center">{t.statsTitle}</h2>
+          <p className="text-center text-gray-400 text-sm mb-6">
+            {lang === 'pt' 
+              ? '🎯 Objetivo: Aumentar o TVL para valorizar o token BIG!' 
+              : '🎯 Goal: Increase TVL to grow BIG token value!'}
+          </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-              <div className="text-sm text-gray-400 mb-1">{t.tvl}</div>
-              <div className="text-2xl font-bold text-orange-400">$21.95</div>
+            <div className="bg-orange-500/20 border-2 border-orange-500/50 rounded-xl p-4 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-orange-600 text-white text-xs px-2 py-1 rounded-bl-lg font-bold">
+                {lang === 'pt' ? 'PRINCIPAL' : 'MAIN'}
+              </div>
+              <div className="text-sm text-gray-300 mb-1">{t.tvl}</div>
+              <div className="text-3xl font-bold text-orange-400 mb-1">$21.95</div>
+              <div className="text-xs text-orange-300">
+                {lang === 'pt' ? '⬆️ Vamos aumentar!' : '⬆️ Let\'s grow it!'}
+              </div>
             </div>
             <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
               <div className="text-sm text-gray-400 mb-1">{t.apr}</div>
               <div className="text-2xl font-bold text-green-400">~100%</div>
+              <div className="text-xs text-gray-500">{lang === 'pt' ? 'Bônus' : 'Bonus'}</div>
             </div>
             <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
               <div className="text-sm text-gray-400 mb-1">{t.volume24h}</div>
               <div className="text-2xl font-bold text-blue-400">$0.00</div>
+              <div className="text-xs text-gray-500">{lang === 'pt' ? 'Crescendo' : 'Growing'}</div>
             </div>
             <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
               <div className="text-sm text-gray-400 mb-1">{t.fees24h}</div>
               <div className="text-2xl font-bold text-purple-400">$0.00</div>
+              <div className="text-xs text-gray-500">{lang === 'pt' ? 'Em breve' : 'Soon'}</div>
             </div>
+          </div>
+          
+          {/* TVL Impact Explanation */}
+          <div className="mt-6 bg-gradient-to-r from-orange-900/30 to-yellow-900/30 border-l-4 border-orange-500 rounded-lg p-4">
+            <h4 className="font-bold text-orange-400 mb-2">
+              {lang === 'pt' ? '💡 Por que TVL é importante?' : '💡 Why is TVL important?'}
+            </h4>
+            <ul className="text-sm text-gray-300 space-y-1">
+              <li>✅ {lang === 'pt' ? 'Maior TVL = Mais confiança dos investidores' : 'Higher TVL = More investor confidence'}</li>
+              <li>✅ {lang === 'pt' ? 'Pool mais profunda = Menos variação de preço' : 'Deeper pool = Less price volatility'}</li>
+              <li>✅ {lang === 'pt' ? 'Atrai mais traders = Mais volume = Mais taxas para você' : 'Attracts traders = More volume = More fees for you'}</li>
+              <li>✅ {lang === 'pt' ? 'Token mais estável e valorizado' : 'More stable and valuable token'}</li>
+            </ul>
           </div>
         </div>
 
@@ -281,18 +322,23 @@ const PoolsPage = () => {
         {/* Final CTA */}
         <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-8 text-center mb-8">
           <h2 className="text-3xl font-bold mb-4">
-            {lang === 'pt' ? 'Pronto para começar?' : 'Ready to start?'}
+            {lang === 'pt' ? '🚀 Vamos valorizar o BIG juntos!' : '🚀 Let\'s grow BIG together!'}
           </h2>
-          <p className="text-orange-100 mb-6">
+          <p className="text-orange-100 mb-2">
             {lang === 'pt' 
-              ? 'Comece a ganhar recompensas adicionando liquidez hoje mesmo!'
-              : 'Start earning rewards by adding liquidity today!'}
+              ? 'Cada depósito aumenta o TVL e fortalece o ecossistema BIG!'
+              : 'Every deposit increases TVL and strengthens the BIG ecosystem!'}
+          </p>
+          <p className="text-orange-200 text-sm mb-6">
+            {lang === 'pt'
+              ? 'Meta: Alcançar $10,000+ em TVL para atrair grandes investidores'
+              : 'Goal: Reach $10,000+ TVL to attract major investors'}
           </p>
           <button
             onClick={openOrcaPool}
             className="px-8 py-4 bg-white text-orange-600 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-lg inline-flex items-center gap-2"
           >
-            {t.goToOrca}
+            {lang === 'pt' ? 'Depositar Agora' : 'Deposit Now'}
             <ExternalLink className="w-5 h-5" />
           </button>
         </div>
