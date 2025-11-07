@@ -143,9 +143,9 @@ export default function Home() {
                     </Link>
                     <Link 
                       href="/pools"
-                      className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300 flex items-center gap-1"
+                      className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      💧 {language === 'pt' ? 'Pools' : 'Pools'}
+                      {language === 'pt' ? 'Pools' : 'Pools'}
                     </Link>
                     <button
                       onClick={handleLogout}
