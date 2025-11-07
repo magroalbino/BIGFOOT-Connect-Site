@@ -260,31 +260,30 @@ const PoolsPage = () => {
                 : '🎯 Goal: Increase TVL to grow BIG token value!'}
             </p>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-orange-500/20 border-2 border-orange-500/50 rounded-xl p-4 text-center relative overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-orange-500/20 border-2 border-orange-500/50 rounded-xl p-6 text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 bg-orange-600 text-white text-xs px-2 py-1 rounded-bl-lg font-bold">
                   {lang === 'pt' ? 'PRINCIPAL' : 'MAIN'}
                 </div>
-                <div className="text-sm text-gray-300 mb-1">{t.tvl}</div>
-                <div className="text-3xl font-bold text-orange-400 mb-1">$21.95</div>
+                <div className="text-sm text-gray-300 mb-2">{t.tvl}</div>
+                <div className="text-3xl font-bold text-orange-400 mb-2">
+                  {lang === 'pt' ? 'Crescendo' : 'Growing'}
+                </div>
                 <div className="text-xs text-orange-300">
-                  {lang === 'pt' ? '⬆️ Vamos aumentar!' : '⬆️ Let\'s grow it!'}
+                  {lang === 'pt' ? '⬆️ Vamos aumentar juntos!' : '⬆️ Let\'s grow it together!'}
                 </div>
               </div>
-              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
-                <div className="text-sm text-gray-400 mb-1">{t.apr}</div>
-                <div className="text-2xl font-bold text-green-400">~100%</div>
-                <div className="text-xs text-gray-500">{lang === 'pt' ? 'Bônus' : 'Bonus'}</div>
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 text-center">
+                <div className="text-sm text-gray-400 mb-2">{t.apr}</div>
+                <div className="text-3xl font-bold text-green-400">~100%</div>
+                <div className="text-xs text-gray-500 mt-2">{lang === 'pt' ? 'Recompensas' : 'Rewards'}</div>
               </div>
-              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
-                <div className="text-sm text-gray-400 mb-1">{t.volume24h}</div>
-                <div className="text-2xl font-bold text-blue-400">$0.00</div>
-                <div className="text-xs text-gray-500">{lang === 'pt' ? 'Crescendo' : 'Growing'}</div>
-              </div>
-              <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
-                <div className="text-sm text-gray-400 mb-1">{t.fees24h}</div>
-                <div className="text-2xl font-bold text-purple-400">$0.00</div>
-                <div className="text-xs text-gray-500">{lang === 'pt' ? 'Em breve' : 'Soon'}</div>
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6 text-center">
+                <div className="text-sm text-gray-400 mb-2">{t.volume24h}</div>
+                <div className="text-3xl font-bold text-blue-400">
+                  {lang === 'pt' ? 'Ativo' : 'Active'}
+                </div>
+                <div className="text-xs text-gray-500 mt-2">{lang === 'pt' ? 'Em expansão' : 'Expanding'}</div>
               </div>
             </div>
             
