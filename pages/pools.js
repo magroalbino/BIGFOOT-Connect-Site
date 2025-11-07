@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ExternalLink, Droplets, TrendingUp, Shield, Zap, Award, ArrowRight, Home } from 'lucide-react';
 
 const PoolsPage = () => {
-  const [lang, setLang] = useState('pt');
+  const [lang, setLang] = useState('en'); // Default to English
 
   // Constants
   const BIG_TOKEN_MINT = '39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
