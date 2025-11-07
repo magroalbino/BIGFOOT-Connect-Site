@@ -170,9 +170,9 @@ export default function Home() {
                     </Link>
                     <Link 
                       href="/pools"
-                      className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300 flex items-center gap-1"
+                      className="text-orange-500 hover:text-orange-400 font-medium px-3 py-1.5 rounded-lg border border-transparent hover:bg-orange-500/10 hover:border-orange-500 transition-all duration-300"
                     >
-                      💧 {language === 'pt' ? 'Pools' : 'Pools'}
+                      {language === 'pt' ? 'Pools' : 'Pools'}
                     </Link>
                   </>
                 )}
@@ -217,12 +217,6 @@ export default function Home() {
             >
               {t('downloadWindows')}
             </a>
-            <Link
-              href="/pools"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex items-center gap-2"
-            >
-              💧 {language === 'pt' ? 'Adicionar Liquidez' : 'Add Liquidity'}
-            </Link>
           </div>
 
           {/* Installer Warning */}
