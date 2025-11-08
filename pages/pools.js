@@ -115,7 +115,10 @@ const PoolsPage = () => {
         <title>Liquidity Pools - BIGFOOT Connect</title>
         <meta name="description" content="Add liquidity to BIG/SOL pool on Orca and earn rewards while helping grow the BIG token ecosystem. Increase TVL and support the BIGFOOT Connect project." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/images/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png" />
+        <link rel="shortcut icon" href="/images/logo.png" />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -245,7 +248,6 @@ const PoolsPage = () => {
                   <div className="flex-1">
                     <p className="text-gray-200">{step}</p>
                   </div>
-                  {idx < 4 && <ArrowRight className="w-5 h-5 text-orange-500 flex-shrink-0" />}
                 </div>
               ))}
             </div>
