@@ -553,9 +553,11 @@ export default function Dashboard() {
           <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-white'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/40'} mb-8 relative overflow-hidden`}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
             
-            <h2 className={`text-2xl font-bold text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-6`}>
-              {t('progress')}
-            </h2>
+            <div className="flex justify-center mb-6">
+              <h2 className={`text-3xl font-bold px-6 py-3 rounded-lg ${theme === 'dark' ? 'bg-orange-500 text-white' : 'bg-orange-500 text-white'} shadow-lg`}>
+                📊 {t('progress')}
+              </h2>
+            </div>
 
             {/* Stats Top */}
             <div className={`flex justify-center gap-16 mb-8 p-6 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-orange-50 border border-orange-200'} rounded-xl`}>
