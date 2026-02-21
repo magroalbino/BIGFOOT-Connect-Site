@@ -431,7 +431,7 @@ export default function Dashboard() {
     plugins: {
       legend: {
         labels: {
-          color: theme === 'dark' ? '#f0f0f0' : '#333',
+          color: theme === 'dark' ? '#f0f0f0' : '#1a1a1a',
           font: { size: 14, weight: '600' }
         }
       },
@@ -449,21 +449,21 @@ export default function Dashboard() {
     scales: {
       x: {
         grid: {
-          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
           lineWidth: 1
         },
         ticks: {
-          color: theme === 'dark' ? '#f0f0f0' : '#333',
+          color: theme === 'dark' ? '#f0f0f0' : '#4b5563',
           font: { size: 12 }
         }
       },
       y: {
         grid: {
-          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
           lineWidth: 1
         },
         ticks: {
-          color: theme === 'dark' ? '#f0f0f0' : '#333',
+          color: theme === 'dark' ? '#f0f0f0' : '#4b5563',
           font: { size: 12 },
           callback: (value) => `${value} BIG`
         },
@@ -504,9 +504,9 @@ export default function Dashboard() {
         <meta name="description" content="Painel do usuário BIGFOOT Connect" />
       </Head>
 
-      <div className={`min-h-screen ${theme === 'dark' ? 'bg-black text-gray-100' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-black text-gray-100' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`}>
         {/* Header */}
-        <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-gradient-to-r from-white to-gray-50'} border-b-2 ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} shadow-lg`}>
+        <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-white'} border-b-2 ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} shadow-lg`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
@@ -545,25 +545,25 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-4xl font-bold text-center mb-8 text-white">
+          <h1 className={`text-4xl font-bold text-center mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             {t('heading')}
           </h1>
 
           {/* Progress Card */}
-          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-white to-gray-50'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/30'} mb-8 relative overflow-hidden`}>
+          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-white'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/40'} mb-8 relative overflow-hidden`}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
             
-            <h2 className="text-2xl font-bold text-center text-white mb-6">
+            <h2 className={`text-2xl font-bold text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-6`}>
               {t('progress')}
             </h2>
 
             {/* Stats Top */}
-            <div className="flex justify-center gap-16 mb-8 p-6 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+            <div className={`flex justify-center gap-16 mb-8 p-6 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-orange-50 border border-orange-200'} rounded-xl`}>
               <div className="text-center">
                 <div className="text-4xl font-bold text-orange-500 mb-2">
                   {totalBigPoints.toFixed(2)} BIG
                 </div>
-                <div className="text-sm text-gray-400 uppercase tracking-wider">
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                   {t('shared')}
                 </div>
               </div>
@@ -571,7 +571,7 @@ export default function Dashboard() {
                 <div className="text-4xl font-bold text-orange-500 mb-2">
                   {daysActive}
                 </div>
-                <div className="text-sm text-gray-400 uppercase tracking-wider">
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                   {t('daysActive')}
                 </div>
               </div>
@@ -579,13 +579,13 @@ export default function Dashboard() {
 
             {/* Month Selector */}
             <div className="text-center mb-6">
-              <label className="text-orange-500 font-semibold mr-4">
+              <label className={`${theme === 'dark' ? 'text-orange-500' : 'text-orange-600'} font-semibold mr-4`}>
                 {t('selectMonth')}
               </label>
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
-                className={`${theme === 'dark' ? 'bg-gray-800 text-gray-100 border-orange-500' : 'bg-white text-gray-900 border-orange-500'} border-2 rounded-lg px-4 py-2 cursor-pointer font-medium transition-all duration-300 hover:bg-gray-700 min-w-[200px]`}
+                className={`${theme === 'dark' ? 'bg-gray-800 text-gray-100 border-orange-500' : 'bg-white text-gray-900 border-orange-600'} border-2 rounded-lg px-4 py-2 cursor-pointer font-medium transition-all duration-300 min-w-[200px]`}
               >
                 {availableMonths.map(month => (
                   <option key={month.value} value={month.value}>{month.label}</option>
@@ -595,32 +595,32 @@ export default function Dashboard() {
 
             {/* Monthly Data Display */}
             {monthlyData.showMonthly && (
-              <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-6 mb-6">
-                <h3 className="text-xl font-bold text-center text-orange-500 mb-4">
+              <div className={`${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-orange-50 border border-orange-200'} rounded-xl p-6 mb-6`}>
+                <h3 className={`text-xl font-bold text-center ${theme === 'dark' ? 'text-orange-500' : 'text-orange-600'} mb-4`}>
                   {availableMonths.find(m => m.value === selectedMonth)?.label}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                  <div className={`text-center p-4 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-white border border-orange-200'} rounded-lg`}>
                     <div className="text-2xl font-bold text-orange-500 mb-1">
                       {monthlyData.totalPoints.toFixed(2)} BIG
                     </div>
-                    <div className="text-xs text-gray-400 uppercase tracking-wider">
+                    <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                       {t('sharedThisMonth')}
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                  <div className={`text-center p-4 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-white border border-orange-200'} rounded-lg`}>
                     <div className="text-2xl font-bold text-orange-500 mb-1">
                       {monthlyData.activeDays}
                     </div>
-                    <div className="text-xs text-gray-400 uppercase tracking-wider">
+                    <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                       {t('activeDaysMonth')}
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                  <div className={`text-center p-4 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-white border border-orange-200'} rounded-lg`}>
                     <div className="text-2xl font-bold text-orange-500 mb-1">
                       {monthlyData.avgDaily.toFixed(2)} BIG
                     </div>
-                    <div className="text-xs text-gray-400 uppercase tracking-wider">
+                    <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                       {t('dailyAverage')}
                     </div>
                   </div>
@@ -629,11 +629,11 @@ export default function Dashboard() {
             )}
 
             {/* Chart */}
-            <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl p-6">
-              <h3 className="text-center text-orange-500 font-semibold text-lg mb-4 pb-2 border-b-2 border-orange-500/20">
+            <div className={`${theme === 'dark' ? 'bg-orange-500/5 border border-orange-500/15' : 'bg-orange-50 border border-orange-200'} rounded-xl p-6`}>
+              <h3 className={`text-center ${theme === 'dark' ? 'text-orange-500' : 'text-orange-600'} font-semibold text-lg mb-4 pb-2 border-b-2 ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-200'}`}>
                 {t('chartTitle')}
               </h3>
-              <div className={`${theme === 'dark' ? 'bg-gray-900/80' : 'bg-gray-50/80'} rounded-xl p-4 border ${theme === 'dark' ? 'border-orange-500/10' : 'border-orange-500/15'}`} style={{ height: '350px' }}>
+              <div className={`${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white'} rounded-xl p-4 border ${theme === 'dark' ? 'border-orange-500/10' : 'border-gray-200'}`} style={{ height: '350px' }}>
                 {chartLoading ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-orange-500">{t('loading')}...</div>
@@ -641,7 +641,7 @@ export default function Dashboard() {
                 ) : chartData ? (
                   <Line data={chartData} options={chartOptions} />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className={`flex items-center justify-center h-full ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                     Nenhum dado disponível
                   </div>
                 )}
@@ -652,10 +652,10 @@ export default function Dashboard() {
           {/* Bottom Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Wallet Card */}
-            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-white to-gray-50'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/30'} relative overflow-hidden`}>
+            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-white'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/40'} relative overflow-hidden`}>
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               
-              <h2 className="text-2xl font-bold text-center text-white mb-4">
+              <h2 className={`text-2xl font-bold text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-4`}>
                 {t('walletTitle')}
               </h2>
               <p className={`text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-6 text-lg`}>
@@ -667,7 +667,7 @@ export default function Dashboard() {
                 value={walletAddress}
                 onChange={(e) => setWalletAddress(e.target.value)}
                 placeholder={t('placeholder')}
-                className={`w-full px-4 py-3 rounded-lg border-2 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'} transition-all duration-300 focus:border-orange-500 focus:outline-none mb-4`}
+                className={`w-full px-4 py-3 rounded-lg border-2 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-gray-100' : 'bg-gray-50 border-gray-300 text-gray-900'} transition-all duration-300 focus:border-orange-500 focus:outline-none mb-4`}
               />
               
               <button
@@ -689,10 +689,10 @@ export default function Dashboard() {
             </div>
 
             {/* Referral Card */}
-            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-gradient-to-br from-white to-gray-50'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/30'} relative overflow-hidden`}>
+            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 to-gray-800' : 'bg-white'} rounded-2xl p-8 shadow-2xl border ${theme === 'dark' ? 'border-orange-500/20' : 'border-orange-500/40'} relative overflow-hidden`}>
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               
-              <h2 className="text-2xl font-bold text-center text-white mb-4">
+              <h2 className={`text-2xl font-bold text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-4`}>
                 {t('referralTitle')}
               </h2>
               <p className={`text-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-6 text-lg`}>
@@ -703,7 +703,7 @@ export default function Dashboard() {
                 type="text"
                 value={referralLink}
                 readOnly
-                className={`w-full px-4 py-3 rounded-lg border-2 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'} font-mono text-sm cursor-pointer mb-4`}
+                className={`w-full px-4 py-3 rounded-lg border-2 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-gray-100' : 'bg-gray-50 border-gray-300 text-gray-900'} font-mono text-sm cursor-pointer mb-4`}
                 onClick={handleCopyReferralLink}
               />
               
@@ -716,19 +716,19 @@ export default function Dashboard() {
               
               {/* Referral Stats */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <div className={`text-center p-4 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-orange-50 border border-orange-200'} rounded-lg`}>
                   <div className="text-2xl font-bold text-orange-500 mb-1">
                     {referralCount}
                   </div>
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                     {t('referrals')}
                   </div>
                 </div>
-                <div className="text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <div className={`text-center p-4 ${theme === 'dark' ? 'bg-orange-500/10 border border-orange-500/20' : 'bg-orange-50 border border-orange-200'} rounded-lg`}>
                   <div className="text-2xl font-bold text-orange-500 mb-1">
                     {referralEarnings.toFixed(3)} BIG
                   </div>
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-wider font-medium`}>
                     {t('referralEarnings')}
                   </div>
                 </div>
@@ -738,8 +738,8 @@ export default function Dashboard() {
         </main>
 
         {/* Footer */}
-        <footer className={`text-center py-6 mt-12 ${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-gradient-to-r from-white to-gray-50 border-gray-200'} border-t-2`}>
-          <p className="text-gray-400 text-sm">
+        <footer className={`text-center py-6 mt-12 ${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-white border-gray-200'} border-t-2`}>
+          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
             {t('footerText')}
           </p>
         </footer>
@@ -780,7 +780,7 @@ export default function Dashboard() {
         }
 
         body.light-mode {
-          background-color: #fefefe;
+          background-color: #f9fafb;
           color: #1a1a1a;
         }
 
@@ -790,7 +790,7 @@ export default function Dashboard() {
         }
 
         body[data-theme="light"] {
-          background-color: #fefefe;
+          background-color: #f9fafb;
           color: #1a1a1a;
         }
       `}</style>
