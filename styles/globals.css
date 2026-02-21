@@ -33,9 +33,9 @@
   --bg-card-light: #ffffff;
   --bg-secondary-light: #f1f5f9;
   --border-light: #e2e8f0;
-  --text-light: #1a202c;
-  --text-secondary-light: #4a5568;
-  --text-muted-light: #718096;
+  --text-light: #0f172a;
+  --text-secondary-light: #334155;
+  --text-muted-light: #64748b;
   
   /* Sombras */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -86,7 +86,7 @@ body {
 }
 
 /* ========================================
-   TEMA CLARO
+   TEMA CLARO - MELHORADO
    ======================================== */
 body.light-mode {
   background-color: var(--bg-light);
@@ -96,6 +96,37 @@ body.light-mode {
 body[data-theme="light"] {
   background-color: var(--bg-light);
   color: var(--text-light);
+}
+
+/* Títulos com melhor contraste em modo claro */
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5,
+body.light-mode h6,
+body[data-theme="light"] h1,
+body[data-theme="light"] h2,
+body[data-theme="light"] h3,
+body[data-theme="light"] h4,
+body[data-theme="light"] h5,
+body[data-theme="light"] h6 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* Parágrafos em modo claro */
+body.light-mode p,
+body[data-theme="light"] p {
+  color: var(--text-secondary-light);
+}
+
+/* Labels e textos secundários em modo claro */
+body.light-mode label,
+body.light-mode span,
+body[data-theme="light"] label,
+body[data-theme="light"] span {
+  color: var(--text-secondary-light);
 }
 
 /* ========================================
