@@ -511,7 +511,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
                 <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40} className="rounded-lg" />
-                <span className="text-xl font-bold text-orange-500">BIGFOOT Connect</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent hover:from-orange-400 hover:to-orange-500 transition-all duration-300">BIGFOOT Connect</span>
               </div>
               
               <div className="flex items-center gap-4">
