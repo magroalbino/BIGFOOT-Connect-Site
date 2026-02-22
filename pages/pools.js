@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink, Droplets, TrendingUp, Shield, Award, ArrowRight } from 'lucide-react';
 
 const PoolsPage = () => {
-  const [lang, setLang] = useState('en'); // Default to English
+  const [lang, setLang] = useState('en');
+  const [theme, setTheme] = useState('dark');
+  const [mounted, setMounted] = useState(false);
 
   // Constants
   const BIG_TOKEN_MINT = '39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
@@ -95,6 +97,17 @@ const PoolsPage = () => {
 
   const [copiedAddress, setCopiedAddress] = useState('');
 
+  // Inicializar tema
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+    }
+  }, []);
+
   const copyToClipboard = (text, label) => {
     navigator.clipboard.writeText(text);
     setCopiedAddress(label);
@@ -109,6 +122,21 @@ const PoolsPage = () => {
     window.open(ORCA_PORTFOLIO_URL, '_blank', 'noopener,noreferrer');
   };
 
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+    
+    if (newTheme === 'light') {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
+  };
+
+  if (!mounted) return null;
+
   return (
     <>
       <Head>
@@ -118,9 +146,9 @@ const PoolsPage = () => {
         <link rel="icon" href="/images/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-b from-gray-900 to-black text-white' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`}>
         {/* Header */}
-        <header className="bg-gradient-to-r from-gray-900 to-gray-800 border-b-2 border-gray-800 shadow-lg">
+        <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-white border-gray-200'} border-b-2 shadow-lg`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 cursor-pointer group">
@@ -131,7 +159,7 @@ const PoolsPage = () => {
                   height={40} 
                   className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
                 />
-                <span className="text-xl font-bold text-orange-500 transition-all duration-300 group-hover:text-orange-400">
+                <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent hover:from-orange-400 hover:to-orange-500 transition-all duration-300">
                   BIGFOOT Connect
                 </span>
               </Link>
@@ -140,11 +168,19 @@ const PoolsPage = () => {
                 <select
                   value={lang}
                   onChange={(e) => setLang(e.target.value)}
-                  className="bg-gray-800 text-gray-100 border border-gray-700 rounded-lg px-3 py-2 cursor-pointer transition-all duration-300 hover:border-orange-500"
+                  className={`${theme === 'dark' ? 'bg-gray-800 text-gray-100 border-gray-700' : 'bg-white text-gray-900 border-gray-300'} border rounded-lg px-3 py-2 cursor-pointer transition-all duration-300 hover:border-orange-500`}
                 >
                   <option value="en">English</option>
                   <option value="pt">Português</option>
                 </select>
+
+                <button
+                  onClick={toggleTheme}
+                  className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg px-3 py-2 text-orange-500 text-xl transition-all duration-300 hover:border-orange-500 hover:scale-110`}
+                  aria-label="Alternar tema"
+                >
+                  {theme === 'dark' ? '🌙' : '🌞'}
+                </button>
               </div>
             </div>
           </div>
@@ -154,11 +190,11 @@ const PoolsPage = () => {
         <div className="max-w-6xl mx-auto p-4 md:p-8">
           {/* Page Title */}
           <div className="text-center mb-12 mt-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${theme === 'dark' ? 'bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent' : 'text-gray-900'}`}>
               {t.title}
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-2">{t.subtitle}</p>
-            <p className="text-md text-orange-400 font-semibold">
+            <p className={`text-lg md:text-xl ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>{t.subtitle}</p>
+            <p className={`text-md font-semibold ${theme === 'dark' ? 'text-orange-400' : 'text-orange-600'}`}>
               {lang === 'pt' 
                 ? '🚀 Ajude a aumentar o TVL e valorize o token BIG!' 
                 : '🚀 Help increase TVL and grow BIG token value!'}
@@ -169,7 +205,7 @@ const PoolsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
             <button
               onClick={openOrcaPool}
-              className="group relative bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl"
+              className="group relative bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl text-white"
             >
               <div className="flex items-center justify-between mb-4">
                 <Droplets className="w-12 h-12" />
@@ -184,7 +220,7 @@ const PoolsPage = () => {
 
             <button
               onClick={openOrcaPortfolio}
-              className="group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl"
+              className="group relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl p-8 transition-all duration-300 hover:scale-105 shadow-2xl text-white"
             >
               <div className="flex items-center justify-between mb-4">
                 <Award className="w-12 h-12" />
@@ -199,33 +235,33 @@ const PoolsPage = () => {
           </div>
 
           {/* Benefits Section */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
-            <h2 className="text-3xl font-bold mb-6 text-center">{t.whyAddLiquidity}</h2>
+          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-orange-500/30' : 'bg-white border-orange-500/40'} border rounded-2xl p-6 md:p-8 mb-8`}>
+            <h2 className={`text-3xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.whyAddLiquidity}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-orange-900/20 border border-orange-500/30 rounded-xl p-6 hover:bg-orange-900/30 transition">
-                <TrendingUp className="w-10 h-10 text-orange-400 mb-4" />
-                <h3 className="text-xl font-bold text-orange-400 mb-2">{t.benefit1Title}</h3>
-                <p className="text-gray-300 text-sm">{t.benefit1Desc}</p>
-                <div className="mt-3 text-xs text-orange-300 font-semibold">
+              <div className={`${theme === 'dark' ? 'bg-orange-900/20 border-orange-500/30 hover:bg-orange-900/30' : 'bg-orange-50 border-orange-500/40 hover:bg-orange-100'} border rounded-xl p-6 transition`}>
+                <TrendingUp className={`w-10 h-10 ${theme === 'dark' ? 'text-orange-400' : 'text-orange-600'} mb-4`} />
+                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-orange-400' : 'text-orange-600'} mb-2`}>{t.benefit1Title}</h3>
+                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{t.benefit1Desc}</p>
+                <div className={`mt-3 text-xs font-semibold ${theme === 'dark' ? 'text-orange-300' : 'text-orange-700'}`}>
                   {lang === 'pt' ? '🎯 Objetivo Principal' : '🎯 Main Goal'}
                 </div>
               </div>
 
-              <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 hover:bg-blue-900/30 transition">
-                <Shield className="w-10 h-10 text-blue-400 mb-4" />
-                <h3 className="text-xl font-bold text-blue-400 mb-2">{t.benefit2Title}</h3>
-                <p className="text-gray-300 text-sm">{t.benefit2Desc}</p>
-                <div className="mt-3 text-xs text-blue-300 font-semibold">
+              <div className={`${theme === 'dark' ? 'bg-blue-900/20 border-blue-500/30 hover:bg-blue-900/30' : 'bg-blue-50 border-blue-500/40 hover:bg-blue-100'} border rounded-xl p-6 transition`}>
+                <Shield className={`w-10 h-10 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} mb-4`} />
+                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} mb-2`}>{t.benefit2Title}</h3>
+                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{t.benefit2Desc}</p>
+                <div className={`mt-3 text-xs font-semibold ${theme === 'dark' ? 'text-blue-300' : 'text-blue-700'}`}>
                   {lang === 'pt' ? '📊 Melhor para Traders' : '📊 Better for Traders'}
                 </div>
               </div>
 
-              <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-6 hover:bg-green-900/30 transition">
-                <Award className="w-10 h-10 text-green-400 mb-4" />
-                <h3 className="text-xl font-bold text-green-400 mb-2">{t.benefit3Title}</h3>
-                <p className="text-gray-300 text-sm">{t.benefit3Desc}</p>
-                <div className="mt-3 text-xs text-green-300 font-semibold">
+              <div className={`${theme === 'dark' ? 'bg-green-900/20 border-green-500/30 hover:bg-green-900/30' : 'bg-green-50 border-green-500/40 hover:bg-green-100'} border rounded-xl p-6 transition`}>
+                <Award className={`w-10 h-10 ${theme === 'dark' ? 'text-green-400' : 'text-green-600'} mb-4`} />
+                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-green-400' : 'text-green-600'} mb-2`}>{t.benefit3Title}</h3>
+                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{t.benefit3Desc}</p>
+                <div className={`mt-3 text-xs font-semibold ${theme === 'dark' ? 'text-green-300' : 'text-green-700'}`}>
                   {lang === 'pt' ? '💰 Recompensa Extra' : '💰 Extra Reward'}
                 </div>
               </div>
@@ -233,17 +269,17 @@ const PoolsPage = () => {
           </div>
 
           {/* How It Works */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
-            <h2 className="text-3xl font-bold mb-6 text-center">{t.howItWorks}</h2>
+          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-orange-500/30' : 'bg-white border-orange-500/40'} border rounded-2xl p-6 md:p-8 mb-8`}>
+            <h2 className={`text-3xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.howItWorks}</h2>
             
             <div className="space-y-4">
               {[t.step1, t.step2, t.step3, t.step4, t.step5].map((step, idx) => (
-                <div key={idx} className="flex items-start gap-4 bg-gray-800/50 rounded-xl p-4 hover:bg-gray-800/70 transition">
-                  <div className="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center font-bold">
+                <div key={idx} className={`flex items-start gap-4 ${theme === 'dark' ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'} rounded-xl p-4 transition`}>
+                  <div className="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center font-bold text-white">
                     {idx + 1}
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-200">{step}</p>
+                    <p className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>{step}</p>
                   </div>
                 </div>
               ))}
@@ -251,47 +287,47 @@ const PoolsPage = () => {
           </div>
 
           {/* Pool Stats with TVL Emphasis */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
-            <h2 className="text-3xl font-bold mb-2 text-center">{t.statsTitle}</h2>
-            <p className="text-center text-gray-400 text-sm mb-6">
+          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-orange-500/30' : 'bg-white border-orange-500/40'} border rounded-2xl p-6 md:p-8 mb-8`}>
+            <h2 className={`text-3xl font-bold mb-2 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.statsTitle}</h2>
+            <p className={`text-center text-sm mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               {lang === 'pt' 
                 ? '🎯 Objetivo: Aumentar o TVL para valorizar o token BIG!' 
                 : '🎯 Goal: Increase TVL to grow BIG token value!'}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-orange-500/20 border-2 border-orange-500/50 rounded-xl p-6 text-center relative overflow-hidden">
+              <div className={`${theme === 'dark' ? 'bg-orange-500/20 border-orange-500/50' : 'bg-orange-50 border-orange-500/50'} border-2 rounded-xl p-6 text-center relative overflow-hidden`}>
                 <div className="absolute top-0 right-0 bg-orange-600 text-white text-xs px-2 py-1 rounded-bl-lg font-bold">
                   {lang === 'pt' ? 'PRINCIPAL' : 'MAIN'}
                 </div>
-                <div className="text-sm text-gray-300 mb-2">{t.tvl}</div>
-                <div className="text-3xl font-bold text-orange-400 mb-2">
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mb-2`}>{t.tvl}</div>
+                <div className={`text-3xl font-bold ${theme === 'dark' ? 'text-orange-400' : 'text-orange-600'} mb-2`}>
                   {lang === 'pt' ? 'Crescendo' : 'Growing'}
                 </div>
-                <div className="text-xs text-orange-300">
+                <div className={`text-xs ${theme === 'dark' ? 'text-orange-300' : 'text-orange-700'}`}>
                   {lang === 'pt' ? '⬆️ Vamos aumentar juntos!' : '⬆️ Let\'s grow it together!'}
                 </div>
               </div>
-              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 text-center">
-                <div className="text-sm text-gray-400 mb-2">{t.apr}</div>
-                <div className="text-3xl font-bold text-green-400">~100%</div>
-                <div className="text-xs text-gray-500 mt-2">{lang === 'pt' ? 'Recompensas' : 'Rewards'}</div>
+              <div className={`${theme === 'dark' ? 'bg-green-500/10 border-green-500/30' : 'bg-green-50 border-green-500/40'} border rounded-xl p-6 text-center`}>
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.apr}</div>
+                <div className={`text-3xl font-bold ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`}>~100%</div>
+                <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'} mt-2`}>{lang === 'pt' ? 'Recompensas' : 'Rewards'}</div>
               </div>
-              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6 text-center">
-                <div className="text-sm text-gray-400 mb-2">{t.volume24h}</div>
-                <div className="text-3xl font-bold text-blue-400">
+              <div className={`${theme === 'dark' ? 'bg-blue-500/10 border-blue-500/30' : 'bg-blue-50 border-blue-500/40'} border rounded-xl p-6 text-center`}>
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.volume24h}</div>
+                <div className={`text-3xl font-bold ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
                   {lang === 'pt' ? 'Ativo' : 'Active'}
                 </div>
-                <div className="text-xs text-gray-500 mt-2">{lang === 'pt' ? 'Em expansão' : 'Expanding'}</div>
+                <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'} mt-2`}>{lang === 'pt' ? 'Em expansão' : 'Expanding'}</div>
               </div>
             </div>
             
             {/* TVL Impact Explanation */}
-            <div className="mt-6 bg-gradient-to-r from-orange-900/30 to-yellow-900/30 border-l-4 border-orange-500 rounded-lg p-4">
-              <h4 className="font-bold text-orange-400 mb-2">
+            <div className={`mt-6 ${theme === 'dark' ? 'bg-gradient-to-r from-orange-900/30 to-yellow-900/30 border-orange-500 text-gray-300' : 'bg-orange-50 border-orange-200 text-gray-800'} border-l-4 rounded-lg p-4`}>
+              <h4 className={`font-bold ${theme === 'dark' ? 'text-orange-400' : 'text-orange-700'} mb-2`}>
                 {lang === 'pt' ? '💡 Por que TVL é importante?' : '💡 Why is TVL important?'}
               </h4>
-              <ul className="text-sm text-gray-300 space-y-1">
+              <ul className={`text-sm space-y-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 <li>✅ {lang === 'pt' ? 'Maior TVL = Mais confiança dos investidores' : 'Higher TVL = More investor confidence'}</li>
                 <li>✅ {lang === 'pt' ? 'Pool mais profunda = Menos variação de preço' : 'Deeper pool = Less price volatility'}</li>
                 <li>✅ {lang === 'pt' ? 'Atrai mais traders = Mais volume = Mais taxas para você' : 'Attracts traders = More volume = More fees for you'}</li>
@@ -301,17 +337,17 @@ const PoolsPage = () => {
           </div>
 
           {/* Pool Info */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-orange-500/30 rounded-2xl p-6 md:p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">{t.poolInfo}</h2>
+          <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-orange-500/30' : 'bg-white border-orange-500/40'} border rounded-2xl p-6 md:p-8 mb-8`}>
+            <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.poolInfo}</h2>
             
             <div className="space-y-4">
-              <div className="bg-gray-800/50 rounded-xl p-4">
-                <div className="text-sm text-gray-400 mb-2">{t.tokenAddress}</div>
+              <div className={`${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'} rounded-xl p-4`}>
+                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.tokenAddress}</div>
                 <div className="flex items-center justify-between gap-2">
-                  <code className="text-xs md:text-sm text-orange-400 break-all">{BIG_TOKEN_MINT}</code>
+                  <code className={`text-xs md:text-sm ${theme === 'dark' ? 'text-orange-400' : 'text-orange-600'} break-all`}>{BIG_TOKEN_MINT}</code>
                   <button
                     onClick={() => copyToClipboard(BIG_TOKEN_MINT, 'token')}
-                    className="flex-shrink-0 px-3 py-1 bg-orange-600 hover:bg-orange-700 rounded-lg text-xs transition"
+                    className="flex-shrink-0 px-3 py-1 bg-orange-600 hover:bg-orange-700 rounded-lg text-xs text-white transition"
                   >
                     {copiedAddress === 'token' ? t.copied : t.copyAddress}
                   </button>
@@ -319,17 +355,17 @@ const PoolsPage = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-800/50 rounded-xl p-4">
-                  <div className="text-sm text-gray-400 mb-2">{t.platform}</div>
-                  <div className="font-bold text-lg">Orca</div>
+                <div className={`${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'} rounded-xl p-4`}>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.platform}</div>
+                  <div className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Orca</div>
                 </div>
-                <div className="bg-gray-800/50 rounded-xl p-4">
-                  <div className="text-sm text-gray-400 mb-2">{t.fee}</div>
-                  <div className="font-bold text-lg text-green-400">0.3%</div>
+                <div className={`${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'} rounded-xl p-4`}>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.fee}</div>
+                  <div className={`font-bold text-lg ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`}>0.3%</div>
                 </div>
-                <div className="bg-gray-800/50 rounded-xl p-4">
-                  <div className="text-sm text-gray-400 mb-2">{t.protocol}</div>
-                  <div className="font-bold text-lg">Whirlpool</div>
+                <div className={`${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'} rounded-xl p-4`}>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-2`}>{t.protocol}</div>
+                  <div className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Whirlpool</div>
                 </div>
               </div>
             </div>
@@ -337,26 +373,26 @@ const PoolsPage = () => {
 
           {/* Why Orca Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-500/30 rounded-2xl p-6">
+            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-500/30' : 'bg-green-50 border-green-500/40'} border rounded-2xl p-6`}>
               <div className="flex items-center gap-3 mb-4">
-                <Shield className="w-8 h-8 text-green-400" />
-                <h3 className="text-xl font-bold">{t.security}</h3>
+                <Shield className={`w-8 h-8 ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`} />
+                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.security}</h3>
               </div>
-              <p className="text-gray-300 text-sm">{t.securityDesc}</p>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{t.securityDesc}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-2xl p-6">
+            <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-blue-500/30' : 'bg-blue-50 border-blue-500/40'} border rounded-2xl p-6`}>
               <div className="flex items-center gap-3 mb-4">
-                <Droplets className="w-8 h-8 text-blue-400" />
-                <h3 className="text-xl font-bold">{t.whyOrca}</h3>
+                <Droplets className={`w-8 h-8 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{t.whyOrca}</h3>
               </div>
-              <p className="text-gray-300 text-sm">{t.whyOrcaDesc}</p>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{t.whyOrcaDesc}</p>
             </div>
           </div>
 
           {/* Final CTA */}
           <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-8 text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-3xl font-bold mb-4 text-white">
               {lang === 'pt' ? '🚀 Vamos valorizar o BIG juntos!' : '🚀 Let\'s grow BIG together!'}
             </h2>
             <p className="text-orange-100 mb-2">
@@ -379,7 +415,7 @@ const PoolsPage = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center text-gray-500 text-sm">
+          <div className={`text-center text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
             <p>© 2025 BIGFOOT Connect. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
             <p className="mt-2 text-xs">
               {lang === 'pt' 
@@ -389,6 +425,23 @@ const PoolsPage = () => {
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        body.light-mode {
+          background-color: #f9fafb;
+          color: #1a1a1a;
+        }
+
+        body[data-theme="dark"] {
+          background-color: #0a0a0a;
+          color: #f0f0f0;
+        }
+
+        body[data-theme="light"] {
+          background-color: #f9fafb;
+          color: #1a1a1a;
+        }
+      `}</style>
     </>
   );
 };
