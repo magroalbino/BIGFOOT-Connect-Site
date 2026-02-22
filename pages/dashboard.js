@@ -555,7 +555,7 @@ export default function Dashboard() {
             
             <div className="flex justify-center mb-6">
               <h2 className={`text-3xl font-bold px-6 py-3 rounded-lg ${theme === 'dark' ? 'bg-orange-500 text-white' : 'bg-orange-500 text-white'} shadow-lg`}>
-                📊 {t('progress')}
+                {t('progress')}
               </h2>
             </div>
 
