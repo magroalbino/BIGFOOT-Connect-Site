@@ -151,6 +151,7 @@ const PoolsPage = () => {
         <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800 border-gray-800' : 'bg-white border-gray-200'} border-b-2 shadow-lg`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
+              {/* CORREÇÃO: removido gradiente de texto no hover para evitar efeito piscando */}
               <Link href="/" className="flex items-center gap-3 cursor-pointer group">
                 <Image 
                   src="/images/logo.png" 
@@ -159,7 +160,7 @@ const PoolsPage = () => {
                   height={40} 
                   className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
                 />
-                <span className={`text-xl font-bold transition-all duration-300 ${theme === 'dark' ? 'text-white group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent' : 'text-gray-900 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent'}`}>
+                <span className="text-xl font-bold transition-colors duration-300 group-hover:text-orange-500">
                   BIGFOOT Connect
                 </span>
               </Link>
