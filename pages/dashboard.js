@@ -509,9 +509,9 @@ export default function Dashboard() {
         <header className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-white'} border-b-2 ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} shadow-lg`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/')}>
-                <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40} className="rounded-lg" />
-                <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent hover:from-orange-400 hover:to-orange-500 transition-all duration-300">BIGFOOT Connect</span>
+              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => router.push('/')}>
+                <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40} className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125" />
+                <span className={`text-xl font-bold transition-all duration-300 ${theme === 'dark' ? 'text-white group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent' : 'text-gray-900 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent'}`}>BIGFOOT Connect</span>
               </div>
               
               <div className="flex items-center gap-4">
@@ -794,22 +794,6 @@ export default function Dashboard() {
         body[data-theme="light"] {
           background-color: #f9fafb;
           color: #1a1a1a;
-        }
-
-        /* BIGFOOT Connect Header Styling */
-        header span[class*="text-xl"][class*="font-bold"] {
-          background: linear-gradient(90deg, #FF6B35 0%, #FFA500 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          display: inline-block;
-        }
-
-        header span[class*="text-xl"][class*="font-bold"]:hover {
-          background: linear-gradient(90deg, #FFA500 0%, #FF6B35 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
         }
       `}</style>
     </ProtectedRoute>
