@@ -159,7 +159,7 @@ const PoolsPage = () => {
                   height={40} 
                   className="rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
                 />
-                <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent group-hover:from-orange-400 group-hover:to-orange-500 transition-all duration-300">
+                <span className={`text-xl font-bold transition-all duration-300 ${theme === 'dark' ? 'text-white group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent' : 'text-gray-900 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:bg-clip-text group-hover:text-transparent'}`}>
                   BIGFOOT Connect
                 </span>
               </Link>
@@ -440,23 +440,6 @@ const PoolsPage = () => {
         body[data-theme="light"] {
           background-color: #f9fafb;
           color: #1a1a1a;
-        }
-
-        /* BIGFOOT Connect Header Styling - Pools Page */
-        header a span[class*="text-xl"][class*="font-bold"] {
-          background: linear-gradient(90deg, #FF6B35 0%, #FFA500 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          display: inline-block;
-          transition: all 0.3s ease;
-        }
-
-        header a:hover span[class*="text-xl"][class*="font-bold"] {
-          background: linear-gradient(90deg, #FFA500 0%, #FF6B35 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
         }
       `}</style>
     </>
