@@ -405,6 +405,16 @@ select:focus-visible {
   background-clip: text;
 }
 
+/* Efeito BIGFOOT Connect */
+span.text-xl.font-bold {
+  display: inline-block;
+}
+
+/* Garantir que o gradient funcione */
+[class*="bg-gradient-to-r"] {
+  background-attachment: fixed;
+}
+
 .bg-gradient-primary {
   background: linear-gradient(135deg, var(--color-primary) 0%, #10B981 100%);
 }
