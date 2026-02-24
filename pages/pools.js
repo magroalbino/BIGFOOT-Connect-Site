@@ -212,7 +212,7 @@ const PoolsPage = () => {
                 <ExternalLink className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
               <h3 className="text-2xl font-bold mb-2">{t.goToOrca}</h3>
-              <p className={`text-sm font-medium ${theme === 'dark' ? 'text-orange-100' : 'text-white'}`}>
+              <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>
                 {lang === 'pt' ? 'Deposite agora e aumente o TVL!' : 'Deposit now and increase TVL!'}
               </p>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
@@ -227,7 +227,7 @@ const PoolsPage = () => {
                 <ExternalLink className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
               <h3 className="text-2xl font-bold mb-2">{t.managePositions}</h3>
-              <p className={`text-sm font-medium ${theme === 'dark' ? 'text-blue-100' : 'text-white'}`}>
+              <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>
                 {lang === 'pt' ? 'Veja e gerencie suas posições' : 'View and manage your positions'}
               </p>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity"></div>
