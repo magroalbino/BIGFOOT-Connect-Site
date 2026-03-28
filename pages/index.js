@@ -22,7 +22,7 @@ export default function Home() {
   // Roadmap data
   const roadmapItems = {
     pt: [
-      { title: "Fase 1 (2025) – Lançamento ✅", desc: "Versão inicial com recursos básicos de compartilhamento e recompensas.", done: true },
+      { title: "Fase 1 (2025) – Lançamento ✅", desc: "Versão inicial com recursos básicos e recompensas.", done: true },
       { title: "Fase 2 (2026) – Criação da BIGchain", desc: "Nossa própria blockchain.", done: false },
       { title: "Fase 3 (2026) – Integração com Extensão", desc: "Suporte para extensão de navegador.", done: false },
       { title: "Fase 4 (2026) – Multiplataforma", desc: "Apps para Android e iOS.", done: false },
@@ -30,7 +30,7 @@ export default function Home() {
       { title: "Fase 6 (2026) – Recursos Avançados", desc: "Novos modelos de recompensas, análises e suporte a novos protocolos.", done: false },
     ],
     en: [
-      { title: "Phase 1 (2025) – Launch ✅", desc: "Initial version with basic sharing features and rewards.", done: true },
+      { title: "Phase 1 (2025) – Launch ✅", desc: "Initial version with basic features and rewards.", done: true },
       { title: "Phase 2 (2026) – BIGchain Creation", desc: "Our own blockchain.", done: false },
       { title: "Phase 3 (2026) – Extension Integration", desc: "Support for browser extension.", done: false },
       { title: "Phase 4 (2026) – Multiplatform", desc: "Apps for Android and iOS.", done: false },
