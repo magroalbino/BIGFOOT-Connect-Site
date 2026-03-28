@@ -27,8 +27,8 @@ const translations = {
     settings: 'Configurações',
     
     // Homepage
-    heroTitle: 'Conecte. Contribua. Ganhe.',
-    heroText: 'Com o BIGFOOT Connect, você compartilha seu poder computacional, ajuda na construção da rede e ganha recompensas em BIG. Baixe o aplicativo, conecte-se e comece agora mesmo!',
+    heroTitle: 'Conectar. Descentralizar. Ganhar.',
+    heroText: 'Com o BIGFOOT Connect, você roda um nó da rede, ajuda na descentralização e ganha recompensas em BIG. Baixe o aplicativo, conecte-se e comece agora mesmo!',
     downloadWindows: 'Windows',
     installerWarning: '🛡️ Aviso: O Windows pode exibir "O Windows protegeu seu computador" ao instalar o BIGFOOT Connect. Isso ocorre porque o instalador ainda não é assinado digitalmente. Para prosseguir, clique em "Mais informações" e depois "Executar assim mesmo". Nosso programa é totalmente seguro e não contém nada que possa prejudicar o computador do usuário.',
     
@@ -39,7 +39,7 @@ const translations = {
     
     // Token
     tokenTitle: '💰 Token BIG (BIG)',
-    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por compartilharem poder computacional e contribuírem com a construção da rede.',
+    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por relay e contribuírem com a construção da rede.',
     contractLabel: 'Contrato:',
     
     // Roadmap
@@ -168,8 +168,8 @@ const translations = {
     settings: 'Settings',
     
     // Homepage
-    heroTitle: 'Connect. Contribute. Earn.',
-    heroText: 'With BIGFOOT Connect, you share your computing power, help build the network, and earn BIG rewards. Download the app, connect, and get started today!',
+    heroTitle: 'Connect. Decentralize. Earn.',
+    heroText: 'With BIGFOOT Connect, you run a network node, help decentralize the web, and earn BIG rewards. Download the app, connect, and get started today!',
     downloadWindows: 'Windows',
     installerWarning: '🛡️ Notice: When installing BIGFOOT Connect, Windows might display "Windows protected your PC" because the installer is not digitally signed yet. To continue, click "More info" and then "Run anyway". Rest assured, our application is completely safe and does not contain anything that could harm your computer.',
     
