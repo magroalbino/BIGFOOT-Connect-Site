@@ -82,7 +82,7 @@ export default function Document() {
               "name": "BIGFOOT Connect",
               "url": "https://bigfootconnect.tech",
               "logo": "https://bigfootconnect.tech/images/logo.png",
-              "description": "Compartilhe seu poder computacional e ganhe recompensas em tokens BIG",
+              "description": "Promova a descentralização da rede e ganhe recompensas em tokens BIG",
               "sameAs": [
                 "https://x.com/BIGFOOT_Connect",
                 "https://discord.gg/mkfmncN5Sa",
