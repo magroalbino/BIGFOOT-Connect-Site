@@ -13,7 +13,7 @@ const PoolsPage = () => {
   const sectionRefs = useRef({});
 
   const BIG_TOKEN_MINT = '39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
-  const ORCA_POOL_URL = 'https://www.orca.so/pools?tokens=39CGFmz6X8XEJT5Ky5zfjfhRjoAhdHAdCXNsvekR6EB8';
+  const ORCA_POOL_URL = 'https://www.orca.so/pools/aUJ4se8F91gBvHz2rixHRiJXygnm2YdPi34b7Sry9tS';
   const ORCA_PORTFOLIO_URL = 'https://www.orca.so/portfolio';
 
   const translations = {
@@ -26,7 +26,7 @@ const PoolsPage = () => {
       benefit2Title: 'Reduce Slippage',
       benefit2Desc: 'More liquidity means better prices for all traders',
       benefit3Title: 'Earn Passive Income',
-      benefit3Desc: 'Bonus: earn 0.3% fees from every trade',
+      benefit3Desc: 'Bonus: earn 1% fees from every trade',
       howItWorks: 'How It Works',
       step1: 'Connect your wallet (Phantom, Solflare, etc)',
       step2: 'Deposit BIG and SOL tokens to increase pool TVL',
@@ -43,7 +43,7 @@ const PoolsPage = () => {
       security: 'Security & Trust',
       securityDesc: 'Orca is one of the most trusted DEXs on Solana, with millions in TVL and audited smart contracts.',
       whyOrca: 'Why Orca?',
-      whyOrcaDesc: 'Orca offers the best liquidity experience on Solana with concentrated liquidity (Whirlpools), low fees, and a user-friendly interface.',
+      whyOrcaDesc: 'Orca offers the best liquidity experience on Solana with Splash Pools, low fees, and a user-friendly interface.',
       copyAddress: 'Copy',
       copied: 'Copied!',
       statsTitle: 'Pool Stats',
@@ -60,7 +60,7 @@ const PoolsPage = () => {
       benefit2Title: 'Reduza o Slippage',
       benefit2Desc: 'Mais liquidez significa melhores preços para todos',
       benefit3Title: 'Ganhe Renda Passiva',
-      benefit3Desc: 'Bônus: ganhe 0.3% de taxas de cada negociação',
+      benefit3Desc: 'Bônus: ganhe 1% de taxas de cada negociação',
       howItWorks: 'Como Funciona',
       step1: 'Conecte sua carteira (Phantom, Solflare, etc)',
       step2: 'Deposite tokens BIG e SOL para aumentar o TVL da pool',
@@ -77,7 +77,7 @@ const PoolsPage = () => {
       security: 'Segurança e Confiança',
       securityDesc: 'Orca é uma das DEXs mais confiáveis da Solana, com milhões em TVL e contratos inteligentes auditados.',
       whyOrca: 'Por Que Orca?',
-      whyOrcaDesc: 'Orca oferece a melhor experiência de liquidez na Solana com liquidez concentrada (Whirlpools), taxas baixas e interface amigável.',
+      whyOrcaDesc: 'Orca oferece a melhor experiência de liquidez na Solana com Splash Pools, taxas baixas e interface amigável.',
       copyAddress: 'Copiar',
       copied: 'Copiado!',
       statsTitle: 'Estatísticas da Pool',
@@ -330,7 +330,7 @@ const PoolsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { label: t.tvl, value: lang === 'pt' ? 'Crescendo' : 'Growing', sub: lang === 'pt' ? '⬆️ Vamos juntos!' : '⬆️ Let\'s grow it!', highlight: true },
-                { label: t.apr, value: '~100%', sub: lang === 'pt' ? 'Recompensas' : 'Rewards', highlight: false },
+                { label: t.apr, value: '<0.01%', sub: lang === 'pt' ? 'Cresce com o TVL' : 'Grows with TVL', highlight: false },
                 { label: t.volume24h, value: lang === 'pt' ? 'Ativo' : 'Active', sub: lang === 'pt' ? 'Em expansão' : 'Expanding', highlight: false },
               ].map((stat, i) => (
                 <div key={i} className={`p-6 rounded-2xl border text-center relative overflow-hidden ${
@@ -392,8 +392,8 @@ const PoolsPage = () => {
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { label: t.platform, value: 'Orca', color: isDark ? 'text-white' : 'text-gray-900' },
-                  { label: t.fee, value: '0.3%', color: isDark ? 'text-green-400' : 'text-green-600' },
-                  { label: t.protocol, value: 'Whirlpool', color: isDark ? 'text-white' : 'text-gray-900' },
+                  { label: t.fee, value: '1.00%', color: isDark ? 'text-green-400' : 'text-green-600' },
+                  { label: t.protocol, value: 'Splash Pool', color: isDark ? 'text-white' : 'text-gray-900' },
                 ].map((item, i) => (
                   <div key={i} className={`p-4 rounded-2xl border text-center ${isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-white border-gray-100'}`}>
                     <div className={`text-xs uppercase tracking-widest mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{item.label}</div>
