@@ -309,7 +309,10 @@ export default function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: { color: isDark ? '#d1d5db' : '#374151', font: { size: 13, weight: '500' } }
+        labels: {
+          color: isDark ? '#d1d5db' : '#374151',
+          font: { size: 13, weight: '500', family: "'Plus Jakarta Sans', sans-serif" }
+        }
       },
       tooltip: {
         backgroundColor: isDark ? 'rgba(10,10,10,0.95)' : 'rgba(255,255,255,0.95)',
@@ -318,17 +321,23 @@ export default function Dashboard() {
         borderColor: 'rgba(249,115,22,0.4)',
         borderWidth: 1,
         padding: 12,
+        titleFont: { family: "'Plus Jakarta Sans', sans-serif" },
+        bodyFont: { family: "'Plus Jakarta Sans', sans-serif" },
         callbacks: { label: (ctx) => `  ${ctx.parsed.y} BIG` }
       }
     },
     scales: {
       x: {
         grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
-        ticks: { color: isDark ? '#9ca3af' : '#6b7280', font: { size: 12 } }
+        ticks: { color: isDark ? '#9ca3af' : '#6b7280', font: { size: 12, family: "'Plus Jakarta Sans', sans-serif" } }
       },
       y: {
         grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
-        ticks: { color: isDark ? '#9ca3af' : '#6b7280', font: { size: 12 }, callback: (v) => `${v} BIG` },
+        ticks: {
+          color: isDark ? '#9ca3af' : '#6b7280',
+          font: { size: 12, family: "'Plus Jakarta Sans', sans-serif" },
+          callback: (v) => `${v} BIG`
+        },
         beginAtZero: true
       }
     }
@@ -366,12 +375,20 @@ export default function Dashboard() {
       <Head>
         <title>{t('heading')} - BIGFOOT Connect</title>
         <meta name="description" content="Painel do usuário BIGFOOT Connect" />
+
+        {/* Fontes padronizadas — igual ao index.jsx */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <div className={`min-h-screen ${isDark ? 'bg-[#080808] text-gray-100' : 'bg-[#fafafa] text-gray-900'} transition-colors duration-500`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <div
+        className={`min-h-screen ${isDark ? 'bg-[#080808] text-gray-100' : 'bg-[#fafafa] text-gray-900'} transition-colors duration-500`}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
 
         {/* Partículas de fundo */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -390,7 +407,7 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Header */}
+        {/* ── HEADER ── */}
         <header className={`sticky top-0 z-50 transition-all duration-300 ${
           scrollY > 20
             ? isDark
@@ -400,12 +417,18 @@ export default function Dashboard() {
         }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
+
+              {/* Logo — Space Grotesk, idêntico ao index.jsx */}
               <div className="flex items-center gap-3 cursor-pointer group" onClick={() => router.push('/')}>
                 <div className="relative">
                   <div className="absolute inset-0 bg-orange-500/20 rounded-xl blur-md group-hover:blur-lg transition-all duration-300 scale-110" />
-                  <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40} className="relative rounded-xl transition-all duration-300 group-hover:scale-110" />
+                  <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40}
+                    className="relative rounded-xl transition-all duration-300 group-hover:scale-110" />
                 </div>
-                <span className="text-xl font-bold text-orange-500 transition-colors duration-300 group-hover:text-orange-400" style={{ fontFamily: "'Syne', sans-serif" }}>
+                <span
+                  className="text-xl font-bold text-orange-500 transition-colors duration-300 group-hover:text-orange-400"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+                >
                   BIGFOOT Connect
                 </span>
               </div>
@@ -414,15 +437,20 @@ export default function Dashboard() {
                 <button
                   onClick={handleLogout}
                   className="group relative inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                   {t('logout')}
                 </button>
 
+                {/* Separator — igual ao index.jsx */}
+                <div className={`w-px h-5 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} mx-1`} />
+
                 <select
                   value={language}
                   onChange={handleLanguageChange}
-                  className={`${isDark ? 'bg-gray-900 text-gray-100 border-gray-700' : 'bg-white text-gray-900 border-gray-200'} border rounded-xl px-3 py-2 text-sm cursor-pointer transition-all duration-300 hover:border-orange-500 focus:outline-none`}
+                  className={`${isDark ? 'bg-gray-900 text-gray-100 border-gray-700/60' : 'bg-white text-gray-900 border-gray-200'} border rounded-lg px-3 py-2 text-sm cursor-pointer transition-all duration-300 hover:border-orange-500 focus:outline-none font-medium`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
                   <option value="en">EN</option>
                   <option value="pt">PT</option>
@@ -430,7 +458,7 @@ export default function Dashboard() {
 
                 <button
                   onClick={toggleTheme}
-                  className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl px-3 py-2 text-orange-500 transition-all duration-300 hover:border-orange-500 hover:scale-110`}
+                  className={`${isDark ? 'bg-gray-900 border-gray-700/60' : 'bg-white border-gray-200'} border rounded-lg px-3 py-2 text-orange-500 transition-all duration-300 hover:border-orange-500 hover:scale-110`}
                   aria-label="Alternar tema"
                 >
                   {isDark ? '🌙' : '🌞'}
@@ -440,65 +468,79 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Main */}
+        {/* ── MAIN ── */}
         <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
           {/* Título da página */}
           <div className="text-center mb-10 dash-reveal">
-            <span className="inline-block text-orange-500 text-xs font-semibold tracking-widest uppercase mb-3">
+            <span
+              className="inline-block text-orange-500 mb-3"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}
+            >
               {language === 'pt' ? 'Painel do Usuário' : 'User Dashboard'}
             </span>
-            <h1 className={`text-4xl md:text-5xl font-extrabold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h1
+              className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+              style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 'clamp(28px, 5vw, 44px)', letterSpacing: '-1px', lineHeight: 1.08 }}
+            >
               {t('heading')}
             </h1>
           </div>
 
-          {/* Progress Card */}
+          {/* ── Progress Card ── */}
           <div className={`relative overflow-hidden rounded-3xl p-8 mb-8 border dash-reveal-delay-1 ${
             isDark ? 'bg-gray-900/60 border-orange-500/15' : 'bg-white border-orange-500/20'
           } shadow-xl`}>
-            {/* Glow decorativo */}
             <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-orange-500/8 blur-3xl pointer-events-none" />
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
 
             <div className="relative">
-              {/* Título da seção */}
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+                <h2
+                  className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '20px', letterSpacing: '-0.4px' }}
+                >
                   {t('progress')}
                 </h2>
               </div>
 
               {/* Stats */}
               <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className={`p-6 rounded-2xl border text-center ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
-                  <div className="text-3xl md:text-4xl font-extrabold text-orange-500 mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>
-                    {totalBigPoints.toFixed(2)}
+                {[
+                  { value: totalBigPoints.toFixed(2), label: `BIG · ${t('shared')}` },
+                  { value: daysActive, label: t('daysActive') },
+                ].map((stat, i) => (
+                  <div key={i} className={`p-6 rounded-2xl border text-center ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
+                    <div
+                      className="text-3xl md:text-4xl font-bold text-orange-500 mb-1"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.8px' }}
+                    >
+                      {stat.value}
+                    </div>
+                    <div
+                      className={isDark ? 'text-gray-400' : 'text-gray-500'}
+                      style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '1.2px', textTransform: 'uppercase' }}
+                    >
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className={`text-xs uppercase tracking-widest font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    BIG · {t('shared')}
-                  </div>
-                </div>
-                <div className={`p-6 rounded-2xl border text-center ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
-                  <div className="text-3xl md:text-4xl font-extrabold text-orange-500 mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>
-                    {daysActive}
-                  </div>
-                  <div className={`text-xs uppercase tracking-widest font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {t('daysActive')}
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Month Selector */}
               <div className="flex items-center gap-4 mb-6 flex-wrap">
-                <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <span
+                  className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                >
                   {t('selectMonth')}
                 </span>
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className={`${isDark ? 'bg-gray-800 text-gray-100 border-gray-700' : 'bg-white text-gray-900 border-gray-200'} border rounded-xl px-4 py-2 text-sm cursor-pointer font-medium transition-all duration-300 hover:border-orange-500 focus:outline-none focus:border-orange-500 min-w-[180px]`}
+                  className={`${isDark ? 'bg-gray-800 text-gray-100 border-gray-700/60' : 'bg-white text-gray-900 border-gray-200'} border rounded-xl px-4 py-2 text-sm cursor-pointer font-medium transition-all duration-300 hover:border-orange-500 focus:outline-none focus:border-orange-500 min-w-[180px]`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
                   {availableMonths.map(month => (
                     <option key={month.value} value={month.value}>{month.label}</option>
@@ -511,7 +553,10 @@ export default function Dashboard() {
                 <div className={`rounded-2xl border p-6 mb-6 ${isDark ? 'bg-orange-500/5 border-orange-500/10' : 'bg-orange-50/60 border-orange-100'}`}>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-1 h-4 bg-orange-500/60 rounded-full" />
-                    <h3 className={`font-semibold text-sm ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>
+                    <h3
+                      className={`text-sm font-semibold ${isDark ? 'text-orange-400' : 'text-orange-600'}`}
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
                       {availableMonths.find(m => m.value === selectedMonth)?.label}
                     </h3>
                   </div>
@@ -522,8 +567,18 @@ export default function Dashboard() {
                       { value: `${monthlyData.avgDaily.toFixed(2)} BIG`, label: t('dailyAverage') },
                     ].map((stat, i) => (
                       <div key={i} className={`text-center p-4 rounded-xl border ${isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-white border-gray-100'}`}>
-                        <div className="text-xl font-bold text-orange-500 mb-1">{stat.value}</div>
-                        <div className={`text-xs uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{stat.label}</div>
+                        <div
+                          className="text-xl font-bold text-orange-500 mb-1"
+                          style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+                        >
+                          {stat.value}
+                        </div>
+                        <div
+                          className={isDark ? 'text-gray-500' : 'text-gray-400'}
+                          style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}
+                        >
+                          {stat.label}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -534,7 +589,10 @@ export default function Dashboard() {
               <div className={`rounded-2xl border overflow-hidden ${isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-gray-50 border-gray-100'}`}>
                 <div className={`px-6 py-4 border-b flex items-center gap-2 ${isDark ? 'border-gray-800' : 'border-gray-100'}`}>
                   <div className="w-1 h-4 bg-orange-500/60 rounded-full" />
-                  <h3 className={`text-sm font-semibold ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <h3
+                    className={`text-sm font-semibold ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
                     {t('chartTitle')}
                   </h3>
                 </div>
@@ -556,7 +614,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Bottom Grid */}
+          {/* ── Bottom Grid ── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* Wallet Card */}
@@ -569,11 +627,17 @@ export default function Dashboard() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+                  <h2
+                    className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', letterSpacing: '-0.3px' }}
+                  >
                     {t('walletTitle')}
                   </h2>
                 </div>
-                <p className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p
+                  className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                  style={{ lineHeight: '1.65', fontWeight: 400 }}
+                >
                   {t('walletDesc')}
                 </p>
 
@@ -583,13 +647,15 @@ export default function Dashboard() {
                   onChange={(e) => setWalletAddress(e.target.value)}
                   placeholder={t('placeholder')}
                   className={`w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:outline-none focus:border-orange-500 mb-4 ${
-                    isDark ? 'bg-gray-800/60 border-gray-700 text-gray-100 placeholder-gray-600' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+                    isDark ? 'bg-gray-800/60 border-gray-700/60 text-gray-100 placeholder-gray-600' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
                   }`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 />
 
                 <button
                   onClick={handleSaveWallet}
                   className="group relative w-full inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                   {t('saveWallet')}
@@ -617,11 +683,17 @@ export default function Dashboard() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+                  <h2
+                    className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', letterSpacing: '-0.3px' }}
+                  >
                     {t('referralTitle')}
                   </h2>
                 </div>
-                <p className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p
+                  className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                  style={{ lineHeight: '1.65', fontWeight: 400 }}
+                >
                   {t('referralDesc')}
                 </p>
 
@@ -630,7 +702,7 @@ export default function Dashboard() {
                   value={referralLink}
                   readOnly
                   className={`w-full px-4 py-3 rounded-xl border text-xs font-mono cursor-pointer transition-all duration-300 hover:border-orange-500/50 mb-4 ${
-                    isDark ? 'bg-gray-800/60 border-gray-700 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-600'
+                    isDark ? 'bg-gray-800/60 border-gray-700/60 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-600'
                   }`}
                   onClick={handleCopyReferralLink}
                 />
@@ -638,37 +710,46 @@ export default function Dashboard() {
                 <button
                   onClick={handleCopyReferralLink}
                   className="group relative w-full inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden mb-6"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                   {t('copyBtn')}
                 </button>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className={`text-center p-4 rounded-2xl border ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
-                    <div className="text-2xl font-extrabold text-orange-500 mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>
-                      {referralCount}
+                  {[
+                    { value: referralCount, label: t('referrals') },
+                    { value: referralEarnings.toFixed(3), label: `BIG · ${t('referralEarnings')}` },
+                  ].map((stat, i) => (
+                    <div key={i} className={`text-center p-4 rounded-2xl border ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
+                      <div
+                        className="text-2xl font-bold text-orange-500 mb-1"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.5px' }}
+                      >
+                        {stat.value}
+                      </div>
+                      <div
+                        className={isDark ? 'text-gray-500' : 'text-gray-400'}
+                        style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}
+                      >
+                        {stat.label}
+                      </div>
                     </div>
-                    <div className={`text-xs uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                      {t('referrals')}
-                    </div>
-                  </div>
-                  <div className={`text-center p-4 rounded-2xl border ${isDark ? 'bg-orange-500/8 border-orange-500/15' : 'bg-orange-50 border-orange-100'}`}>
-                    <div className="text-2xl font-extrabold text-orange-500 mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>
-                      {referralEarnings.toFixed(3)}
-                    </div>
-                    <div className={`text-xs uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                      BIG · {t('referralEarnings')}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className={`relative z-10 text-center py-8 mt-8 border-t ${isDark ? 'border-gray-800/60 bg-[#050505]' : 'border-gray-100 bg-white'}`}>
-          <p className={`text-sm ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>{t('footerText')}</p>
+        {/* ── FOOTER ── */}
+        <footer className={`relative z-10 text-center py-8 mt-8 border-t ${isDark ? 'border-gray-800/40 bg-[#050505]' : 'border-gray-100 bg-white'}`}>
+          <p
+            className={`text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}
+            style={{ fontWeight: 400, letterSpacing: '0.2px' }}
+          >
+            {t('footerText')}
+          </p>
         </footer>
 
         {/* Notification Toast */}
@@ -698,30 +779,23 @@ export default function Dashboard() {
           50% { transform: translate(-10px, -50px) scale(0.95); opacity: 0.5; }
           75% { transform: translate(-25px, -20px) scale(1.02); opacity: 0.7; }
         }
-
         @keyframes dash-reveal {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(-12px); }
           to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(50px); }
           to { opacity: 0.6; transform: translateY(0); }
         }
-
         .particle { animation: particle-drift var(--dur, 10s) ease-in-out infinite; }
-
         .dash-reveal { animation: dash-reveal 0.6s ease-out both; }
         .dash-reveal-delay-1 { animation: dash-reveal 0.6s ease-out 0.1s both; }
         .dash-reveal-delay-2 { animation: dash-reveal 0.6s ease-out 0.2s both; }
-
         .animate-fade-in { animation: fade-in 0.3s ease-out; }
-
         body.light-mode { background-color: #fafafa; color: #1a1a1a; }
         body[data-theme="dark"] { background-color: #080808; color: #f0f0f0; }
         body[data-theme="light"] { background-color: #fafafa; color: #1a1a1a; }
