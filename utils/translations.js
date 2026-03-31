@@ -39,7 +39,8 @@ const translations = {
     
     // Token
     tokenTitle: '💰 Token BIG (BIG)',
-    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por relay e contribuírem com a construção da rede.',
+    // ATUALIZADO: menciona relay (correto), Solana e BIGchain
+    tokenDesc: 'O BIG é o token oficial do ecossistema BIGFOOT Connect. Usuários são recompensados em BIG por relay e por contribuírem com a construção da rede. O token estará disponível na rede Solana e, futuramente, na BIGchain — a blockchain nativa do ecossistema BIGFOOT.',
     contractLabel: 'Contrato:',
     
     // Roadmap
@@ -54,7 +55,7 @@ const translations = {
     purposeQuestions: '❓ Dúvidas',
     
     // Footer
-    footerDescription: 'Compartilhe seu poder computacional e ganhe recompensas em tokens BIG.',
+    footerDescription: 'Rode um nó de relay e ganhe recompensas em tokens BIG.',
     footerAbout: 'Sobre',
     footerWhitepaper: 'Whitepaper',
     footerRoadmap: 'Roadmap',
@@ -180,7 +181,8 @@ const translations = {
     
     // Token
     tokenTitle: '💰 BIG Token (BIG)',
-    tokenDesc: 'The BIG token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing computing power and contributing to building the network.',
+    // UPDATED: uses "relay" instead of "computing power", mentions Solana and BIGchain
+    tokenDesc: 'The BIG token powers the BIGFOOT Connect ecosystem. Users are rewarded in BIG for sharing relay capacity and contributing to building the network. The token will be available on the Solana network and, in the future, on BIGchain — BIGFOOT\'s native blockchain.',
     contractLabel: 'Contract:',
     
     // Roadmap
@@ -195,7 +197,7 @@ const translations = {
     purposeQuestions: '❓ Questions',
     
     // Footer
-    footerDescription: 'Share your computing power and earn BIG token rewards.',
+    footerDescription: 'Run a relay node and earn BIG token rewards.',
     footerAbout: 'About',
     footerWhitepaper: 'Whitepaper',
     footerRoadmap: 'Roadmap',
