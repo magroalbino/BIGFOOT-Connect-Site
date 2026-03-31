@@ -268,26 +268,6 @@ export default function Home() {
           {/* ── HERO ── */}
           <section className="w-full max-w-5xl pt-24 pb-20 flex flex-col items-center">
 
-            {/* Badge */}
-            <div
-              className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-8"
-              style={{
-                background: isDark ? 'rgba(249,115,22,0.08)' : 'rgba(249,115,22,0.06)',
-                borderColor: isDark ? 'rgba(249,115,22,0.25)' : 'rgba(249,115,22,0.3)',
-              }}
-            >
-              <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-              {/*
-                MUDANÇA: Badge usa Plus Jakarta Sans com font-weight 600.
-                Tracking mais amplo para o estilo "label" ficar mais refinado.
-              */}
-              <span
-                className="text-orange-500 text-xs font-semibold tracking-[1.2px] uppercase"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                {language === 'pt' ? 'Plataforma Web3 · Solana' : 'Web3 Platform · Solana'}
-              </span>
-            </div>
 
             {/*
               MUDANÇA: Título usa Space Grotesk com letter-spacing: -1.5px.
@@ -330,8 +310,9 @@ export default function Home() {
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-white/10 to-orange-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17 12l-5 5-5-5h3V7h4v5h3z" />
+                {/* Logo oficial do Windows */}
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
                 </svg>
                 {t('downloadWindows')}
               </a>
