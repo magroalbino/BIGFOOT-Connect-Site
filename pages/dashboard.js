@@ -455,66 +455,6 @@ export default function Dashboard() {
 
               <div className="flex items-center gap-3">
 
-                {/* ── Phantom Wallet Button ── */}
-                {phantomConnected ? (
-                  <div
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 hover:scale-105"
-                    style={{
-                      background: isDark ? 'rgba(153,69,255,0.10)' : 'rgba(153,69,255,0.07)',
-                      borderColor: 'rgba(153,69,255,0.30)',
-                    }}
-                    onClick={handleDisconnectPhantom}
-                    title={language === 'pt' ? 'Clique para desconectar' : 'Click to disconnect'}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="128" height="128" rx="26" fill="#AB9FF2"/>
-                      <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white"/>
-                      <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#AB9FF2"/>
-                      <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#AB9FF2"/>
-                      <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#AB9FF2"/>
-                    </svg>
-                    <div className="flex flex-col leading-none">
-                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#9945FF', letterSpacing: '0.4px' }}>
-                        {language === 'pt' ? 'Conectada' : 'Connected'}
-                      </span>
-                      <span className="font-mono" style={{ fontSize: '11px', color: isDark ? '#9ca3af' : '#6b7280' }}>
-                        {phantomAddress.slice(0, 4)}...{phantomAddress.slice(-4)}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleConnectPhantom}
-                    disabled={phantomConnecting}
-                    className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden"
-                    style={{
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                      letterSpacing: '0.1px',
-                      background: isDark ? 'rgba(153,69,255,0.10)' : 'rgba(153,69,255,0.07)',
-                      borderColor: 'rgba(153,69,255,0.30)',
-                      color: '#9945FF',
-                    }}
-                    onMouseEnter={e => !phantomConnecting && (e.currentTarget.style.boxShadow = '0 6px 18px rgba(153,69,255,0.25)')}
-                    onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
-                  >
-                    <span className="absolute inset-0 bg-gradient-to-r from-[#9945FF]/0 via-[#9945FF]/10 to-[#9945FF]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    {phantomConnecting ? (
-                      <div className="w-4 h-4 rounded-full border-2 border-[#9945FF]/30 border-t-[#9945FF] animate-spin" />
-                    ) : (
-                      <svg width="17" height="17" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="128" height="128" rx="26" fill="#AB9FF2"/>
-                        <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white"/>
-                        <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#AB9FF2"/>
-                        <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#AB9FF2"/>
-                        <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#AB9FF2"/>
-                      </svg>
-                    )}
-                    {phantomConnecting
-                      ? (language === 'pt' ? 'Conectando...' : 'Connecting...')
-                      : (language === 'pt' ? 'Conectar Phantom' : 'Connect Phantom')}
-                  </button>
-                )}
-
                 <button
                   onClick={handleLogout}
                   className="group relative inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden"
@@ -544,6 +484,79 @@ export default function Dashboard() {
                 >
                   {isDark ? '🌙' : '🌞'}
                 </button>
+
+                {/* ── Phantom Wallet Button — à direita do tema ── */}
+                {phantomConnected ? (
+                  <div
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: isDark ? 'rgba(83,75,177,0.15)' : 'rgba(83,75,177,0.07)',
+                      borderColor: 'rgba(83,75,177,0.35)',
+                    }}
+                    onClick={handleDisconnectPhantom}
+                    title={language === 'pt' ? 'Clique para desconectar' : 'Click to disconnect'}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="pg-c" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#534BB1"/>
+                          <stop offset="100%" stopColor="#551BF9"/>
+                        </linearGradient>
+                      </defs>
+                      <rect width="128" height="128" rx="26" fill="url(#pg-c)"/>
+                      <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white" fillOpacity="0.95"/>
+                      <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#534BB1"/>
+                      <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#534BB1"/>
+                      <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#534BB1"/>
+                    </svg>
+                    <div className="flex flex-col leading-none">
+                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#7C5CF6', letterSpacing: '0.4px' }}>
+                        {language === 'pt' ? 'Conectada' : 'Connected'}
+                      </span>
+                      <span className="font-mono" style={{ fontSize: '11px', color: isDark ? '#9ca3af' : '#6b7280' }}>
+                        {phantomAddress.slice(0, 4)}...{phantomAddress.slice(-4)}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleConnectPhantom}
+                    disabled={phantomConnecting}
+                    className="group relative inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      letterSpacing: '0.1px',
+                      background: isDark ? 'rgba(83,75,177,0.12)' : 'rgba(83,75,177,0.07)',
+                      borderColor: isDark ? 'rgba(83,75,177,0.40)' : 'rgba(83,75,177,0.25)',
+                      color: '#7C5CF6',
+                    }}
+                    onMouseEnter={e => !phantomConnecting && (e.currentTarget.style.boxShadow = '0 4px 14px rgba(83,75,177,0.28)')}
+                    onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
+                    title={language === 'pt' ? 'Conectar Phantom Wallet' : 'Connect Phantom Wallet'}
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#534BB1]/0 via-[#534BB1]/10 to-[#534BB1]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    {phantomConnecting ? (
+                      <div className="w-4 h-4 rounded-full border-2 border-[#534BB1]/30 border-t-[#534BB1] animate-spin" />
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="pg-d" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stopColor="#534BB1"/>
+                            <stop offset="100%" stopColor="#551BF9"/>
+                          </linearGradient>
+                        </defs>
+                        <rect width="128" height="128" rx="26" fill="url(#pg-d)"/>
+                        <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white" fillOpacity="0.95"/>
+                        <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#534BB1"/>
+                        <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#534BB1"/>
+                        <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#534BB1"/>
+                      </svg>
+                    )}
+                    {phantomConnecting
+                      ? (language === 'pt' ? 'Conectando...' : 'Connecting...')
+                      : 'Phantom'}
+                  </button>
+                )}
               </div>
             </div>
           </div>
