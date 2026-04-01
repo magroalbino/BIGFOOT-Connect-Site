@@ -297,7 +297,7 @@ export default function Dashboard() {
 
   const handleCopyReferralLink = async () => {
     try { await navigator.clipboard.writeText(referralLink); } catch {}
-    showNotification('Link copiado!', 'copy');
+    showNotification(language === 'pt' ? 'Link copiado!' : 'Link copied!', 'copy');
   };
 
   const handleLogout = async () => {
@@ -496,18 +496,12 @@ export default function Dashboard() {
                     onClick={handleDisconnectPhantom}
                     title={language === 'pt' ? 'Clique para desconectar' : 'Click to disconnect'}
                   >
-                    <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="pg-c" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#534BB1"/>
-                          <stop offset="100%" stopColor="#551BF9"/>
-                        </linearGradient>
-                      </defs>
-                      <rect width="128" height="128" rx="26" fill="url(#pg-c)"/>
-                      <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white" fillOpacity="0.95"/>
-                      <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#534BB1"/>
-                      <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#534BB1"/>
-                      <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#534BB1"/>
+                    <svg width="18" height="18" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="100" height="100" rx="22" fill="#AB9FF2"/>
+                      <path d="M50 16C33.432 16 20 29.432 20 46C20 56.4 24.6 64 30.4 69.2C32 70.64 33 72.6 33 74.6V81C33 82.1 33.9 83 35 83H39V79H61V83H65C66.1 83 67 82.1 67 81V74.6C67 72.6 68 70.64 69.6 69.2C75.4 64 80 56.4 80 46C80 29.432 66.568 16 50 16Z" fill="white"/>
+                      <ellipse cx="42" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                      <ellipse cx="58" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                      <path d="M33 81C33 81 36 78 39 81C42 84 47 81 50 81C53 81 58 84 61 81C64 78 67 81 67 81" stroke="#AB9FF2" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
                     </svg>
                     <div className="flex flex-col leading-none">
                       <span style={{ fontSize: '10px', fontWeight: 700, color: '#7C5CF6', letterSpacing: '0.4px' }}>
@@ -538,18 +532,12 @@ export default function Dashboard() {
                     {phantomConnecting ? (
                       <div className="w-4 h-4 rounded-full border-2 border-[#534BB1]/30 border-t-[#534BB1] animate-spin" />
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient id="pg-d" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stopColor="#534BB1"/>
-                            <stop offset="100%" stopColor="#551BF9"/>
-                          </linearGradient>
-                        </defs>
-                        <rect width="128" height="128" rx="26" fill="url(#pg-d)"/>
-                        <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white" fillOpacity="0.95"/>
-                        <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#534BB1"/>
-                        <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#534BB1"/>
-                        <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#534BB1"/>
+                      <svg width="18" height="18" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" rx="22" fill="#AB9FF2"/>
+                        <path d="M50 16C33.432 16 20 29.432 20 46C20 56.4 24.6 64 30.4 69.2C32 70.64 33 72.6 33 74.6V81C33 82.1 33.9 83 35 83H39V79H61V83H65C66.1 83 67 82.1 67 81V74.6C67 72.6 68 70.64 69.6 69.2C75.4 64 80 56.4 80 46C80 29.432 66.568 16 50 16Z" fill="white"/>
+                        <ellipse cx="42" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                        <ellipse cx="58" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                        <path d="M33 81C33 81 36 78 39 81C42 84 47 81 50 81C53 81 58 84 61 81C64 78 67 81 67 81" stroke="#AB9FF2" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
                       </svg>
                     )}
                     {phantomConnecting
