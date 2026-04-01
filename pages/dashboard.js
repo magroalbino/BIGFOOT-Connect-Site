@@ -49,10 +49,14 @@ export default function Dashboard() {
   const [theme, setTheme] = useState('dark');
   const [scrollY, setScrollY] = useState(0);
   
-  const [walletAddress, setWalletAddress] = useState('');
   const [referralLink, setReferralLink] = useState('');
   const [referralCount, setReferralCount] = useState(0);
   const [referralEarnings, setReferralEarnings] = useState(0);
+
+  // Phantom Wallet
+  const [phantomConnected, setPhantomConnected] = useState(false);
+  const [phantomAddress, setPhantomAddress] = useState('');
+  const [phantomConnecting, setPhantomConnecting] = useState(false);
   
   const [totalBigPoints, setTotalBigPoints] = useState(0);
   const [daysActive, setDaysActive] = useState(0);
@@ -68,7 +72,6 @@ export default function Dashboard() {
   
   const [chartData, setChartData] = useState(null);
   const [chartLoading, setChartLoading] = useState(true);
-  const [statusMessage, setStatusMessage] = useState({ text: '', type: '', show: false });
   const [notification, setNotification] = useState({ text: '', type: '', show: false });
 
   const isDark = theme === 'dark';
@@ -113,7 +116,6 @@ export default function Dashboard() {
         return;
       }
       const userData = userDoc.data();
-      setWalletAddress(userData.walletAddress || '');
       const encodedEmail = encodeURIComponent(user.email);
       const refLink = `${window.location.origin}/register?ref=${encodedEmail}`;
       setReferralLink(refLink);
@@ -132,7 +134,6 @@ export default function Dashboard() {
         email: user.email,
         createdAt: new Date(),
         sharedPoints: 0,
-        walletAddress: '',
         referredBy: '',
         referralEarnings: 0
       });
@@ -258,16 +259,40 @@ export default function Dashboard() {
     return unsubscribe;
   };
 
-  const handleSaveWallet = async () => {
-    const wallet = walletAddress.trim();
-    if (!wallet) { showStatusMessage('Digite um endereço válido.', 'error'); return; }
-    if (wallet.length < 32 || wallet.length > 44) { showStatusMessage('Endereço Solana inválido.', 'error'); return; }
-    try {
-      await updateDoc(doc(db, 'users', user.uid), { walletAddress: wallet, walletUpdatedAt: new Date() });
-      showStatusMessage('Endereço salvo com sucesso!');
-    } catch (error) {
-      showStatusMessage('Erro ao salvar endereço. Tente novamente.', 'error');
+  const handleConnectPhantom = async () => {
+    const provider = window?.solana;
+    if (!provider?.isPhantom) {
+      window.open('https://phantom.app/', '_blank');
+      return;
     }
+    setPhantomConnecting(true);
+    try {
+      const resp = await provider.connect();
+      const address = resp.publicKey.toString();
+      setPhantomAddress(address);
+      setPhantomConnected(true);
+      setWalletAddress(address);
+      showStatusMessage(
+        language === 'pt' ? 'Phantom conectada! Salve o endereço abaixo.' : 'Phantom connected! Save the address below.'
+      );
+    } catch (err) {
+      if (err.code !== 4001) {
+        showStatusMessage(
+          language === 'pt' ? 'Erro ao conectar a Phantom.' : 'Failed to connect Phantom.',
+          'error'
+        );
+      }
+    } finally {
+      setPhantomConnecting(false);
+    }
+  };
+
+  const handleDisconnectPhantom = async () => {
+    try {
+      await window?.solana?.disconnect();
+    } catch {}
+    setPhantomConnected(false);
+    setPhantomAddress('');
   };
 
   const handleCopyReferralLink = async () => {
@@ -292,11 +317,6 @@ export default function Dashboard() {
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
     if (allUsageData && Object.keys(allUsageData).length > 0) filterDataByMonth(selectedMonth);
-  };
-
-  const showStatusMessage = (text, type = 'success') => {
-    setStatusMessage({ text, type, show: true });
-    setTimeout(() => setStatusMessage({ text: '', type: '', show: false }), 3000);
   };
 
   const showNotification = (text, type = 'success') => {
@@ -434,6 +454,67 @@ export default function Dashboard() {
               </div>
 
               <div className="flex items-center gap-3">
+
+                {/* ── Phantom Wallet Button ── */}
+                {phantomConnected ? (
+                  <div
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: isDark ? 'rgba(153,69,255,0.10)' : 'rgba(153,69,255,0.07)',
+                      borderColor: 'rgba(153,69,255,0.30)',
+                    }}
+                    onClick={handleDisconnectPhantom}
+                    title={language === 'pt' ? 'Clique para desconectar' : 'Click to disconnect'}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="128" height="128" rx="26" fill="#AB9FF2"/>
+                      <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white"/>
+                      <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#AB9FF2"/>
+                      <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#AB9FF2"/>
+                      <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#AB9FF2"/>
+                    </svg>
+                    <div className="flex flex-col leading-none">
+                      <span style={{ fontSize: '10px', fontWeight: 700, color: '#9945FF', letterSpacing: '0.4px' }}>
+                        {language === 'pt' ? 'Conectada' : 'Connected'}
+                      </span>
+                      <span className="font-mono" style={{ fontSize: '11px', color: isDark ? '#9ca3af' : '#6b7280' }}>
+                        {phantomAddress.slice(0, 4)}...{phantomAddress.slice(-4)}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleConnectPhantom}
+                    disabled={phantomConnecting}
+                    className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed overflow-hidden"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      letterSpacing: '0.1px',
+                      background: isDark ? 'rgba(153,69,255,0.10)' : 'rgba(153,69,255,0.07)',
+                      borderColor: 'rgba(153,69,255,0.30)',
+                      color: '#9945FF',
+                    }}
+                    onMouseEnter={e => !phantomConnecting && (e.currentTarget.style.boxShadow = '0 6px 18px rgba(153,69,255,0.25)')}
+                    onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#9945FF]/0 via-[#9945FF]/10 to-[#9945FF]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    {phantomConnecting ? (
+                      <div className="w-4 h-4 rounded-full border-2 border-[#9945FF]/30 border-t-[#9945FF] animate-spin" />
+                    ) : (
+                      <svg width="17" height="17" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="128" height="128" rx="26" fill="#AB9FF2"/>
+                        <path d="M110.584 64.456C110.584 89.529 90.231 109.912 65.195 109.912C40.158 109.912 19.806 89.529 19.806 64.456C19.806 39.383 40.158 19 65.195 19C90.231 19 110.584 39.383 110.584 64.456Z" fill="white"/>
+                        <path d="M93.648 55.37H84.016C83.29 55.37 82.703 55.957 82.703 56.683V79.09C82.703 79.816 83.29 80.403 84.016 80.403H93.648C94.374 80.403 94.961 79.816 94.961 79.09V56.683C94.961 55.957 94.374 55.37 93.648 55.37Z" fill="#AB9FF2"/>
+                        <path d="M75.883 47.718H66.251C65.525 47.718 64.938 48.305 64.938 49.031V79.09C64.938 79.816 65.525 80.403 66.251 80.403H75.883C76.609 80.403 77.196 79.816 77.196 79.09V49.031C77.196 48.305 76.609 47.718 75.883 47.718Z" fill="#AB9FF2"/>
+                        <path d="M58.118 55.37H48.486C47.76 55.37 47.173 55.957 47.173 56.683V79.09C47.173 79.816 47.76 80.403 48.486 80.403H58.118C58.844 80.403 59.431 79.816 59.431 79.09V56.683C59.431 55.957 58.844 55.37 58.118 55.37Z" fill="#AB9FF2"/>
+                      </svg>
+                    )}
+                    {phantomConnecting
+                      ? (language === 'pt' ? 'Conectando...' : 'Connecting...')
+                      : (language === 'pt' ? 'Conectar Phantom' : 'Connect Phantom')}
+                  </button>
+                )}
+
                 <button
                   onClick={handleLogout}
                   className="group relative inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden"
@@ -443,7 +524,7 @@ export default function Dashboard() {
                   {t('logout')}
                 </button>
 
-                {/* Separator — igual ao index.jsx */}
+                {/* Separator */}
                 <div className={`w-px h-5 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} mx-1`} />
 
                 <select
@@ -615,63 +696,7 @@ export default function Dashboard() {
           </div>
 
           {/* ── Bottom Grid ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-            {/* Wallet Card */}
-            <div className={`relative overflow-hidden rounded-3xl p-8 border dash-reveal-delay-2 ${
-              isDark ? 'bg-gray-900/60 border-orange-500/15' : 'bg-white border-orange-500/20'
-            } shadow-xl`}>
-              <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-orange-500/5 blur-3xl pointer-events-none" />
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
-
-              <div className="relative">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                  <h2
-                    className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
-                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', letterSpacing: '-0.3px' }}
-                  >
-                    {t('walletTitle')}
-                  </h2>
-                </div>
-                <p
-                  className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-                  style={{ lineHeight: '1.65', fontWeight: 400 }}
-                >
-                  {t('walletDesc')}
-                </p>
-
-                <input
-                  type="text"
-                  value={walletAddress}
-                  onChange={(e) => setWalletAddress(e.target.value)}
-                  placeholder={t('placeholder')}
-                  className={`w-full px-4 py-3 rounded-xl border text-sm transition-all duration-300 focus:outline-none focus:border-orange-500 mb-4 ${
-                    isDark ? 'bg-gray-800/60 border-gray-700/60 text-gray-100 placeholder-gray-600' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
-                  }`}
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                />
-
-                <button
-                  onClick={handleSaveWallet}
-                  className="group relative w-full inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] overflow-hidden"
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  {t('saveWallet')}
-                </button>
-
-                {statusMessage.show && (
-                  <div className={`mt-4 px-4 py-3 rounded-xl text-sm text-center font-medium ${
-                    statusMessage.type === 'error'
-                      ? isDark ? 'bg-red-500/10 border border-red-500/20 text-red-400' : 'bg-red-50 border border-red-200 text-red-600'
-                      : isDark ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-green-50 border border-green-200 text-green-600'
-                  }`}>
-                    {statusMessage.text}
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-6">
 
             {/* Referral Card */}
             <div className={`relative overflow-hidden rounded-3xl p-8 border dash-reveal-delay-2 ${
