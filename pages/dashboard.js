@@ -339,15 +339,15 @@ export default function Dashboard() {
     setClaimTx('');
 
     try {
-      const response = await fetch('https://bigfoot-server.vercel.app/api/bridge', {
+      // The bridge needs a BIGchain address — we use the Firestore userId as identifier
+      // and pass the Phantom address as the Solana destination
+      const response = await fetch('https://bigfoot-server.vercel.app/bridge/convert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userAddress: phantomAddress,
+          bigAddress: `big${user.uid}`,   // synthetic BIGchain address tied to this user
+          solanaAddress: phantomAddress,   // Phantom wallet receives the BIG (SPL)
           amount,
-          userId: user.uid,
-          userEmail: user.email,
-          month: currentMonth,
         }),
       });
 
@@ -356,6 +356,8 @@ export default function Dashboard() {
       if (!response.ok) {
         throw new Error(data.error || data.message || 'Bridge error');
       }
+
+      const txSig = data.txSignature || data.signature || data.tx || '';
 
       // Zero out this month's points in Firestore
       const monthDates = Object.keys(allUsageData).filter(d => d.startsWith(currentMonth));
@@ -373,12 +375,12 @@ export default function Dashboard() {
       // Record claim so user can't claim again this month
       await setDoc(doc(db, 'users', user.uid, 'claims', currentMonth), {
         amount,
-        walletAddress: phantomAddress,
-        txSignature: data.signature || data.tx || '',
+        solanaAddress: phantomAddress,
+        txSignature: txSig,
         claimedAt: new Date(),
       });
 
-      setClaimTx(data.signature || data.tx || '');
+      setClaimTx(txSig);
       setClaimStatus('success');
       setAlreadyClaimed(true);
 
@@ -910,7 +912,7 @@ export default function Dashboard() {
                       </div>
                       {claimTx && (
                         <a
-                          href={`https://explorer.solana.com/tx/${claimTx}?cluster=mainnet`}
+                          href={`https://explorer.solana.com/tx/${claimTx}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 text-xs font-medium transition-colors hover:opacity-80"
