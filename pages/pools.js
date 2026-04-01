@@ -144,12 +144,21 @@ const PoolsPage = () => {
         <meta name="description" content="Add liquidity to BIG/SOL pool on Orca and earn rewards." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/favicon.ico" />
+
+        {/* Fontes padronizadas — Space Grotesk (títulos) + Plus Jakarta Sans (corpo) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <div className={`min-h-screen ${isDark ? 'bg-[#080808] text-gray-100' : 'bg-[#fafafa] text-gray-900'} transition-colors duration-500`} style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      {/* Fonte base: Plus Jakarta Sans */}
+      <div
+        className={`min-h-screen ${isDark ? 'bg-[#080808] text-gray-100' : 'bg-[#fafafa] text-gray-900'} transition-colors duration-500`}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
 
         {/* Partículas de fundo */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -168,7 +177,7 @@ const PoolsPage = () => {
           ))}
         </div>
 
-        {/* Header */}
+        {/* ── HEADER ── */}
         <header className={`sticky top-0 z-50 transition-all duration-300 ${
           scrollY > 20
             ? isDark
@@ -178,28 +187,40 @@ const PoolsPage = () => {
         }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
+
+              {/* Logo — Space Grotesk, igual ao index.jsx */}
               <Link href="/" className="flex items-center gap-3 group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-orange-500/20 rounded-xl blur-md group-hover:blur-lg transition-all duration-300 scale-110" />
-                  <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40} className="relative rounded-xl transition-all duration-300 group-hover:scale-110" />
+                  <Image src="/images/logo.png" alt="BIGFOOT Logo" width={40} height={40}
+                    className="relative rounded-xl transition-all duration-300 group-hover:scale-110" />
                 </div>
-                <span className="text-xl font-bold text-orange-500 transition-colors duration-300 group-hover:text-orange-400" style={{ fontFamily: "'Syne', sans-serif" }}>
+                <span
+                  className="text-xl font-bold text-orange-500 transition-colors duration-300 group-hover:text-orange-400"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+                >
                   BIGFOOT Connect
                 </span>
               </Link>
 
               <div className="flex items-center gap-3">
+                {/* Separator */}
+                <div className={`w-px h-5 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} mx-1`} />
+
                 <select
                   value={lang}
                   onChange={(e) => setLang(e.target.value)}
-                  className={`${isDark ? 'bg-gray-900 text-gray-100 border-gray-700' : 'bg-white text-gray-900 border-gray-200'} border rounded-xl px-3 py-2 text-sm cursor-pointer transition-all duration-300 hover:border-orange-500 focus:outline-none`}
+                  className={`${isDark ? 'bg-gray-900 text-gray-100 border-gray-700/60' : 'bg-white text-gray-900 border-gray-200'} border rounded-lg px-3 py-2 text-sm cursor-pointer transition-all duration-300 hover:border-orange-500 focus:outline-none font-medium`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
                   <option value="en">EN</option>
                   <option value="pt">PT</option>
                 </select>
+
                 <button
                   onClick={toggleTheme}
-                  className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-xl px-3 py-2 text-orange-500 transition-all duration-300 hover:border-orange-500 hover:scale-110`}
+                  className={`${isDark ? 'bg-gray-900 border-gray-700/60' : 'bg-white border-gray-200'} border rounded-lg px-3 py-2 text-orange-500 transition-all duration-300 hover:border-orange-500 hover:scale-110`}
+                  aria-label="Alternar tema"
                 >
                   {isDark ? '🌙' : '🌞'}
                 </button>
@@ -208,28 +229,49 @@ const PoolsPage = () => {
           </div>
         </header>
 
-        {/* Main */}
+        {/* ── MAIN ── */}
         <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
           {/* Hero */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 pools-reveal"
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 pools-reveal"
               style={{
                 background: isDark ? 'rgba(249,115,22,0.08)' : 'rgba(249,115,22,0.06)',
                 borderColor: isDark ? 'rgba(249,115,22,0.25)' : 'rgba(249,115,22,0.3)',
-              }}>
+              }}
+            >
               <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-              <span className="text-orange-500 text-sm font-semibold tracking-wider uppercase">
-                {lang === 'pt' ? 'Solana · DeFi · Orca' : 'Solana · DeFi · Orca'}
+              <span
+                className="text-orange-500 font-semibold"
+                style={{ fontSize: '11px', letterSpacing: '1.2px', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Solana · DeFi · Orca
               </span>
             </div>
-            <h1 className={`text-4xl md:text-6xl font-extrabold mb-4 pools-reveal-delay-1 ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+
+            {/* Título — Space Grotesk */}
+            <h1
+              className={`font-bold mb-4 pools-reveal-delay-1 ${isDark ? 'text-white' : 'text-gray-900'}`}
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: 'clamp(32px, 6vw, 56px)',
+                letterSpacing: '-1.5px',
+                lineHeight: 1.06,
+              }}
+            >
               💧 {t.title}
             </h1>
-            <p className={`text-lg md:text-xl pools-reveal-delay-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+
+            <p
+              className={`text-lg md:text-xl pools-reveal-delay-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+              style={{ lineHeight: '1.65', fontWeight: 400 }}
+            >
               {t.subtitle}
             </p>
-            <p className={`text-sm font-semibold mt-2 pools-reveal-delay-2 ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>
+            <p
+              className={`text-sm font-semibold mt-2 pools-reveal-delay-2 ${isDark ? 'text-orange-400' : 'text-orange-600'}`}
+            >
               🚀 {lang === 'pt' ? 'Ajude a aumentar o TVL e valorize o token BIG!' : 'Help increase TVL and grow BIG token value!'}
             </p>
           </div>
@@ -247,8 +289,13 @@ const PoolsPage = () => {
                 </div>
                 <ExternalLink className="w-5 h-5 opacity-70 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
-              <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>{t.goToOrca}</h3>
-              <p className="text-sm font-medium" style={{ color: '#ffffff' }}>
+              <h3
+                className="text-xl font-bold mb-1"
+                style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+              >
+                {t.goToOrca}
+              </h3>
+              <p className="text-sm font-medium text-white/90">
                 {lang === 'pt' ? 'Deposite agora e aumente o TVL!' : 'Deposit now and increase TVL!'}
               </p>
             </button>
@@ -264,8 +311,13 @@ const PoolsPage = () => {
                 </div>
                 <ExternalLink className="w-5 h-5 opacity-70 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
-              <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "'Syne', sans-serif" }}>{t.managePositions}</h3>
-              <p className="text-sm font-medium" style={{ color: '#ffffff' }}>
+              <h3
+                className="text-xl font-bold mb-1"
+                style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.3px' }}
+              >
+                {t.managePositions}
+              </h3>
+              <p className="text-sm font-medium text-white/90">
                 {lang === 'pt' ? 'Veja e gerencie suas posições' : 'View and manage your positions'}
               </p>
             </button>
@@ -288,8 +340,15 @@ const PoolsPage = () => {
                 return (
                   <div key={i} className={`p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${colors[item.color]}`}>
                     <div className="mb-4">{item.icon}</div>
-                    <h3 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif" }}>{item.title}</h3>
-                    <p className={`text-sm mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{item.desc}</p>
+                    <h3
+                      className="text-base font-bold mb-2"
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.2px' }}
+                    >
+                      {item.title}
+                    </h3>
+                    <p className={`text-sm mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={{ lineHeight: '1.6' }}>
+                      {item.desc}
+                    </p>
                     <div className="text-xs font-semibold opacity-70">{item.tag}</div>
                   </div>
                 );
@@ -305,15 +364,20 @@ const PoolsPage = () => {
               <div className="space-y-3">
                 {[t.step1, t.step2, t.step3, t.step4, t.step5].map((step, idx) => (
                   <div key={idx} className="flex items-start gap-6 group">
-                    <div className={`relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                      isDark ? 'bg-gray-900 border-2 border-orange-500/30 text-orange-400 group-hover:border-orange-500 group-hover:bg-orange-500/10' : 'bg-white border-2 border-orange-200 text-orange-600 group-hover:border-orange-500 group-hover:bg-orange-50'
-                    }`} style={{ fontFamily: "'Syne', sans-serif" }}>
+                    <div
+                      className={`relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        isDark
+                          ? 'bg-gray-900 border-2 border-orange-500/30 text-orange-400 group-hover:border-orange-500 group-hover:bg-orange-500/10'
+                          : 'bg-white border-2 border-orange-200 text-orange-600 group-hover:border-orange-500 group-hover:bg-orange-50'
+                      }`}
+                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
                       {idx + 1}
                     </div>
-                    <div className={`flex-1 py-3 px-4 rounded-xl transition-all duration-300 ${
-                      isDark ? 'group-hover:bg-gray-900/60' : 'group-hover:bg-white'
-                    }`}>
-                      <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>{step}</p>
+                    <div className={`flex-1 py-3 px-4 rounded-xl transition-all duration-300 ${isDark ? 'group-hover:bg-gray-900/60' : 'group-hover:bg-white'}`}>
+                      <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`} style={{ lineHeight: '1.6' }}>
+                        {step}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -329,7 +393,7 @@ const PoolsPage = () => {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { label: t.tvl, value: lang === 'pt' ? 'Crescendo' : 'Growing', sub: lang === 'pt' ? '⬆️ Vamos juntos!' : '⬆️ Let\'s grow it!', highlight: true },
+                { label: t.tvl, value: lang === 'pt' ? 'Crescendo' : 'Growing', sub: lang === 'pt' ? '⬆️ Vamos juntos!' : "⬆️ Let's grow it!", highlight: true },
                 { label: t.apr, value: '<0.01%', sub: lang === 'pt' ? 'Cresce com o TVL' : 'Grows with TVL', highlight: false },
                 { label: t.volume24h, value: lang === 'pt' ? 'Ativo' : 'Active', sub: lang === 'pt' ? 'Em expansão' : 'Expanding', highlight: false },
               ].map((stat, i) => (
@@ -338,9 +402,24 @@ const PoolsPage = () => {
                     ? isDark ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-50 border-orange-200'
                     : isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-white border-gray-100'
                 }`}>
-                  {stat.highlight && <div className="absolute top-0 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-bl-xl font-bold">{lang === 'pt' ? 'PRINCIPAL' : 'MAIN'}</div>}
-                  <div className={`text-xs uppercase tracking-widest mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{stat.label}</div>
-                  <div className={`text-2xl font-extrabold mb-1 ${stat.highlight ? 'text-orange-500' : isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>{stat.value}</div>
+                  {stat.highlight && (
+                    <div className="absolute top-0 right-0 bg-orange-500 text-white text-xs px-2 py-1 rounded-bl-xl font-bold"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      {lang === 'pt' ? 'PRINCIPAL' : 'MAIN'}
+                    </div>
+                  )}
+                  <div
+                    className={`text-xs uppercase tracking-widest mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '1.2px' }}
+                  >
+                    {stat.label}
+                  </div>
+                  <div
+                    className={`text-2xl font-bold mb-1 ${stat.highlight ? 'text-orange-500' : isDark ? 'text-white' : 'text-gray-900'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.5px' }}
+                  >
+                    {stat.value}
+                  </div>
                   <div className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{stat.sub}</div>
                 </div>
               ))}
@@ -348,7 +427,10 @@ const PoolsPage = () => {
 
             {/* TVL explainer */}
             <div className={`mt-6 p-5 rounded-2xl border-l-4 border-orange-500 ${isDark ? 'bg-orange-500/5' : 'bg-orange-50'}`}>
-              <h4 className={`font-bold text-sm mb-3 ${isDark ? 'text-orange-400' : 'text-orange-700'}`}>
+              <h4
+                className={`font-bold text-sm mb-3 ${isDark ? 'text-orange-400' : 'text-orange-700'}`}
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              >
                 💡 {lang === 'pt' ? 'Por que TVL é importante?' : 'Why is TVL important?'}
               </h4>
               <ul className={`text-sm space-y-1.5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -363,8 +445,8 @@ const PoolsPage = () => {
                   'Attracts traders = More volume = More fees for you',
                   'More stable and valuable token',
                 ]).map((item, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-orange-500 mt-0.5">✓</span>
+                  <li key={i} className="flex items-start gap-2" style={{ lineHeight: '1.6' }}>
+                    <span className="text-orange-500 mt-0.5 flex-shrink-0">✓</span>
                     {item}
                   </li>
                 ))}
@@ -377,14 +459,22 @@ const PoolsPage = () => {
             <SectionHeader label="Info" title={t.poolInfo} isDark={isDark} />
             <div className="mt-8 space-y-4">
               <div className={`p-5 rounded-2xl border ${isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-white border-gray-100'}`}>
-                <div className={`text-xs uppercase tracking-widest mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{t.tokenAddress}</div>
+                <div
+                  className={`text-xs uppercase tracking-widest mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '1.2px' }}
+                >
+                  {t.tokenAddress}
+                </div>
                 <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <code className={`text-xs md:text-sm font-mono break-all ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>{BIG_TOKEN_MINT}</code>
+                  <code className={`text-xs md:text-sm font-mono break-all ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>
+                    {BIG_TOKEN_MINT}
+                  </code>
                   <button
                     onClick={() => copyToClipboard(BIG_TOKEN_MINT, 'token')}
                     className="flex-shrink-0 px-4 py-1.5 bg-orange-500 hover:bg-orange-600 rounded-xl text-xs text-white font-semibold transition-all duration-300 hover:shadow-[0_4px_12px_rgba(249,115,22,0.3)]"
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                   >
-                    {copiedAddress === 'token' ? '✓ ' + t.copied : t.copyAddress}
+                    {copiedAddress === 'token' ? `✓ ${t.copied}` : t.copyAddress}
                   </button>
                 </div>
               </div>
@@ -396,8 +486,18 @@ const PoolsPage = () => {
                   { label: t.protocol, value: 'Splash Pool', color: isDark ? 'text-white' : 'text-gray-900' },
                 ].map((item, i) => (
                   <div key={i} className={`p-4 rounded-2xl border text-center ${isDark ? 'bg-gray-900/60 border-gray-800' : 'bg-white border-gray-100'}`}>
-                    <div className={`text-xs uppercase tracking-widest mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{item.label}</div>
-                    <div className={`font-bold ${item.color}`} style={{ fontFamily: "'Syne', sans-serif" }}>{item.value}</div>
+                    <div
+                      className={`text-xs uppercase tracking-widest mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '1px' }}
+                    >
+                      {item.label}
+                    </div>
+                    <div
+                      className={`font-bold ${item.color}`}
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.2px' }}
+                    >
+                      {item.value}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -410,16 +510,30 @@ const PoolsPage = () => {
               <div className={`p-6 rounded-2xl border ${isDark ? 'bg-green-500/5 border-green-500/15' : 'bg-green-50 border-green-100'}`}>
                 <div className="flex items-center gap-3 mb-3">
                   <Shield className={`w-6 h-6 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
-                  <h3 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>{t.security}</h3>
+                  <h3
+                    className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.2px' }}
+                  >
+                    {t.security}
+                  </h3>
                 </div>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{t.securityDesc}</p>
+                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={{ lineHeight: '1.65' }}>
+                  {t.securityDesc}
+                </p>
               </div>
               <div className={`p-6 rounded-2xl border ${isDark ? 'bg-blue-500/5 border-blue-500/15' : 'bg-blue-50 border-blue-100'}`}>
                 <div className="flex items-center gap-3 mb-3">
                   <Droplets className={`w-6 h-6 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
-                  <h3 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>{t.whyOrca}</h3>
+                  <h3
+                    className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                    style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.2px' }}
+                  >
+                    {t.whyOrca}
+                  </h3>
                 </div>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{t.whyOrcaDesc}</p>
+                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`} style={{ lineHeight: '1.65' }}>
+                  {t.whyOrcaDesc}
+                </p>
               </div>
             </div>
           </Section>
@@ -434,10 +548,13 @@ const PoolsPage = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
             <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-white/5 blur-3xl" />
             <div className="relative">
-              <h2 className="text-3xl font-extrabold mb-3 text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
+              <h2
+                className="text-3xl font-bold mb-3 text-white"
+                style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.8px' }}
+              >
                 🚀 {lang === 'pt' ? 'Vamos valorizar o BIG juntos!' : "Let's grow BIG together!"}
               </h2>
-              <p className="text-orange-100 mb-1 text-sm">
+              <p className="text-orange-100 mb-1 text-sm" style={{ lineHeight: '1.6' }}>
                 {lang === 'pt' ? 'Cada depósito aumenta o TVL e fortalece o ecossistema BIG!' : 'Every deposit increases TVL and strengthens the BIG ecosystem!'}
               </p>
               <p className="text-orange-200/80 text-xs mb-8">
@@ -446,6 +563,7 @@ const PoolsPage = () => {
               <button
                 onClick={() => window.open(ORCA_POOL_URL, '_blank', 'noopener,noreferrer')}
                 className="group inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-orange-50 px-8 py-4 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.2)]"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
                 {lang === 'pt' ? 'Depositar Agora' : 'Deposit Now'}
                 <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -454,9 +572,12 @@ const PoolsPage = () => {
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className={`relative z-10 text-center py-8 border-t ${isDark ? 'border-gray-800/60 bg-[#050505]' : 'border-gray-100 bg-white'}`}>
-          <p className={`text-sm ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+        {/* ── FOOTER ── */}
+        <footer className={`relative z-10 text-center py-8 border-t ${isDark ? 'border-gray-800/40 bg-[#050505]' : 'border-gray-100 bg-white'}`}>
+          <p
+            className={`text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}
+            style={{ fontWeight: 400, letterSpacing: '0.2px' }}
+          >
             © 2025 BIGFOOT Connect. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}
           </p>
           <p className={`text-xs mt-1 ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>
@@ -472,18 +593,14 @@ const PoolsPage = () => {
           50% { transform: translate(-10px, -50px) scale(0.95); opacity: 0.5; }
           75% { transform: translate(-25px, -20px) scale(1.02); opacity: 0.7; }
         }
-
         @keyframes pools-reveal {
           from { opacity: 0; transform: translateY(24px); }
           to { opacity: 1; transform: translateY(0); }
         }
-
         .particle { animation: particle-drift var(--dur, 10s) ease-in-out infinite; }
-
         .pools-reveal { animation: pools-reveal 0.6s ease-out both; }
         .pools-reveal-delay-1 { animation: pools-reveal 0.6s ease-out 0.1s both; }
         .pools-reveal-delay-2 { animation: pools-reveal 0.6s ease-out 0.2s both; }
-
         body.light-mode { background-color: #fafafa; color: #1a1a1a; }
         body[data-theme="dark"] { background-color: #080808; color: #f0f0f0; }
         body[data-theme="light"] { background-color: #fafafa; color: #1a1a1a; }
@@ -492,7 +609,8 @@ const PoolsPage = () => {
   );
 };
 
-// Componentes auxiliares
+// ── Componentes auxiliares ──
+
 function Section({ id, registerRef, visible, children, isDark }) {
   return (
     <div
@@ -517,10 +635,29 @@ function Section({ id, registerRef, visible, children, isDark }) {
 function SectionHeader({ label, title, isDark }) {
   return (
     <div className="text-center">
-      <span className="inline-block text-orange-500 text-xs font-semibold tracking-widest uppercase mb-3">
+      {/* Label — Plus Jakarta Sans, igual ao padrão do site */}
+      <span
+        className="inline-block text-orange-500 mb-3"
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: '11px',
+          fontWeight: 700,
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+        }}
+      >
         {label}
       </span>
-      <h2 className={`text-2xl md:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: "'Syne', sans-serif" }}>
+      {/* Título — Space Grotesk */}
+      <h2
+        className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: 'clamp(22px, 4vw, 30px)',
+          letterSpacing: '-0.6px',
+          lineHeight: 1.1,
+        }}
+      >
         {title}
       </h2>
     </div>
