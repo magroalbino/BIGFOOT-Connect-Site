@@ -57,6 +57,12 @@ export default function Dashboard() {
   const [phantomConnected, setPhantomConnected] = useState(false);
   const [phantomAddress, setPhantomAddress] = useState('');
   const [phantomConnecting, setPhantomConnecting] = useState(false);
+
+  // Claim
+  const [claimStatus, setClaimStatus] = useState(null); // null | 'loading' | 'success' | 'error'
+  const [claimTx, setClaimTx] = useState('');
+  const [claimError, setClaimError] = useState('');
+  const [alreadyClaimed, setAlreadyClaimed] = useState(false);
   
   const [totalBigPoints, setTotalBigPoints] = useState(0);
   const [daysActive, setDaysActive] = useState(0);
@@ -271,13 +277,12 @@ export default function Dashboard() {
       const address = resp.publicKey.toString();
       setPhantomAddress(address);
       setPhantomConnected(true);
-      setWalletAddress(address);
-      showStatusMessage(
-        language === 'pt' ? 'Phantom conectada! Salve o endereço abaixo.' : 'Phantom connected! Save the address below.'
+      showNotification(
+        language === 'pt' ? 'Phantom conectada!' : 'Phantom connected!', 'success'
       );
     } catch (err) {
       if (err.code !== 4001) {
-        showStatusMessage(
+        showNotification(
           language === 'pt' ? 'Erro ao conectar a Phantom.' : 'Failed to connect Phantom.',
           'error'
         );
@@ -293,6 +298,97 @@ export default function Dashboard() {
     } catch {}
     setPhantomConnected(false);
     setPhantomAddress('');
+  };
+
+  // Check if user already claimed this month
+  const checkAlreadyClaimed = async (uid) => {
+    try {
+      const currentMonth = new Date().toISOString().slice(0, 7); // "2025-06"
+      const claimRef = doc(db, 'users', uid, 'claims', currentMonth);
+      const claimSnap = await getDoc(claimRef);
+      setAlreadyClaimed(claimSnap.exists());
+    } catch {}
+  };
+
+  // Run claim check when user logs in
+  useEffect(() => {
+    if (user?.uid) checkAlreadyClaimed(user.uid);
+  }, [user]);
+
+  const handleClaim = async () => {
+    if (!phantomConnected || !phantomAddress) return;
+    if (alreadyClaimed) return;
+
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const claimablePoints = monthlyData.showMonthly
+      ? monthlyData.totalPoints
+      : totalBigPoints;
+
+    if (claimablePoints < 1) {
+      showNotification(
+        language === 'pt' ? 'Saldo mínimo para claim: 1 BIG.' : 'Minimum claim balance: 1 BIG.',
+        'error'
+      );
+      return;
+    }
+
+    const amount = Math.min(Math.floor(claimablePoints), 1000);
+
+    setClaimStatus('loading');
+    setClaimError('');
+    setClaimTx('');
+
+    try {
+      const response = await fetch('https://bigfoot-server.vercel.app/api/bridge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userAddress: phantomAddress,
+          amount,
+          userId: user.uid,
+          userEmail: user.email,
+          month: currentMonth,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Bridge error');
+      }
+
+      // Zero out this month's points in Firestore
+      const monthDates = Object.keys(allUsageData).filter(d => d.startsWith(currentMonth));
+      const batch = [];
+      for (const dateKey of monthDates) {
+        batch.push(
+          updateDoc(
+            doc(db, 'users', user.uid, 'bigpoints_earnings', dateKey),
+            { bigpoints: 0 }
+          )
+        );
+      }
+      await Promise.all(batch);
+
+      // Record claim so user can't claim again this month
+      await setDoc(doc(db, 'users', user.uid, 'claims', currentMonth), {
+        amount,
+        walletAddress: phantomAddress,
+        txSignature: data.signature || data.tx || '',
+        claimedAt: new Date(),
+      });
+
+      setClaimTx(data.signature || data.tx || '');
+      setClaimStatus('success');
+      setAlreadyClaimed(true);
+
+      // Reload points
+      await loadAllUsageData(user.uid);
+
+    } catch (err) {
+      setClaimStatus('error');
+      setClaimError(err.message || 'Unknown error');
+    }
   };
 
   const handleCopyReferralLink = async () => {
@@ -698,6 +794,207 @@ export default function Dashboard() {
 
           {/* ── Bottom Grid ── */}
           <div className="grid grid-cols-1 gap-6">
+
+            {/* ── Claim Card — only visible when Phantom is connected ── */}
+            {phantomConnected && (
+              <div className={`relative overflow-hidden rounded-3xl p-8 border dash-reveal-delay-2 ${
+                isDark ? 'bg-gray-900/60 border-[#AB9FF2]/20' : 'bg-white border-[#AB9FF2]/30'
+              } shadow-xl`}>
+                {/* top glow line */}
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#AB9FF2]/50 to-transparent" />
+                {/* bg glow */}
+                <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl pointer-events-none"
+                  style={{ background: 'rgba(171,159,242,0.06)' }} />
+
+                <div className="relative">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-2 flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-6 rounded-full" style={{ background: '#AB9FF2' }} />
+                      <h2
+                        className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
+                        style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '18px', letterSpacing: '-0.3px' }}
+                      >
+                        {language === 'pt' ? 'Resgatar BIG' : 'Claim BIG'}
+                      </h2>
+                    </div>
+
+                    {/* Connected wallet badge */}
+                    <div
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border"
+                      style={{
+                        background: isDark ? 'rgba(171,159,242,0.10)' : 'rgba(171,159,242,0.08)',
+                        borderColor: 'rgba(171,159,242,0.30)',
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 100 100" fill="none">
+                        <rect width="100" height="100" rx="22" fill="#AB9FF2"/>
+                        <path d="M50 16C33.432 16 20 29.432 20 46C20 56.4 24.6 64 30.4 69.2C32 70.64 33 72.6 33 74.6V81C33 82.1 33.9 83 35 83H39V79H61V83H65C66.1 83 67 82.1 67 81V74.6C67 72.6 68 70.64 69.6 69.2C75.4 64 80 56.4 80 46C80 29.432 66.568 16 50 16Z" fill="white"/>
+                        <ellipse cx="42" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                        <ellipse cx="58" cy="47" rx="4.5" ry="5.5" fill="#AB9FF2"/>
+                        <path d="M33 81C33 81 36 78 39 81C42 84 47 81 50 81C53 81 58 84 61 81C64 78 67 81 67 81" stroke="#AB9FF2" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+                      </svg>
+                      <span className="font-mono" style={{ fontSize: '11px', color: isDark ? '#9ca3af' : '#6b7280' }}>
+                        {phantomAddress.slice(0, 4)}...{phantomAddress.slice(-4)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p
+                    className={`text-sm mb-6 pl-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                    style={{ lineHeight: '1.65', fontWeight: 400 }}
+                  >
+                    {language === 'pt'
+                      ? 'Resgate seus tokens BIG (Solana) referentes ao mês atual. Apenas 1 claim por mês.'
+                      : 'Claim your BIG tokens (Solana) for the current month. One claim per month.'}
+                  </p>
+
+                  {/* Amount display */}
+                  <div className={`rounded-2xl border p-5 mb-5 ${
+                    isDark ? 'bg-[rgba(171,159,242,0.06)] border-[#AB9FF2]/15' : 'bg-[#F5F3FF] border-[#AB9FF2]/25'
+                  }`}>
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div>
+                        <p
+                          className={`text-xs mb-1 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+                          style={{ fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}
+                        >
+                          {language === 'pt' ? 'Disponível para resgate' : 'Available to claim'}
+                        </p>
+                        <div className="flex items-baseline gap-2">
+                          <span
+                            className="font-bold"
+                            style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '36px', letterSpacing: '-1px', color: '#AB9FF2' }}
+                          >
+                            {Math.min(Math.floor(monthlyData.showMonthly ? monthlyData.totalPoints : totalBigPoints), 1000).toLocaleString()}
+                          </span>
+                          <span className={`text-sm font-semibold ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>BIG</span>
+                        </div>
+                        {(monthlyData.showMonthly ? monthlyData.totalPoints : totalBigPoints) > 1000 && (
+                          <p className="text-xs mt-1" style={{ color: '#AB9FF2', opacity: 0.7 }}>
+                            {language === 'pt' ? 'Limite: 1.000 BIG por claim' : 'Limit: 1,000 BIG per claim'}
+                          </p>
+                        )}
+                      </div>
+                      <div className={`text-right text-xs ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                        <p>{language === 'pt' ? 'Rede' : 'Network'}</p>
+                        <p className="font-semibold text-[#9945FF]">Solana</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Already claimed this month */}
+                  {alreadyClaimed ? (
+                    <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
+                      isDark ? 'bg-green-500/8 border-green-500/20 text-green-400' : 'bg-green-50 border-green-200 text-green-700'
+                    }`}>
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm font-medium">
+                        {language === 'pt' ? 'Já resgatado este mês! Próximo claim disponível em 1º do mês.' : 'Already claimed this month! Next claim available on the 1st.'}
+                      </p>
+                    </div>
+
+                  ) : claimStatus === 'success' ? (
+                    <div className="space-y-3">
+                      <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
+                        isDark ? 'bg-green-500/8 border-green-500/20 text-green-400' : 'bg-green-50 border-green-200 text-green-700'
+                      }`}>
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-sm font-medium">
+                          {language === 'pt' ? 'Claim realizado com sucesso!' : 'Claim successful!'}
+                        </p>
+                      </div>
+                      {claimTx && (
+                        <a
+                          href={`https://explorer.solana.com/tx/${claimTx}?cluster=mainnet`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-xs font-medium transition-colors hover:opacity-80"
+                          style={{ color: '#AB9FF2', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          {language === 'pt' ? 'Ver transação no Solana Explorer' : 'View transaction on Solana Explorer'}
+                        </a>
+                      )}
+                    </div>
+
+                  ) : claimStatus === 'error' ? (
+                    <div className="space-y-3">
+                      <div className={`px-4 py-3 rounded-xl border ${
+                        isDark ? 'bg-red-500/8 border-red-500/20 text-red-400' : 'bg-red-50 border-red-200 text-red-700'
+                      }`}>
+                        <p className="text-sm font-medium mb-1">
+                          {language === 'pt' ? 'Erro ao processar claim' : 'Claim failed'}
+                        </p>
+                        {claimError && (
+                          <p className="text-xs opacity-70 font-mono">{claimError}</p>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setClaimStatus(null)}
+                        className="text-xs font-medium underline"
+                        style={{ color: '#AB9FF2', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                      >
+                        {language === 'pt' ? 'Tentar novamente' : 'Try again'}
+                      </button>
+                    </div>
+
+                  ) : (
+                    /* Claim button */
+                    <button
+                      onClick={handleClaim}
+                      disabled={
+                        claimStatus === 'loading' ||
+                        Math.floor(monthlyData.showMonthly ? monthlyData.totalPoints : totalBigPoints) < 1
+                      }
+                      className="group relative w-full inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                      style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        letterSpacing: '0.1px',
+                        background: 'linear-gradient(135deg, #9945FF 0%, #AB9FF2 100%)',
+                        color: 'white',
+                        boxShadow: claimStatus === 'loading' ? 'none' : '0 8px 24px rgba(153,69,255,0.30)',
+                      }}
+                      onMouseEnter={e => { if (claimStatus !== 'loading') e.currentTarget.style.boxShadow = '0 12px 32px rgba(153,69,255,0.45)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(153,69,255,0.30)'; }}
+                    >
+                      <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                      {claimStatus === 'loading' ? (
+                        <>
+                          <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                          {language === 'pt' ? 'Processando...' : 'Processing...'}
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {language === 'pt' ? 'Fazer Claim' : 'Claim BIG'}
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {/* Info note */}
+                  {!alreadyClaimed && claimStatus !== 'success' && (
+                    <p
+                      className={`text-xs mt-3 text-center ${isDark ? 'text-gray-600' : 'text-gray-400'}`}
+                      style={{ lineHeight: '1.5' }}
+                    >
+                      {language === 'pt'
+                        ? '⚡ Os pontos do mês atual serão zerados após o resgate.'
+                        : '⚡ Current month points will be reset after claiming.'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Referral Card */}
             <div className={`relative overflow-hidden rounded-3xl p-8 border dash-reveal-delay-2 ${
