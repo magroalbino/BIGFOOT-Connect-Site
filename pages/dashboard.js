@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import { auth, db } from '../config/firebase';
+import { auth, db, getAuthToken } from '../config/firebase';
 import { 
   collection, 
   getDocs, 
@@ -38,7 +38,9 @@ const Line = dynamic(
   { ssr: false }
 );
 
-const ADMIN_EMAIL = 'fabricioricard23@gmail.com';
+// Admin check via Firebase Custom Claim (never hardcode emails in client code)
+// Set claim server-side: admin.auth().setCustomUserClaims(uid, { admin: true })
+const [isAdminUser, setIsAdminUser] = useState(false);
 
 export default function Dashboard() {
   const router = useRouter();
@@ -105,6 +107,11 @@ export default function Dashboard() {
       if (currentUser) {
         setUser(currentUser);
         await initDashboard(currentUser);
+        // Check admin via Custom Claim — never via email
+        try {
+          const tokenResult = await currentUser.getIdTokenResult();
+          setIsAdminUser(tokenResult.claims.admin === true);
+        } catch { setIsAdminUser(false); }
       } else {
         router.push('/login');
       }
@@ -316,8 +323,20 @@ export default function Dashboard() {
   }, [user]);
 
   const handleClaim = async () => {
+    // Guard duplo — evita cliques múltiplos enquanto processa
+    if (claimStatus === 'loading') return;
     if (!phantomConnected || !phantomAddress) return;
     if (alreadyClaimed) return;
+
+    // Validação do endereço Solana (base58, 32-44 chars)
+    const isValidSolana = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(phantomAddress);
+    if (!isValidSolana) {
+      showNotification(
+        language === 'pt' ? 'Endereço Phantom inválido.' : 'Invalid Phantom address.',
+        'error'
+      );
+      return;
+    }
 
     const currentMonth = new Date().toISOString().slice(0, 7);
     const claimablePoints = monthlyData.showMonthly
@@ -339,14 +358,19 @@ export default function Dashboard() {
     setClaimTx('');
 
     try {
-      // The bridge needs a BIGchain address — we use the Firestore userId as identifier
-      // and pass the Phantom address as the Solana destination
+      // Obtém o ID Token do Firebase para autenticar no servidor
+      const idToken = await getAuthToken();
+      if (!idToken) throw new Error('Authentication error. Please log in again.');
+
       const response = await fetch('https://bigfoot-server.vercel.app/bridge/convert', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,   // servidor verifica com Admin SDK
+        },
         body: JSON.stringify({
-          bigAddress: `big${user.uid}`,   // synthetic BIGchain address tied to this user
-          solanaAddress: phantomAddress,   // Phantom wallet receives the BIG (SPL)
+          bigAddress: `big${user.uid}`,
+          solanaAddress: phantomAddress,
           amount,
         }),
       });
@@ -399,7 +423,12 @@ export default function Dashboard() {
   };
 
   const handleLogout = async () => {
-    try { await signOut(auth); localStorage.clear(); router.push('/'); } catch {}
+    try {
+      await signOut(auth);
+      // Remove only app-specific keys — never clear all localStorage
+      ['theme', 'lang'].forEach(key => localStorage.removeItem(key));
+      router.push('/');
+    } catch {}
   };
 
   const toggleTheme = () => {
@@ -1086,7 +1115,7 @@ export default function Dashboard() {
         )}
 
         {/* Admin Button */}
-        {user?.email === ADMIN_EMAIL && (
+        {isAdminUser && (
           <button
             onClick={() => router.push('/admin')}
             className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-full font-semibold text-xs uppercase tracking-wider shadow-2xl transition-all duration-300 hover:scale-110 opacity-60 hover:opacity-100"
