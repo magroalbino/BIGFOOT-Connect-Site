@@ -1,26 +1,60 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Função auxiliar para verificar autenticação
+
+    // ── Helpers ──────────────────────────────────────────────
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Função para verificar se é o próprio usuário
+
     function isUser(userId) {
       return request.auth.uid == userId;
     }
-    
-    // Regras para a coleção users
+
+    // ── users/{userId} ────────────────────────────────────────
+    // Cada usuário só acessa os próprios dados
     match /users/{userId} {
       allow read: if isAuthenticated() && isUser(userId);
-      allow write: if isAuthenticated() && isUser(userId);
-      
-      // Subcoleção bigpoints_earnings
+      // Só permite criar/atualizar campos não sensíveis — nunca direto em claims
+      allow create: if isAuthenticated() && isUser(userId);
+      allow update: if isAuthenticated() && isUser(userId)
+                    && !('referralEarnings' in request.resource.data.diff(resource.data).affectedKeys());
+      allow delete: if false;
+
+      // bigpoints_earnings — usuário lê os próprios, mas NÃO escreve direto
+      // (escrita vem do servidor via Admin SDK após claim aprovado)
       match /bigpoints_earnings/{docId} {
         allow read: if isAuthenticated() && isUser(userId);
-        allow write: if isAuthenticated() && isUser(userId);
+        // O dashboard precisa zerar os pontos após o claim — permitido apenas
+        // se o valor novo for 0 (zero-out após claim bem sucedido)
+        allow update: if isAuthenticated() && isUser(userId)
+                      && request.resource.data.bigpoints == 0;
+        allow create: if false; // só o app Electron/servidor cria
+        allow delete: if false;
       }
+
+      // claims — usuário só lê; escrita exclusiva do servidor (Admin SDK)
+      match /claims/{month} {
+        allow read: if isAuthenticated() && isUser(userId);
+        allow write: if false; // servidor usa Admin SDK, não client SDK
+      }
+    }
+
+    // ── conversions — só o servidor escreve (Admin SDK) ──────
+    match /conversions/{convId} {
+      allow read: if false;  // histórico via API, nunca direto do cliente
+      allow write: if false;
+    }
+
+    // ── daily_conversions — só o servidor escreve ─────────────
+    match /daily_conversions/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // ── Bloqueia tudo que não foi listado explicitamente ──────
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
