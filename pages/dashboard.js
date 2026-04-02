@@ -38,14 +38,14 @@ const Line = dynamic(
   { ssr: false }
 );
 
-// Admin check via Firebase Custom Claim (never hardcode emails in client code)
-// Set claim server-side: admin.auth().setCustomUserClaims(uid, { admin: true })
-const [isAdminUser, setIsAdminUser] = useState(false);
-
 export default function Dashboard() {
   const router = useRouter();
   const { t, language, setLanguage } = useTranslation();
-  
+
+  // Admin check via Firebase Custom Claim
+  // Set server-side: admin.auth().setCustomUserClaims(uid, { admin: true })
+  const [isAdminUser, setIsAdminUser] = useState(false);
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState('dark');
