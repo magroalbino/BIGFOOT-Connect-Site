@@ -29,13 +29,20 @@ const firebaseConfig = {
   measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Valida que todas as variáveis estão presentes (quebra o build cedo se faltar)
-if (typeof window === 'undefined') {
-  const missing = Object.entries(firebaseConfig)
-    .filter(([, v]) => !v)
-    .map(([k]) => `NEXT_PUBLIC_${k.replace(/([A-Z])/g, '_$1').toUpperCase()}`);
+// Valida vars em runtime (client-side) — nunca durante o build do Next.js,
+// pois as env vars NEXT_PUBLIC_* só ficam disponíveis no bundle do cliente.
+if (typeof window !== 'undefined') {
+  const required = [
+    ['NEXT_PUBLIC_FIREBASE_API_KEY',             firebaseConfig.apiKey],
+    ['NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',         firebaseConfig.authDomain],
+    ['NEXT_PUBLIC_FIREBASE_PROJECT_ID',          firebaseConfig.projectId],
+    ['NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',      firebaseConfig.storageBucket],
+    ['NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID', firebaseConfig.messagingSenderId],
+    ['NEXT_PUBLIC_FIREBASE_APP_ID',              firebaseConfig.appId],
+  ];
+  const missing = required.filter(([, v]) => !v).map(([k]) => k);
   if (missing.length > 0) {
-    throw new Error(`Missing Firebase env vars: ${missing.join(', ')}`);
+    console.error('[Firebase] Missing env vars — add them to Vercel Environment Variables:', missing.join(', '));
   }
 }
 
