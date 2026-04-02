@@ -4,49 +4,69 @@ import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
-// Configuração do Firebase
+// ──────────────────────────────────────────────────────────────────
+// IMPORTANTE: Nunca use valores hardcoded aqui.
+// Todas as chaves devem vir de variáveis de ambiente (.env.local).
+// Crie o arquivo .env.local na raiz do projeto com:
+//
+//   NEXT_PUBLIC_FIREBASE_API_KEY=...
+//   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+//   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+//   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+//   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+//   NEXT_PUBLIC_FIREBASE_APP_ID=...
+//   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=...
+//
+// O .env.local já está no .gitignore — NUNCA commite esse arquivo.
+// ──────────────────────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAhziJbG5Pxg0UYvq784YH4zXpsdKfh7AY",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "bigfoot-connect.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "bigfoot-connect",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "bigfoot-connect.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "177999879162",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:177999879162:web:a1ea739930cac97475e243",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-WEY300P1S7"
+  apiKey:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain:        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId:         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket:     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Inicializar Firebase App
+// Valida que todas as variáveis estão presentes (quebra o build cedo se faltar)
+if (typeof window === 'undefined') {
+  const missing = Object.entries(firebaseConfig)
+    .filter(([, v]) => !v)
+    .map(([k]) => `NEXT_PUBLIC_${k.replace(/([A-Z])/g, '_$1').toUpperCase()}`);
+  if (missing.length > 0) {
+    throw new Error(`Missing Firebase env vars: ${missing.join(', ')}`);
+  }
+}
+
+// Inicializar Firebase App (singleton — evita re-inicialização em hot-reload)
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Inicializar serviços
-const auth = getAuth(app);
-const db = getFirestore(app);
+const auth    = getAuth(app);
+const db      = getFirestore(app);
 const storage = getStorage(app);
 
-// Configurar persistência de autenticação
+// Configurar persistência de autenticação (apenas no cliente)
 if (typeof window !== 'undefined') {
-  setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      console.log('✅ Firebase Auth: Persistência LOCAL ativada');
-    })
-    .catch((error) => {
-      console.error('❌ Firebase Auth: Erro ao configurar persistência:', error);
-    });
+  setPersistence(auth, browserLocalPersistence).catch((error) => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Firebase Auth persistence error:', error);
+    }
+  });
 
   // Habilitar persistência offline do Firestore
-  enableIndexedDbPersistence(db)
-    .then(() => {
-      console.log('✅ Firestore: Persistência offline ativada');
-    })
-    .catch((error) => {
+  enableIndexedDbPersistence(db).catch((error) => {
+    if (process.env.NODE_ENV !== 'production') {
       if (error.code === 'failed-precondition') {
-        console.warn('⚠️ Firestore: Múltiplas abas abertas, persistência desabilitada');
+        console.warn('Firestore: multiple tabs open, offline persistence disabled');
       } else if (error.code === 'unimplemented') {
-        console.warn('⚠️ Firestore: Navegador não suporta persistência offline');
+        console.warn('Firestore: browser does not support offline persistence');
       } else {
-        console.error('❌ Firestore: Erro ao ativar persistência:', error);
+        console.error('Firestore persistence error:', error);
       }
-    });
+    }
+  });
 }
 
 // Inicializar Analytics (apenas no cliente e se suportado)
@@ -54,78 +74,47 @@ let analytics = null;
 if (typeof window !== 'undefined') {
   isSupported()
     .then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app);
-        console.log('✅ Firebase Analytics ativado');
-      } else {
-        console.warn('⚠️ Firebase Analytics não suportado neste navegador');
-      }
+      if (supported) analytics = getAnalytics(app);
     })
-    .catch((error) => {
-      console.error('❌ Erro ao verificar suporte do Analytics:', error);
-    });
+    .catch(() => {}); // Analytics é não-crítico — engole o erro silenciosamente
 }
 
-// Lista de emails de administradores
-export const ADMIN_EMAILS = [
-  'fabricioricard23@gmail.com'
-];
+// ──────────────────────────────────────────────────────────────────
+// ADMIN — verificação de admin deve ser feita via Firebase Custom Claims,
+// nunca via email hardcoded no cliente.
+//
+// Como configurar:
+//   1. No servidor (Admin SDK): auth.setCustomUserClaims(uid, { admin: true })
+//   2. No cliente: const token = await user.getIdTokenResult();
+//                  const isAdmin = token.claims.admin === true;
+//
+// REMOVIDO: ADMIN_EMAILS array — não exponha emails de admin no bundle JS.
+// ──────────────────────────────────────────────────────────────────
 
-// Função para verificar se é admin
-export const isAdmin = (email) => {
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(email.toLowerCase());
-};
-
-// Função para obter o usuário atual
-export const getCurrentUser = () => {
-  return auth.currentUser;
-};
-
-// Função para verificar se está autenticado
-export const isAuthenticated = () => {
-  return !!auth.currentUser;
-};
-
-// Configuração da API
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.bigfootconnect.tech';
-
-// Função para fazer requisições à API
-export const apiRequest = async (endpoint, options = {}) => {
+// Verifica se o usuário atual é admin via Custom Claim (seguro)
+export const isAdmin = async (user) => {
+  if (!user) return false;
   try {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('API Request Error:', error);
-    throw error;
+    const tokenResult = await user.getIdTokenResult();
+    return tokenResult.claims.admin === true;
+  } catch {
+    return false;
   }
 };
 
-// Exportar serviços
-export { app, auth, db, storage, analytics };
-
-// Exportar configuração (útil para debug)
-export const getFirebaseConfig = () => {
-  return {
-    projectId: firebaseConfig.projectId,
-    authDomain: firebaseConfig.authDomain,
-    // Não exponha chaves sensíveis em produção
-  };
+// Obtém um ID Token fresco para autenticar chamadas ao backend
+export const getAuthToken = async () => {
+  const user = auth.currentUser;
+  if (!user) return null;
+  try {
+    return await user.getIdToken(/* forceRefresh= */ false);
+  } catch {
+    return null;
+  }
 };
 
-// Log de inicialização
-console.log('🔥 Firebase inicializado com sucesso');
-console.log(`📦 Projeto: ${firebaseConfig.projectId}`);
-console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+// Função para verificar se está autenticado
+export const isAuthenticated = () => !!auth.currentUser;
+
+// Exportar serviços
+export { app, auth, db, storage, analytics };
