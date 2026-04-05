@@ -1,127 +1,40 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+const admin = require('firebase-admin')
 
-// ──────────────────────────────────────────────────────────────────
-// IMPORTANTE: Nunca use valores hardcoded aqui.
-// Todas as chaves devem vir de variáveis de ambiente (.env.local).
-// Crie o arquivo .env.local na raiz do projeto com:
-//
-//   NEXT_PUBLIC_FIREBASE_API_KEY=...
-//   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-//   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
-//   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
-//   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
-//   NEXT_PUBLIC_FIREBASE_APP_ID=...
-//   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=...
-//
-// O .env.local já está no .gitignore — NUNCA commite esse arquivo.
-// ──────────────────────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain:        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId:         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket:     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+let db   = null
+let auth = null
 
-// Valida vars em runtime (client-side) — nunca durante o build do Next.js,
-// pois as env vars NEXT_PUBLIC_* só ficam disponíveis no bundle do cliente.
-if (typeof window !== 'undefined') {
-  const required = [
-    ['NEXT_PUBLIC_FIREBASE_API_KEY',             firebaseConfig.apiKey],
-    ['NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',         firebaseConfig.authDomain],
-    ['NEXT_PUBLIC_FIREBASE_PROJECT_ID',          firebaseConfig.projectId],
-    ['NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',      firebaseConfig.storageBucket],
-    ['NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID', firebaseConfig.messagingSenderId],
-    ['NEXT_PUBLIC_FIREBASE_APP_ID',              firebaseConfig.appId],
-  ];
-  const missing = required.filter(([, v]) => !v).map(([k]) => k);
-  if (missing.length > 0) {
-    console.error('[Firebase] Missing env vars — add them to Vercel Environment Variables:', missing.join(', '));
+function initFirebase() {
+  if (admin.apps.length > 0) {
+    db   = admin.firestore()
+    auth = admin.auth()
+    return db
   }
-}
 
-// Inicializar Firebase App (singleton — evita re-inicialização em hot-reload)
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
 
-// Inicializar serviços
-const auth    = getAuth(app);
-const db      = getFirestore(app);
-const storage = getStorage(app);
-
-// Configurar persistência de autenticação (apenas no cliente)
-if (typeof window !== 'undefined') {
-  setPersistence(auth, browserLocalPersistence).catch((error) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error('Firebase Auth persistence error:', error);
-    }
-  });
-
-  // Habilitar persistência offline do Firestore
-  enableIndexedDbPersistence(db).catch((error) => {
-    if (process.env.NODE_ENV !== 'production') {
-      if (error.code === 'failed-precondition') {
-        console.warn('Firestore: multiple tabs open, offline persistence disabled');
-      } else if (error.code === 'unimplemented') {
-        console.warn('Firestore: browser does not support offline persistence');
-      } else {
-        console.error('Firestore persistence error:', error);
-      }
-    }
-  });
-}
-
-// Inicializar Analytics (apenas no cliente e se suportado)
-let analytics = null;
-if (typeof window !== 'undefined') {
-  isSupported()
-    .then((supported) => {
-      if (supported) analytics = getAnalytics(app);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
     })
-    .catch(() => {}); // Analytics é não-crítico — engole o erro silenciosamente
+
+    db   = admin.firestore()
+    auth = admin.auth()
+    console.log('✅ Firebase conectado')
+    return db
+  } catch (err) {
+    console.error('❌ Erro ao iniciar Firebase:', err.message)
+    throw err
+  }
 }
 
-// ──────────────────────────────────────────────────────────────────
-// ADMIN — verificação de admin deve ser feita via Firebase Custom Claims,
-// nunca via email hardcoded no cliente.
-//
-// Como configurar:
-//   1. No servidor (Admin SDK): auth.setCustomUserClaims(uid, { admin: true })
-//   2. No cliente: const token = await user.getIdTokenResult();
-//                  const isAdmin = token.claims.admin === true;
-//
-// REMOVIDO: ADMIN_EMAILS array — não exponha emails de admin no bundle JS.
-// ──────────────────────────────────────────────────────────────────
+function getDb() {
+  if (!db) initFirebase()
+  return db
+}
 
-// Verifica se o usuário atual é admin via Custom Claim (seguro)
-export const isAdmin = async (user) => {
-  if (!user) return false;
-  try {
-    const tokenResult = await user.getIdTokenResult();
-    return tokenResult.claims.admin === true;
-  } catch {
-    return false;
-  }
-};
+function getAuth() {
+  if (!auth) initFirebase()
+  return auth
+}
 
-// Obtém um ID Token fresco para autenticar chamadas ao backend
-export const getAuthToken = async () => {
-  const user = auth.currentUser;
-  if (!user) return null;
-  try {
-    return await user.getIdToken(/* forceRefresh= */ false);
-  } catch {
-    return null;
-  }
-};
-
-// Função para verificar se está autenticado
-export const isAuthenticated = () => !!auth.currentUser;
-
-// Exportar serviços
-export { app, auth, db, storage, analytics };
+module.exports = { initFirebase, getDb, getAuth }
