@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Configurações experimentais removidas para compatibilidade com Next.js 13.5.6
   experimental: {
     optimizeCss: true
   },
@@ -30,10 +29,58 @@ const nextConfig = {
 
   // Configuração de headers para segurança
   async headers() {
+    // Content Security Policy
+    // Permite apenas origens explicitamente listadas.
+    // 'unsafe-inline' em style-src é necessário para Tailwind/CSS-in-JS.
+    // 'unsafe-eval' em script-src é necessário para Next.js em dev — removido em prod.
+    const isDev = process.env.NODE_ENV === 'development';
+
+    const csp = [
+      // Padrão: bloqueia tudo que não for listado
+      `default-src 'self'`,
+
+      // Scripts: Next.js chunks + Google Fonts (preconnect) + Phantom (injeta script)
+      // 'unsafe-inline' necessário para Next.js inline scripts no _document
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://apis.google.com`,
+
+      // Estilos: inline (Tailwind/CSS-in-JS) + Google Fonts
+      `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+
+      // Fontes: Google Fonts
+      `font-src 'self' https://fonts.gstatic.com`,
+
+      // Imagens: self + Firebase Storage + Google (avatars) + data URIs
+      `img-src 'self' data: blob: https://firebasestorage.googleapis.com https://lh3.googleusercontent.com https://explorer.solana.com`,
+
+      // Conexões de rede: Firebase, API própria, bridge, Solana
+      `connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://api.bigfootconnect.tech https://bigfoot-server.vercel.app https://explorer.solana.com wss://*.firebaseio.com`,
+
+      // Frames: Firebase Auth usa iframe para login federado
+      `frame-src 'self' https://bigfoot-connect.firebaseapp.com`,
+
+      // Objetos: bloqueia Flash e similares
+      `object-src 'none'`,
+
+      // Base URI: evita ataques de injeção de base tag
+      `base-uri 'self'`,
+
+      // Form action: só permite envio para o próprio site
+      `form-action 'self'`,
+
+      // Upgrade insecure requests em produção
+      ...(isDev ? [] : [`upgrade-insecure-requests`]),
+    ].join('; ');
+
     return [
       {
         source: '/:path*',
         headers: [
+          // ── CSP ──────────────────────────────────────────────────────────
+          {
+            key: 'Content-Security-Policy',
+            value: csp,
+          },
+          // ── Headers existentes (mantidos) ─────────────────────────────────
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
@@ -61,7 +108,7 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
-          }
+          },
         ],
       },
     ];
@@ -120,13 +167,13 @@ const nextConfig = {
 
   // Variáveis de ambiente públicas
   env: {
-    NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    NEXT_PUBLIC_FIREBASE_API_KEY:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID:         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    NEXT_PUBLIC_FIREBASE_APP_ID:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    NEXT_PUBLIC_API_BASE_URL:                process.env.NEXT_PUBLIC_API_BASE_URL,
   },
 
   // Configuração de compressão
@@ -143,8 +190,6 @@ const nextConfig = {
 
   // Desabilitar powered-by header
   poweredByHeader: false,
-
-  // Turbopack removido - usando configuração padrão do Next.js 13.5.6
 
   // Output standalone para Docker
   output: 'standalone',
