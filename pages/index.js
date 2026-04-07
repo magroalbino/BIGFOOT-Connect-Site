@@ -305,7 +305,7 @@ export default function Home() {
             {/* CTA */}
             <div className="hero-cta flex gap-4 flex-wrap justify-center mb-10">
               <a
-                href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.3.5/BIGFOOT-Connect-Setup-1.3.5.exe"
+                href="https://github.com/fabricioricard/BIGFOOT-Connect/releases/download/v1.3.6/BIGFOOT-Connect-Setup-1.3.6.exe"
                 className="group relative inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-2xl text-sm font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(249,115,22,0.38)] overflow-hidden"
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
               >
