@@ -844,20 +844,6 @@
     </div>
 
     <script>
-        // Copy logo from uploads
-        const logo = document.getElementById('logo-placeholder');
-        fetch('/mnt/user-data/uploads/1775779551003_image.png')
-            .then(r => r.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onload = e => { logo.src = e.target.result; };
-                reader.readAsDataURL(blob);
-            })
-            .catch(() => {
-                // Fallback: simple gradient logo
-                logo.style.background = 'linear-gradient(135deg, #FF6B35, #00D084)';
-            });
-
         function switchLanguage(lang) {
             const elements = document.querySelectorAll('.en, .pt');
             const enBtn = document.querySelectorAll('.lang-btn')[0];
