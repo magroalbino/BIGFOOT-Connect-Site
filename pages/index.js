@@ -373,7 +373,7 @@ export default function Home() {
               {t('whitepaperText')}
             </p>
             <a
-              href="/docs/whitepaper.pdf"
+              href="/docs/whitepaper.html"
               target="_blank"
               className="group inline-flex items-center gap-3 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(20,184,166,0.35)] text-sm"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
