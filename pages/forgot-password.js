@@ -183,18 +183,34 @@ export default function ForgotPassword() {
     setMessage({ text: '', type: '' });
   };
 
+  const isDark = theme === 'dark';
+
   return (
     <>
       <Head>
         <title>{language === 'pt' ? 'Recuperar Senha' : 'Forgot Password'} - BIGFOOT Connect</title>
         <meta name="description" content="Recupere sua senha do BIGFOOT Connect" />
         <link rel="icon" href="/images/favicon.ico" />
+        
+        {/* ── FONTES PADRONIZADAS ── */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${theme === 'dark' ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} relative overflow-hidden transition-colors duration-300`}>
+      {/* 
+        MUDANÇA: Container principal usa Plus Jakarta Sans como base.
+      */}
+      <div 
+        className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} relative overflow-hidden transition-colors duration-300`}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
         {/* Animated background */}
         <div className="fixed inset-0 z-0 pointer-events-none">
-          <div className={`absolute inset-0 ${theme === 'dark' ? 'opacity-30' : 'opacity-20'}`} style={{
+          <div className={`absolute inset-0 ${isDark ? 'opacity-30' : 'opacity-20'}`} style={{
             background: `
               radial-gradient(circle at 20% 80%, rgba(31, 148, 140, 0.12) 0%, transparent 50%),
               radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
@@ -212,7 +228,8 @@ export default function ForgotPassword() {
           <select
             value={language}
             onChange={handleLanguageChange}
-            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl px-3 py-2 text-orange-500 cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 shadow-lg backdrop-blur-xl`}
+            className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl px-3 py-2 text-orange-500 cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 shadow-lg backdrop-blur-xl font-medium`}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             <option value="en">English</option>
             <option value="pt">Português</option>
@@ -220,10 +237,10 @@ export default function ForgotPassword() {
           
           <button
             onClick={toggleTheme}
-            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl w-11 h-11 flex items-center justify-center text-orange-500 text-xl cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 hover:scale-105 shadow-lg backdrop-blur-xl relative overflow-hidden`}
+            className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl w-11 h-11 flex items-center justify-center text-orange-500 text-xl cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 hover:scale-105 shadow-lg backdrop-blur-xl relative overflow-hidden`}
             aria-label="Alternar tema"
           >
-            {theme === 'dark' ? '🌙' : '🌞'}
+            {isDark ? '🌙' : '🌞'}
           </button>
         </div>
 
@@ -241,13 +258,19 @@ export default function ForgotPassword() {
                 priority
               />
             </Link>
-            <span className="mt-4 text-3xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
+            {/* 
+              MUDANÇA: Logo text usa Space Grotesk com tracking negativo.
+            */}
+            <span 
+              className="mt-4 text-3xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent"
+              style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.5px' }}
+            >
               BIGFOOT Connect
             </span>
           </div>
 
           {/* Form container */}
-          <div className={`${theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-200'} border backdrop-blur-2xl rounded-3xl p-10 shadow-2xl relative overflow-hidden`}>
+          <div className={`${isDark ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-200'} border backdrop-blur-2xl rounded-3xl p-10 shadow-2xl relative overflow-hidden`}>
             {/* Top gradient bar */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-600 to-green-500"></div>
 
@@ -266,12 +289,25 @@ export default function ForgotPassword() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl font-bold text-center mb-4 relative">
+                {/* 
+                  MUDANÇA: Título usa Space Grotesk weight 700.
+                */}
+                <h2 
+                  className="text-3xl font-bold text-center mb-4 relative"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.8px' }}
+                >
                   {language === 'pt' ? 'Esqueceu a Senha?' : 'Forgot Password?'}
                   <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-teal-600 to-green-500 rounded-full"></div>
                 </h2>
 
-                <p className={`text-center mb-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                {/* 
+                  MUDANÇA: Parágrafo descritivo com Plus Jakarta Sans.
+                  line-height 1.65 para melhor legibilidade.
+                */}
+                <p 
+                  className={`text-center mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: '1.65', fontWeight: 400 }}
+                >
                   {language === 'pt' 
                     ? 'Digite seu e-mail e enviaremos um link para redefinir sua senha.' 
                     : 'Enter your email and we\'ll send you a link to reset your password.'}
@@ -285,15 +321,20 @@ export default function ForgotPassword() {
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`w-full px-4 py-3 ${theme === 'dark' ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer`}
+                      className={`w-full px-4 py-3 ${isDark ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer`}
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400 }}
                       placeholder=" "
                       required
                       autoComplete="email"
                       autoFocus
                     />
+                    {/* 
+                      MUDANÇA: Label usa Plus Jakarta Sans weight 500.
+                    */}
                     <label
                       htmlFor="email"
-                      className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                      className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                     >
                       {language === 'pt' ? 'E-mail' : 'Email'}
                     </label>
@@ -304,6 +345,7 @@ export default function ForgotPassword() {
                     type="submit"
                     disabled={loading}
                     className="w-full bg-gradient-to-r from-teal-600 to-green-500 hover:from-teal-700 hover:to-green-600 text-white font-semibold py-3.5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-600/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.2px' }}
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
                     {loading ? (
@@ -322,14 +364,20 @@ export default function ForgotPassword() {
                       message.type === 'success' ? 'bg-green-500/10 text-green-500 border border-green-500/30' :
                       message.type === 'info' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/30' :
                       'bg-red-500/10 text-red-500 border border-red-500/30'
-                    }`}>
+                    }`}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: '1.5' }}
+                    >
                       {message.text}
                     </div>
                   )}
 
                   {/* Back to login */}
                   <div className="text-center">
-                    <Link href="/login" className="text-teal-600 hover:text-teal-500 text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-teal-600 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0 inline-flex items-center gap-2">
+                    <Link 
+                      href="/login" 
+                      className="text-teal-600 hover:text-teal-500 text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-teal-600 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0 inline-flex items-center gap-2"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
+                    >
                       <span>←</span>
                       <span>{language === 'pt' ? 'Voltar ao Login' : 'Back to Login'}</span>
                     </Link>
@@ -345,18 +393,33 @@ export default function ForgotPassword() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl font-bold text-center mb-4 text-green-500">
+                {/* 
+                  MUDANÇA: Título de sucesso usa Space Grotesk.
+                */}
+                <h2 
+                  className="text-3xl font-bold text-center mb-4 text-green-500"
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.8px' }}
+                >
                   {language === 'pt' ? 'E-mail Enviado!' : 'Email Sent!'}
                 </h2>
 
-                <p className={`text-center mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                {/* 
+                  MUDANÇA: Textos descritivos com Plus Jakarta Sans.
+                */}
+                <p 
+                  className={`text-center mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: '1.65', fontWeight: 400 }}
+                >
                   {language === 'pt' 
                     ? 'Enviamos um link de recuperação para seu e-mail. Verifique sua caixa de entrada e spam.' 
                     : 'We sent a recovery link to your email. Check your inbox and spam folder.'}
                 </p>
 
-                <div className={`p-4 rounded-xl mb-6 ${theme === 'dark' ? 'bg-blue-500/10' : 'bg-blue-50'} border ${theme === 'dark' ? 'border-blue-500/30' : 'border-blue-200'}`}>
-                  <p className={`text-sm ${theme === 'dark' ? 'text-blue-400' : 'text-blue-700'}`}>
+                <div className={`p-4 rounded-xl mb-6 ${isDark ? 'bg-blue-500/10' : 'bg-blue-50'} border ${isDark ? 'border-blue-500/30' : 'border-blue-200'}`}>
+                  <p 
+                    className={`text-sm ${isDark ? 'text-blue-400' : 'text-blue-700'}`}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: '1.6', fontWeight: 400 }}
+                  >
                     💡 {language === 'pt' 
                       ? 'Dica: O e-mail pode levar alguns minutos para chegar. Não se esqueça de verificar a pasta de spam!' 
                       : 'Tip: The email may take a few minutes to arrive. Don\'t forget to check your spam folder!'}
@@ -365,14 +428,18 @@ export default function ForgotPassword() {
 
                 <div className="space-y-3">
                   <Link href="/login" className="block w-full">
-                    <button className="w-full bg-gradient-to-r from-teal-600 to-green-500 hover:from-teal-700 hover:to-green-600 text-white font-semibold py-3.5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-600/40">
+                    <button 
+                      className="w-full bg-gradient-to-r from-teal-600 to-green-500 hover:from-teal-700 hover:to-green-600 text-white font-semibold py-3.5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-600/40"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.2px' }}
+                    >
                       {language === 'pt' ? 'Ir para o Login' : 'Go to Login'}
                     </button>
                   </Link>
 
                   <button
                     onClick={handleResendEmail}
-                    className={`w-full ${theme === 'dark' ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg font-medium`}
+                    className={`w-full ${isDark ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg font-medium`}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                   >
                     {language === 'pt' ? 'Reenviar E-mail' : 'Resend Email'}
                   </button>
@@ -383,7 +450,11 @@ export default function ForgotPassword() {
 
           {/* Back to home */}
           <div className="mt-10 text-center">
-            <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 px-4 py-2 rounded-lg hover:bg-orange-500/10">
+            <Link 
+              href="/" 
+              className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 px-4 py-2 rounded-lg hover:bg-orange-500/10"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
+            >
               <span>{language === 'pt' ? '← Voltar para Home' : '← Back to Home'}</span>
             </Link>
           </div>
