@@ -273,18 +273,34 @@ export default function Register() {
     }
   };
 
+  const isDark = theme === 'dark';
+
   return (
     <>
       <Head>
         <title>{t('title')} - BIGFOOT Connect</title>
         <meta name="description" content="Crie sua conta no BIGFOOT Connect" />
         <link rel="icon" href="/images/favicon.ico" />
+        
+        {/* ── FONTES PADRONIZADAS ── */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${theme === 'dark' ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} relative overflow-hidden transition-colors duration-300`}>
+      {/* 
+        MUDANÇA: Container principal usa Plus Jakarta Sans como base.
+      */}
+      <div 
+        className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'} relative overflow-hidden transition-colors duration-300`}
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
         {/* Animated background */}
         <div className="fixed inset-0 z-0 pointer-events-none">
-          <div className={`absolute inset-0 ${theme === 'dark' ? 'opacity-30' : 'opacity-20'}`} style={{
+          <div className={`absolute inset-0 ${isDark ? 'opacity-30' : 'opacity-20'}`} style={{
             background: `
               radial-gradient(circle at 20% 80%, rgba(31, 148, 140, 0.12) 0%, transparent 50%),
               radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
@@ -302,7 +318,8 @@ export default function Register() {
           <select
             value={language}
             onChange={handleLanguageChange}
-            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl px-3 py-2 text-orange-500 cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 shadow-lg backdrop-blur-xl`}
+            className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl px-3 py-2 text-orange-500 cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 shadow-lg backdrop-blur-xl font-medium`}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             <option value="en">English</option>
             <option value="pt">Português</option>
@@ -310,10 +327,10 @@ export default function Register() {
           
           <button
             onClick={toggleTheme}
-            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl w-11 h-11 flex items-center justify-center text-orange-500 text-xl cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 hover:scale-105 shadow-lg backdrop-blur-xl relative overflow-hidden`}
+            className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-300'} border rounded-xl w-11 h-11 flex items-center justify-center text-orange-500 text-xl cursor-pointer transition-all duration-300 hover:border-teal-600 hover:-translate-y-0.5 hover:scale-105 shadow-lg backdrop-blur-xl relative overflow-hidden`}
             aria-label="Alternar tema"
           >
-            {theme === 'dark' ? '🌙' : '🌞'}
+            {isDark ? '🌙' : '🌞'}
           </button>
         </div>
 
@@ -331,13 +348,19 @@ export default function Register() {
                 priority
               />
             </Link>
-            <span className="mt-4 text-3xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">
+            {/* 
+              MUDANÇA: Logo text usa Space Grotesk com tracking negativo.
+            */}
+            <span 
+              className="mt-4 text-3xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent"
+              style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.5px' }}
+            >
               BIGFOOT Connect
             </span>
           </div>
 
           {/* Form container */}
-          <div className={`${theme === 'dark' ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-200'} border backdrop-blur-2xl rounded-3xl p-10 shadow-2xl relative overflow-hidden`}>
+          <div className={`${isDark ? 'bg-gray-900/80 border-gray-800' : 'bg-white border-gray-200'} border backdrop-blur-2xl rounded-3xl p-10 shadow-2xl relative overflow-hidden`}>
             {/* Top gradient bar */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-600 to-green-500"></div>
 
@@ -347,7 +370,13 @@ export default function Register() {
               animation: 'shimmer 8s linear infinite'
             }}></div>
 
-            <h2 className="text-3xl font-bold text-center mb-8 relative">
+            {/* 
+              MUDANÇA: Título usa Space Grotesk weight 700.
+            */}
+            <h2 
+              className="text-3xl font-bold text-center mb-8 relative"
+              style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.8px' }}
+            >
               {t('title')}
               <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-teal-600 to-green-500 rounded-full"></div>
             </h2>
@@ -360,14 +389,19 @@ export default function Register() {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-4 py-3 ${theme === 'dark' ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer`}
+                  className={`w-full px-4 py-3 ${isDark ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400 }}
                   placeholder=" "
                   required
                   autoComplete="email"
                 />
+                {/* 
+                  MUDANÇA: Label usa Plus Jakarta Sans weight 500.
+                */}
                 <label
                   htmlFor="email"
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   {t('email')}
                 </label>
@@ -380,14 +414,16 @@ export default function Register() {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3 ${theme === 'dark' ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer pr-12`}
+                  className={`w-full px-4 py-3 ${isDark ? 'bg-white/5 border-gray-800 focus:bg-white/10' : 'bg-gray-50 border-gray-300 focus:bg-white'} border-2 rounded-2xl transition-all duration-300 focus:border-teal-600 focus:shadow-lg focus:shadow-teal-600/20 focus:-translate-y-0.5 outline-none peer pr-12`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 400 }}
                   placeholder=" "
                   required
                   autoComplete="new-password"
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'bg-gray-900 text-gray-400' : 'bg-white text-gray-600'} px-2 pointer-events-none transition-all duration-300 peer-focus:top-0 peer-focus:text-teal-600 peer-focus:font-semibold peer-focus:text-sm peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:text-teal-600 peer-[:not(:placeholder-shown)]:font-semibold`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   {t('password')}
                 </label>
@@ -401,7 +437,7 @@ export default function Register() {
                 </button>
                 
                 {/* Password strength meter */}
-                <div className={`h-1 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-300'} rounded-full mt-2 overflow-hidden`}>
+                <div className={`h-1 ${isDark ? 'bg-gray-800' : 'bg-gray-300'} rounded-full mt-2 overflow-hidden`}>
                   <div 
                     className={`h-full transition-all duration-300 rounded-full ${getStrengthClass()}`}
                     style={{
@@ -419,6 +455,7 @@ export default function Register() {
                 type="submit"
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-teal-600 to-green-500 hover:from-teal-700 hover:to-green-600 text-white font-semibold py-3.5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-teal-600/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.2px' }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
                 {loading ? (
@@ -437,7 +474,9 @@ export default function Register() {
                   message.type === 'success' ? 'bg-green-500/10 text-green-500 border border-green-500/30' :
                   message.type === 'info' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/30' :
                   'bg-red-500/10 text-red-500 border border-red-500/30'
-                }`}>
+                }`}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: '1.5' }}
+                >
                   {message.text}
                 </div>
               )}
@@ -445,10 +484,13 @@ export default function Register() {
               {/* Divider */}
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className={`w-full border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-300'}`}></div>
+                  <div className={`w-full border-t ${isDark ? 'border-gray-800' : 'border-gray-300'}`}></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className={`${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} px-4 text-gray-500 font-medium`}>
+                  <span 
+                    className={`${isDark ? 'bg-gray-900' : 'bg-white'} px-4 text-gray-500 font-medium`}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
                     {t('dividerText')}
                   </span>
                 </div>
@@ -458,7 +500,8 @@ export default function Register() {
               <Link href="/login" className="block">
                 <button
                   type="button"
-                  className={`w-full ${theme === 'dark' ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg font-medium`}
+                  className={`w-full ${isDark ? 'bg-white/5 hover:bg-white/10 border-gray-800' : 'bg-gray-50 hover:bg-white border-gray-300'} border py-3 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg font-medium`}
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
                 >
                   {t('loginLink')}
                 </button>
@@ -468,7 +511,11 @@ export default function Register() {
 
           {/* Back to home */}
           <div className="mt-10 text-center">
-            <Link href="/" className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 px-4 py-2 rounded-lg hover:bg-orange-500/10">
+            <Link 
+              href="/" 
+              className="text-gray-500 hover:text-orange-500 text-sm transition-all duration-300 inline-flex items-center gap-2 hover:gap-3 px-4 py-2 rounded-lg hover:bg-orange-500/10"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: '0.1px' }}
+            >
               <span>{t('backHome')}</span>
             </Link>
           </div>
