@@ -495,8 +495,8 @@ export default function Dashboard() {
 
     // Meses de 2026 até o mês atual
     for (let y = 2026; y <= currentYear; y++) {
-      const endM = y === currentYear ? currentMonth : 12;
-      for (let m = 1; m <= endM; m++) {
+  const endM = 12; // sempre mostra o ano completo (todos os meses)
+  for (let m = 1; m <= endM; m++) {
         const value = `${y}-${String(m).padStart(2, '0')}`;
         const date = new Date(y, m - 1, 1);
         const label = date.toLocaleDateString(
