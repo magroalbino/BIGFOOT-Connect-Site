@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Verifica se os campos alterados estão apenas na lista permitida
+    function onlyAllowedFields(allowedFields) {
+      let changedFields = request.resource.data.diff(resource.data).affectedKeys();
+      return changedFields.hasOnly(allowedFields);
+    }
+
+    // ── users/{userId} ────────────────────────────────────────
+    match /users/{userId} {
+      // Apenas leitura e atualização restrita — criação reservada ao backend
+      allow read: if isAuthenticated() && isUser(userId);
+      allow create: if false; // apenas Admin SDK cria o documento inicial
+      allow update: if isAuthenticated() && isUser(userId)
+                    && onlyAllowedFields(['nickname', 'avatar'])
+                    && request.resource.data.keys().size() <= 10;
+      allow delete: if false;
+
+      // bigpoints_earnings — leitura permitida, escrita apenas para zerar
+      match /bigpoints_earnings/{docId} {
+        allow read: if isAuthenticated() && isUser(userId);
+        allow update: if isAuthenticated() && isUser(userId)
+                      && request.resource.data.bigpoints is number
+                      && request.resource.data.bigpoints == 0;
+        allow create: if false; // apenas Admin SDK / servidor
+        allow delete: if false;
+      }
+
+      // claims — apenas leitura; escrita exclusiva do Admin SDK
+      match /claims/{month} {
+        allow read: if isAuthenticated() && isUser(userId);
+        allow write: if false;
+      }
+    }
+
+    // ── conversions — apenas Admin SDK manipula ──────────────
+    match /conversions/{convId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // ── daily_conversions — apenas Admin SDK manipula ────────
+    match /daily_conversions/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // ── Bloqueia todo o restante ──────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
