@@ -151,15 +151,19 @@ const nextConfig = {
     ];
   },
 
-  // Configuração de rewrites para API
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'https://api.bigfootconnect.tech/api/:path*',
-      },
-    ];
-  },
+  // Configuração de rewrites para API e rota do Whitepaper
+async rewrites() {
+  return [
+    {
+      source: '/whitepaper',
+      destination: '/docs/whitepaper.html',
+    },
+    {
+      source: '/api/:path*',
+      destination: 'https://api.bigfootconnect.tech/api/:path*',
+    },
+  ];
+},
 
   // Variáveis de ambiente públicas
   env: {
